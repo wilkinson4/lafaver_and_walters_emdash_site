@@ -7,14 +7,14 @@ import TopicNav from "../../components/TopicNav.astro";
 const topicSlug = Astro.url.searchParams.get("topic") ?? undefined;
 const cursor = Astro.url.searchParams.get("cursor") ?? undefined;
 
-const topicsResult = await getTaxonomyTermsWithCacheHint("topic");
+const topicsResult = await getTaxonomyTermsWithCacheHint("category");
 const topic = topicSlug ? topicsResult.data.find((t) => t.slug === topicSlug) : undefined;
 
-const { entries, nextCursor, cacheHint } = await getEmDashCollection("articles", {
+const { entries, nextCursor, cacheHint } = await getEmDashCollection("posts", {
 	orderBy: { published_at: "desc" },
 	limit: 12,
 	cursor,
-	...(topic ? { where: { topic: topic.slug } } : {}),
+	...(topic ? { where: { category: topic.slug } } : {}),
 });
 if (Astro.cache?.enabled) {
 	Astro.cache.set(topicsResult.cacheHint);

@@ -1,10 +1,14 @@
 ---
 interface Props {
-	topics: { slug: string; label: string }[];
+	topics: { slug: string; label: string; count?: number }[];
 	active?: string;
 }
 
-const { topics, active } = Astro.props;
+// Hide empty categories (WordPress imports bring many) and list the busiest first.
+const topics = Astro.props.topics
+	.filter((t) => t.count === undefined || t.count > 0 || t.slug === Astro.props.active)
+	.toSorted((a, b) => (b.count ?? 0) - (a.count ?? 0));
+const { active } = Astro.props;
 const chip = "border px-5 py-2.5 text-base font-medium hover:border-[#111] hover:bg-[#111] hover:text-white";
 const on = "border-[#111] bg-[#111] text-white";
 const off = "border-[#cfcac3] bg-white";

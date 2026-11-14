@@ -4,17 +4,18 @@ import { Image, PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import ArticleCard from "../../components/ArticleCard.astro";
 import ArticleHeading from "../../components/ArticleHeading.astro";
+import ArticleHtmlBlock from "../../components/ArticleHtmlBlock.astro";
 import { getHomepage, headings, readMinutes, telHref } from "../../lib/site";
 
 const slug = decodeSlug(Astro.params.slug);
 if (!slug) return Astro.rewrite("/404");
 
-const { entry: article, cacheHint } = await getEmDashEntry("articles", slug);
+const { entry: article, cacheHint } = await getEmDashEntry("posts", slug);
 if (!article) return Astro.rewrite("/404");
 
 const [homeResult, recent, settings] = await Promise.all([
 	getHomepage(),
-	getEmDashCollection("articles", { orderBy: { published_at: "desc" }, limit: 20 }),
+	getEmDashCollection("posts", { orderBy: { published_at: "desc" }, limit: 20 }),
 	getSiteSettings(),
 ]);
 if (Astro.cache?.enabled) {
@@ -25,7 +26,7 @@ if (Astro.cache?.enabled) {
 
 const home = homeResult.home?.data;
 const data = article.data;
-const topics = data.terms?.topic ?? [];
+const topics = data.terms?.category ?? [];
 const topic = topics[0];
 const toc = headings(data.content);
 const author = data.byline?.displayName ?? "Randyl";
@@ -34,7 +35,7 @@ const updated = (data.updatedAt ?? data.publishedAt)?.toLocaleDateString("en-US"
 const topicSlugs = new Set(topics.map((t) => t.slug));
 const related = recent.entries
 	.filter((a) => a.id !== article.id)
-	.map((a) => ({ a, score: (a.data.terms?.topic ?? []).some((t) => topicSlugs.has(t.slug)) ? 1 : 0 }))
+	.map((a) => ({ a, score: (a.data.terms?.category ?? []).some((t) => topicSlugs.has(t.slug)) ? 1 : 0 }))
 	.sort((x, y) => y.score - x.score)
 	.slice(0, 3)
 	.map(({ a }) => a);
@@ -55,7 +56,7 @@ const avatar = "cover rounded-full bg-[#ddd] grayscale";
 	description={seo.description ?? data.excerpt}
 	canonical={seo.canonical}
 	image={seo.ogImage}
-	content={{ collection: "articles", id: data.id, slug }}
+	content={{ collection: "posts", id: data.id, slug }}
 >
 	<div class="article-page bg-ivory [--fs:20px]">
 		<header class="bg-white pt-17.5">
@@ -101,7 +102,7 @@ const avatar = "cover rounded-full bg-[#ddd] grayscale";
 		>
 			<article>
 				<div class="article-body" id="article">
-					<PortableText value={data.content} components={{ block: { h2: ArticleHeading } }} />
+					<PortableText value={data.content} components={{ block: { h2: ArticleHeading }, type: { htmlBlock: ArticleHtmlBlock } }} />
 				</div>
 
 				<div

@@ -17,10 +17,10 @@ const [homeResult, workshopResult, articlesResult, testimonialsResult, faqsResul
 	await Promise.all([
 		getHomepage(),
 		getNextWorkshop(),
-		getEmDashCollection("articles", { orderBy: { published_at: "desc" }, limit: 12 }),
+		getEmDashCollection("posts", { orderBy: { published_at: "desc" }, limit: 12 }),
 		getEmDashCollection("testimonials", { orderBy: { sort_order: "asc" }, limit: 3 }),
 		getEmDashCollection("faqs", { orderBy: { sort_order: "asc" }, limit: 12 }),
-		getTaxonomyTermsWithCacheHint("topic"),
+		getTaxonomyTermsWithCacheHint("category"),
 		getSiteSettings(),
 	]);
 if (Astro.cache?.enabled) {
@@ -40,7 +40,7 @@ const timezone = (settings as { timezone?: string } | undefined)?.timezone || DE
 const articles = articlesResult.entries;
 const featured = articles.find((a) => a.data.featured) ?? articles[0];
 const moreArticles = articles.filter((a) => a !== featured).slice(0, 3);
-const topicOf = (a: (typeof articles)[number]) => a.data.terms?.topic?.[0]?.label;
+const topicOf = (a: (typeof articles)[number]) => a.data.terms?.category?.[0]?.label;
 
 const workshop = workshopResult.workshop;
 const w = workshop ? workshopParts(workshop.data.starts_at, workshop.data.ends_at, timezone) : null;

@@ -7,19 +7,19 @@ EmDash + Astro site (Node.js, SQLite, local uploads). Requires Node ≥ 22.23.4 
 | Page | Route |
 |---|---|
 | Homepage | `/` |
-| Learning Center (filter with `?topic=`) | `/learn` |
-| Article | `/learn/:slug` |
+| Learning Center (filter by category with `?topic=<category-slug>`) | `/learn` |
+| Article | `/learn/:slug` (old WordPress `/blog/:slug` URLs 301-redirect here) |
 | 404 | fallback |
 
 ## Editable content (EmDash admin)
 
 - **Homepage** (singleton): hero, journey paths, guide, stats, quiz, about, FAQ/contact headings, contact details, footer
-- **Articles** with **Topics** taxonomy
+- **Articles** (the `posts` collection, imported from WordPress) with **Categories** (shown as Learning Center topics) and **Tags**. Tick *Feature on homepage* on one article to make it the homepage lead; otherwise the newest is used.
 - **Workshops** (the next upcoming one drives the top banner and workshop section)
 - **Testimonials**, **FAQs**
 - **Menus**: `primary`, `footer_learn`, `footer_services`
 
-Schema and sample content live in `seed/seed.json`.
+Schema and sample content live in `seed/seed.json` (articles come from the WordPress import, not the seed).
 
 ## Getting started
 

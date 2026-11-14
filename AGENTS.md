@@ -76,6 +76,14 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 
 Site settings have `title` and `tagline`.
 
+## Site content model
+
+- Learning Center articles are the `posts` collection (labelled "Articles"; imported from WordPress with the emdash-exporter plugin), served at `/learn/{slug}`. A pattern redirect sends old `/blog/[slug]` URLs there.
+- Learning Center "topics" are the `category` taxonomy (`?topic=<category-slug>`); `TopicNav` hides empty categories. `tag` is also on posts.
+- `posts.featured` ("Feature on homepage") picks the homepage lead article; otherwise the newest is used.
+- Imported bodies contain WordPress `htmlBlock`s. `src/components/ArticleHtmlBlock.astro` rebuilds Kadence buttons (`kadence/singlebtn`, stored as empty comments) from `originalAttrs`; other blocks use EmDash's `HtmlBlock`.
+- Imported `pages` and the `primary-menu` menu exist but have no routes yet; the site uses the `primary`, `footer_learn` and `footer_services` menus.
+
 ## Plugins
 
 Sandboxed plugins are enabled via `sandboxRunner: "@emdash-cms/sandbox-workerd/sandbox"` in `astro.config.mjs` (deps: `@emdash-cms/sandbox-workerd`, `workerd`). Admins can install registry plugins from **Registry** in the admin; plugin code runs in a separate workerd process (Miniflare in `pnpm dev`). Config-managed plugins go in `emdash({ plugins: [] })` (native, in-process) or `sandboxed: []` -- follow each package's instructions. Never set `sandbox: false` outside local debugging. Docs: https://docs.emdashcms.com/plugins/installing/

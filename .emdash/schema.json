@@ -1,0 +1,660 @@
+{
+  "collections": [
+    {
+      "slug": "homepage",
+      "label": "Homepage",
+      "labelSingular": "Homepage",
+      "description": "Homepage copy and contact details. Edit the single entry; do not add more.",
+      "icon": "house",
+      "supports": [
+        "drafts",
+        "revisions"
+      ],
+      "hidden": false,
+      "sortOrder": 0,
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Internal name",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "phone",
+          "label": "Contact · Phone",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "email",
+          "label": "Contact · Email",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "address",
+          "label": "Contact · Office address",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "hours",
+          "label": "Contact · Hours",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "brokerage",
+          "label": "Contact · Brokerage",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "hero_eyebrow",
+          "label": "Hero · Eyebrow",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "hero_headline",
+          "label": "Hero · Headline (wrap a word in *asterisks* to highlight it)",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "hero_intro",
+          "label": "Hero · Intro",
+          "type": "text",
+          "required": false,
+          "unique": false,
+          "options": {
+            "rows": 3
+          }
+        },
+        {
+          "slug": "hero_image",
+          "label": "Hero · Image",
+          "type": "image",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "trust_points",
+          "label": "Hero · Trust points (wrap text in *asterisks* to bold it)",
+          "type": "repeater",
+          "required": false,
+          "unique": false,
+          "validation": {
+            "subFields": [
+              {
+                "slug": "text",
+                "label": "Text",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "show_stars",
+                "label": "Show 5 stars",
+                "type": "boolean"
+              }
+            ],
+            "maxItems": 3
+          }
+        },
+        {
+          "slug": "paths_heading",
+          "label": "Journeys · Heading",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "paths_intro",
+          "label": "Journeys · Intro",
+          "type": "text",
+          "required": false,
+          "unique": false,
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "paths",
+          "label": "Journeys · Paths",
+          "type": "repeater",
+          "required": false,
+          "unique": false,
+          "validation": {
+            "subFields": [
+              {
+                "slug": "title",
+                "label": "Title",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "description",
+                "label": "Description",
+                "type": "text"
+              },
+              {
+                "slug": "link_label",
+                "label": "Link label",
+                "type": "string"
+              },
+              {
+                "slug": "link_url",
+                "label": "Link URL",
+                "type": "url"
+              }
+            ],
+            "maxItems": 4
+          }
+        },
+        {
+          "slug": "guide_title",
+          "label": "Free guide · Title",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "guide_card_text",
+          "label": "Free guide · Short description",
+          "type": "text",
+          "required": false,
+          "unique": false,
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "guide_heading",
+          "label": "Free guide · Section heading",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "guide_intro",
+          "label": "Free guide · Section intro",
+          "type": "text",
+          "required": false,
+          "unique": false,
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "guide_points",
+          "label": "Free guide · What's inside",
+          "type": "repeater",
+          "required": false,
+          "unique": false,
+          "validation": {
+            "subFields": [
+              {
+                "slug": "text",
+                "label": "Point",
+                "type": "string",
+                "required": true
+              }
+            ],
+            "maxItems": 8
+          }
+        },
+        {
+          "slug": "learn_heading",
+          "label": "Learning Center · Heading",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "stats",
+          "label": "Stats",
+          "type": "repeater",
+          "required": false,
+          "unique": false,
+          "validation": {
+            "subFields": [
+              {
+                "slug": "value",
+                "label": "Number",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "label",
+                "label": "Label",
+                "type": "string",
+                "required": true
+              }
+            ],
+            "maxItems": 4
+          }
+        },
+        {
+          "slug": "quiz_heading",
+          "label": "Quiz · Heading",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "quiz_intro",
+          "label": "Quiz · Intro",
+          "type": "text",
+          "required": false,
+          "unique": false,
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "reviews_heading",
+          "label": "Testimonials · Heading",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "about_heading",
+          "label": "About · Heading",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "about_body",
+          "label": "About · Text",
+          "type": "portableText",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "about_photo",
+          "label": "About · Photo",
+          "type": "image",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "faq_heading",
+          "label": "FAQ · Heading",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "faq_intro",
+          "label": "FAQ · Intro",
+          "type": "text",
+          "required": false,
+          "unique": false,
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "contact_heading",
+          "label": "Consultation · Heading",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "contact_intro",
+          "label": "Consultation · Intro",
+          "type": "text",
+          "required": false,
+          "unique": false,
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "contact_steps",
+          "label": "Consultation · Steps",
+          "type": "repeater",
+          "required": false,
+          "unique": false,
+          "validation": {
+            "subFields": [
+              {
+                "slug": "title",
+                "label": "Step",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "detail",
+                "label": "Detail",
+                "type": "string"
+              }
+            ],
+            "maxItems": 4
+          }
+        },
+        {
+          "slug": "footer_blurb",
+          "label": "Footer · About blurb",
+          "type": "text",
+          "required": false,
+          "unique": false,
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "disclaimer",
+          "label": "Footer · Legal disclaimer",
+          "type": "text",
+          "required": false,
+          "unique": false,
+          "options": {
+            "rows": 2
+          }
+        }
+      ]
+    },
+    {
+      "slug": "workshops",
+      "label": "Workshops",
+      "labelSingular": "Workshop",
+      "description": "The next upcoming workshop is promoted in the site banner and on the homepage.",
+      "icon": "calendar-blank",
+      "supports": [
+        "drafts",
+        "revisions"
+      ],
+      "hidden": false,
+      "sortOrder": 2,
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "short_title",
+          "label": "Banner name",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "summary",
+          "label": "Description",
+          "type": "text",
+          "required": false,
+          "unique": false,
+          "options": {
+            "rows": 3
+          }
+        },
+        {
+          "slug": "starts_at",
+          "label": "Starts",
+          "type": "datetime",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "ends_at",
+          "label": "Ends",
+          "type": "datetime",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "location",
+          "label": "Location",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "capacity",
+          "label": "Capacity",
+          "type": "integer",
+          "required": false,
+          "unique": false,
+          "validation": {
+            "min": 0
+          }
+        },
+        {
+          "slug": "seats_left",
+          "label": "Seats left",
+          "type": "integer",
+          "required": false,
+          "unique": false,
+          "validation": {
+            "min": 0
+          }
+        },
+        {
+          "slug": "rsvp_url",
+          "label": "Registration link",
+          "type": "url",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "image",
+          "label": "Image",
+          "type": "image",
+          "required": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "slug": "testimonials",
+      "label": "Testimonials",
+      "labelSingular": "Testimonial",
+      "icon": "quotes",
+      "supports": [
+        "drafts"
+      ],
+      "hidden": false,
+      "sortOrder": 3,
+      "fields": [
+        {
+          "slug": "name",
+          "label": "Client name",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "detail",
+          "label": "Situation",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "quote",
+          "label": "Quote",
+          "type": "text",
+          "required": true,
+          "unique": false,
+          "options": {
+            "rows": 4
+          }
+        },
+        {
+          "slug": "photo",
+          "label": "Photo",
+          "type": "image",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "sort_order",
+          "label": "Display order",
+          "type": "integer",
+          "required": false,
+          "unique": false,
+          "defaultValue": 10
+        }
+      ]
+    },
+    {
+      "slug": "faqs",
+      "label": "FAQs",
+      "labelSingular": "FAQ",
+      "icon": "question",
+      "supports": [
+        "drafts"
+      ],
+      "hidden": false,
+      "sortOrder": 4,
+      "fields": [
+        {
+          "slug": "question",
+          "label": "Question",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "answer",
+          "label": "Answer",
+          "type": "text",
+          "required": true,
+          "unique": false,
+          "options": {
+            "rows": 4
+          }
+        },
+        {
+          "slug": "sort_order",
+          "label": "Display order",
+          "type": "integer",
+          "required": false,
+          "unique": false,
+          "defaultValue": 10
+        }
+      ]
+    },
+    {
+      "slug": "pages",
+      "label": "Pages",
+      "labelSingular": "Page",
+      "description": "Imported from WordPress post type: page",
+      "supports": [
+        "revisions",
+        "drafts",
+        "search"
+      ],
+      "hidden": false,
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "excerpt",
+          "label": "Excerpt",
+          "type": "text",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "featured_image",
+          "label": "Featured Image",
+          "type": "image",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "seo_title",
+          "label": "SEO Title",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "seo_description",
+          "label": "SEO Description",
+          "type": "text",
+          "required": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "slug": "posts",
+      "label": "Posts",
+      "labelSingular": "Post",
+      "description": "Imported from WordPress post type: post",
+      "supports": [
+        "revisions",
+        "drafts",
+        "search"
+      ],
+      "hidden": false,
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "excerpt",
+          "label": "Excerpt",
+          "type": "text",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "featured_image",
+          "label": "Featured Image",
+          "type": "image",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "featured",
+          "label": "Feature on homepage",
+          "type": "boolean",
+          "required": false,
+          "unique": false
+        }
+      ]
+    }
+  ],
+  "version": "cf2d5a95f9ea993b"
+}

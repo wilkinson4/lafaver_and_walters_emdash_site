@@ -18,7 +18,7 @@ interface Props {
 }
 
 const { article, showExcerpt = false, surface = "ivory" } = Astro.props;
-const topic = article.data.terms?.topic?.[0]?.label;
+const topic = article.data.terms?.category?.[0]?.label;
 ---
 
 <a
