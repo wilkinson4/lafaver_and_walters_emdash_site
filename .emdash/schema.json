@@ -22,9 +22,16 @@
         },
         {
           "slug": "phone",
-          "label": "Contact · Phone",
+          "label": "Contact · Cell phone",
           "type": "string",
           "required": true,
+          "unique": false
+        },
+        {
+          "slug": "office_phone",
+          "label": "Contact · Office phone (brokerage, required by law)",
+          "type": "string",
+          "required": false,
           "unique": false
         },
         {
@@ -608,13 +615,16 @@
     },
     {
       "slug": "posts",
-      "label": "Posts",
-      "labelSingular": "Post",
-      "description": "Imported from WordPress post type: post",
+      "label": "Articles",
+      "labelSingular": "Article",
+      "description": "Learning Center articles (imported from WordPress). Tick \"Feature on homepage\" to choose the lead article.",
+      "icon": "book-open",
       "supports": [
-        "revisions",
         "drafts",
-        "search"
+        "revisions",
+        "preview",
+        "search",
+        "seo"
       ],
       "hidden": false,
       "fields": [
@@ -656,5 +666,5 @@
       ]
     }
   ],
-  "version": "cf2d5a95f9ea993b"
+  "version": "508c034d6377a4d1"
 }

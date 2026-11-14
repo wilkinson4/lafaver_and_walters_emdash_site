@@ -1,227 +1,228 @@
 @import "tailwindcss";
 
 @theme {
-	--breakpoint-*: initial;
-	--breakpoint-sm: 721px; /* phones at 720px and below */
-	--breakpoint-md: 1001px; /* single-column layouts at 1000px and below */
-	--breakpoint-lg: 1101px; /* full nav menu above 1100px */
+  --breakpoint-*: initial;
+  --breakpoint-sm: 721px; /* phones at 720px and below */
+  --breakpoint-md: 1001px; /* single-column layouts at 1000px and below */
+  --breakpoint-lg: 1101px; /* full nav menu above 1100px */
+  --breakpoint-xl: 1280px; /* header phone numbers (cell + office, equal size) */
 
-	--color-brand: #b40101;
-	--color-brand-hover: #d01f1f;
-	--color-brand-light: #ff5c5c;
-	--color-black: #0b0b0b;
-	--color-ink: #1a1a1a;
-	--color-muted: #4a4a4a;
-	--color-muted-dark: #c9c9cc;
-	--color-ivory: #f7f5f2;
-	--color-line: #e3ded8;
-	--color-line-dark: #2e2e2e;
-	--color-field: #bdb7af;
-	--color-star: #f5b301;
+  --color-brand: #b40101;
+  --color-brand-hover: #d01f1f;
+  --color-brand-light: #ff5c5c;
+  --color-black: #0b0b0b;
+  --color-ink: #1a1a1a;
+  --color-muted: #4a4a4a;
+  --color-muted-dark: #c9c9cc;
+  --color-ivory: #f7f5f2;
+  --color-line: #e3ded8;
+  --color-line-dark: #2e2e2e;
+  --color-field: #bdb7af;
+  --color-star: #f5b301;
 
-	/* Same sizes as Tailwind's defaults, but without bundled line-heights:
+  /* Same sizes as Tailwind's defaults, but without bundled line-heights:
 	   the design sets line-height per element (body is 1.7). */
-	--text-*: initial;
-	--text-xs: 0.75rem;
-	--text-sm: 0.875rem;
-	--text-base: 1rem;
-	--text-lg: 1.125rem;
-	--text-xl: 1.25rem;
-	--text-2xl: 1.5rem;
+  --text-*: initial;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
 
-	--font-serif: "Playfair Display", Georgia, serif;
-	--font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
 }
 
 @layer base {
-	html {
-		scroll-behavior: smooth;
-	}
-	body {
-		background: #fff;
-		color: var(--color-ink);
-		font-family: var(--font-sans);
-		font-size: 18px;
-		line-height: 1.7;
-	}
-	:focus-visible {
-		outline: 3px solid var(--color-brand);
-		outline-offset: 3px;
-	}
-	/* Preflight makes controls inherit body line-height; the design expects the browser default. */
-	button,
-	input,
-	select,
-	textarea {
-		line-height: normal;
-	}
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: #fff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-brand);
+    outline-offset: 3px;
+  }
+  /* Preflight makes controls inherit body line-height; the design expects the browser default. */
+  button,
+  input,
+  select,
+  textarea {
+    line-height: normal;
+  }
 }
 
 /* Shared building blocks */
 @utility wrap {
-	margin-inline: auto;
-	max-width: 1280px;
-	padding-inline: 20px;
-	@variant sm {
-		padding-inline: 40px;
-	}
+  margin-inline: auto;
+  max-width: 1280px;
+  padding-inline: 20px;
+  @variant sm {
+    padding-inline: 40px;
+  }
 }
 @utility eyebrow {
-	color: var(--color-brand);
-	font-size: 14px;
-	font-weight: 600;
-	letter-spacing: 3px;
-	text-transform: uppercase;
+  color: var(--color-brand);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
 }
 @utility section-title {
-	margin: 12px 0 18px;
-	font-family: var(--font-serif);
-	font-size: 36px;
-	font-weight: 500;
-	line-height: 1.15;
-	@variant sm {
-		font-size: 48px;
-	}
+  margin: 12px 0 18px;
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 1.15;
+  @variant sm {
+    font-size: 48px;
+  }
 }
 @utility lead {
-	max-width: 640px;
-	color: var(--color-muted);
-	font-size: 20px;
+  max-width: 640px;
+  color: var(--color-muted);
+  font-size: 20px;
 }
 @utility btn {
-	display: inline-flex;
-	align-items: center;
-	gap: 10px;
-	padding: 18px 32px;
-	border: 2px solid transparent;
-	font-size: 17px;
-	font-weight: 600;
-	white-space: nowrap;
-	cursor: pointer;
-	transition: 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 32px;
+  border: 2px solid transparent;
+  font-size: 17px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: 0.2s;
 }
 @utility btn-red {
-	background: var(--color-brand);
-	color: #fff;
-	&:hover {
-		background: var(--color-brand-hover);
-	}
+  background: var(--color-brand);
+  color: #fff;
+  &:hover {
+    background: var(--color-brand-hover);
+  }
 }
 @utility btn-line {
-	border-color: var(--color-ink);
-	color: var(--color-ink);
-	&:hover {
-		background: var(--color-ink);
-		color: #fff;
-	}
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+  &:hover {
+    background: var(--color-ink);
+    color: #fff;
+  }
 }
 @utility btn-black {
-	background: var(--color-black);
-	color: #fff;
+  background: var(--color-black);
+  color: #fff;
 }
 @utility btn-white {
-	background: #fff;
-	color: var(--color-black);
+  background: #fff;
+  color: var(--color-black);
 }
 @utility field-label {
-	display: block;
-	margin-bottom: 6px;
-	font-size: 15px;
-	font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: 600;
 }
 @utility field-input {
-	width: 100%;
-	padding: 16px 18px;
-	border: 1px solid var(--color-field);
-	background: #fff;
-	color: var(--color-ink);
-	font-size: 17px;
-	&:focus {
-		border-color: var(--color-brand);
-		outline: none;
-	}
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--color-field);
+  background: #fff;
+  color: var(--color-ink);
+  font-size: 17px;
+  &:focus {
+    border-color: var(--color-brand);
+    outline: none;
+  }
 }
 /* Makes an EmDash <Image> fill its container */
 @utility cover {
-	position: relative;
-	overflow: hidden;
-	& > img,
-	& > picture,
-	& > picture > img {
-		position: absolute;
-		inset: 0;
-		width: 100% !important;
-		height: 100% !important;
-		max-width: none !important;
-		object-fit: cover;
-	}
+  position: relative;
+  overflow: hidden;
+  & > img,
+  & > picture,
+  & > picture > img {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    object-fit: cover;
+  }
 }
 
 /* Rich text from the CMS (Portable Text) can't carry utility classes. */
 @layer components {
-	.article-body {
-		max-width: 760px;
-		font-size: var(--fs, 20px);
-		line-height: 1.8;
+  .article-body {
+    max-width: 760px;
+    font-size: var(--fs, 20px);
+    line-height: 1.8;
 
-		& p {
-			margin-bottom: 1.2em;
-		}
-		& > p:first-child::first-letter {
-			float: left;
-			margin: 6px 14px 0 0;
-			color: var(--color-brand);
-			font-family: var(--font-serif);
-			font-size: 4.2em;
-			line-height: 0.9;
-		}
-		& h2 {
-			margin: 1.8em 0 0.6em;
-			scroll-margin-top: 120px;
-			font-family: var(--font-serif);
-			font-size: 1.7em;
-			font-weight: 500;
-			line-height: 1.25;
-		}
-		& h3 {
-			margin: 1.4em 0 0.5em;
-			font-family: var(--font-serif);
-			font-size: 1.3em;
-			font-weight: 500;
-		}
-		& ul,
-		& ol {
-			margin: 0 0 1.2em 1.2em;
-		}
-		& ul {
-			list-style: disc;
-		}
-		& ol {
-			list-style: decimal;
-		}
-		& li {
-			margin-bottom: 0.5em;
-		}
-		& strong {
-			color: #000;
-		}
-		& a {
-			color: var(--color-brand);
-			text-decoration: underline;
-			text-underline-offset: 3px;
-		}
-		& blockquote {
-			margin: 1.8em 0;
-			padding: 28px 0;
-			border-block: 2px solid var(--color-brand);
-			font-family: var(--font-serif);
-			font-size: 1.45em;
-			font-style: italic;
-			line-height: 1.45;
-			text-align: center;
-		}
-		& blockquote p {
-			margin: 0;
-		}
-	}
+    & p {
+      margin-bottom: 1.2em;
+    }
+    & > p:first-child::first-letter {
+      float: left;
+      margin: 6px 14px 0 0;
+      color: var(--color-brand);
+      font-family: var(--font-serif);
+      font-size: 4.2em;
+      line-height: 0.9;
+    }
+    & h2 {
+      margin: 1.8em 0 0.6em;
+      scroll-margin-top: 120px;
+      font-family: var(--font-serif);
+      font-size: 1.7em;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+    & h3 {
+      margin: 1.4em 0 0.5em;
+      font-family: var(--font-serif);
+      font-size: 1.3em;
+      font-weight: 500;
+    }
+    & ul,
+    & ol {
+      margin: 0 0 1.2em 1.2em;
+    }
+    & ul {
+      list-style: disc;
+    }
+    & ol {
+      list-style: decimal;
+    }
+    & li {
+      margin-bottom: 0.5em;
+    }
+    & strong {
+      color: #000;
+    }
+    & a {
+      color: var(--color-brand);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    & blockquote {
+      margin: 1.8em 0;
+      padding: 28px 0;
+      border-block: 2px solid var(--color-brand);
+      font-family: var(--font-serif);
+      font-size: 1.45em;
+      font-style: italic;
+      line-height: 1.45;
+      text-align: center;
+    }
+    & blockquote p {
+      margin: 0;
+    }
+  }
 }

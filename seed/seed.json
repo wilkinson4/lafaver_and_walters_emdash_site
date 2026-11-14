@@ -1,939 +1,917 @@
 {
-	"$schema": "https://emdashcms.com/seed.schema.json",
-	"version": "1",
-	"meta": {
-		"name": "Randyl Homes Group",
-		"description": "Real estate guidance site for homeowners 40+: learning center, workshops, and lead capture.",
-		"author": "Randyl Homes Group"
-	},
-	"settings": {
-		"title": "Randyl Homes Group",
-		"tagline": "Real estate guidance for your next chapter",
-		"timezone": "America/Chicago"
-	},
-	"collections": [
-		{
-			"slug": "posts",
-			"label": "Articles",
-			"labelSingular": "Article",
-			"description": "Learning Center articles (imported from WordPress). Tick \"Feature on homepage\" to choose the lead article.",
-			"icon": "book-open",
-			"sortOrder": 1,
-			"urlPattern": "/learn/{slug}",
-			"supports": [
-				"drafts",
-				"revisions",
-				"preview",
-				"search",
-				"seo"
-			],
-			"dateField": "publishedAt",
-			"fields": [
-				{
-					"slug": "title",
-					"label": "Title",
-					"type": "string",
-					"required": true,
-					"searchable": true
-				},
-				{
-					"slug": "excerpt",
-					"label": "Summary",
-					"type": "text",
-					"searchable": true,
-					"options": {
-						"rows": 3
-					}
-				},
-				{
-					"slug": "featured_image",
-					"label": "Featured image",
-					"type": "image"
-				},
-				{
-					"slug": "content",
-					"label": "Article",
-					"type": "portableText",
-					"searchable": true
-				},
-				{
-					"slug": "featured",
-					"label": "Feature on homepage",
-					"type": "boolean",
-					"defaultValue": false
-				}
-			]
-		},
-		{
-			"slug": "homepage",
-			"label": "Homepage",
-			"labelSingular": "Homepage",
-			"description": "Homepage copy and contact details. Edit the single entry; do not add more.",
-			"icon": "house",
-			"sortOrder": 0,
-			"routable": false,
-			"titleField": "title",
-			"admin": {
-				"quickCreate": false
-			},
-			"supports": [
-				"drafts",
-				"revisions"
-			],
-			"fields": [
-				{
-					"slug": "title",
-					"label": "Internal name",
-					"type": "string",
-					"required": true
-				},
-				{
-					"slug": "phone",
-					"label": "Contact · Phone",
-					"type": "string",
-					"required": true
-				},
-				{
-					"slug": "email",
-					"label": "Contact · Email",
-					"type": "string"
-				},
-				{
-					"slug": "address",
-					"label": "Contact · Office address",
-					"type": "string"
-				},
-				{
-					"slug": "hours",
-					"label": "Contact · Hours",
-					"type": "string"
-				},
-				{
-					"slug": "brokerage",
-					"label": "Contact · Brokerage",
-					"type": "string"
-				},
-				{
-					"slug": "hero_eyebrow",
-					"label": "Hero · Eyebrow",
-					"type": "string"
-				},
-				{
-					"slug": "hero_headline",
-					"label": "Hero · Headline (wrap a word in *asterisks* to highlight it)",
-					"type": "string",
-					"required": true
-				},
-				{
-					"slug": "hero_intro",
-					"label": "Hero · Intro",
-					"type": "text",
-					"options": {
-						"rows": 3
-					}
-				},
-				{
-					"slug": "hero_image",
-					"label": "Hero · Image",
-					"type": "image"
-				},
-				{
-					"slug": "trust_points",
-					"label": "Hero · Trust points (wrap text in *asterisks* to bold it)",
-					"type": "repeater",
-					"validation": {
-						"subFields": [
-							{
-								"slug": "text",
-								"label": "Text",
-								"type": "string",
-								"required": true
-							},
-							{
-								"slug": "show_stars",
-								"label": "Show 5 stars",
-								"type": "boolean"
-							}
-						],
-						"maxItems": 3
-					}
-				},
-				{
-					"slug": "paths_heading",
-					"label": "Journeys · Heading",
-					"type": "string"
-				},
-				{
-					"slug": "paths_intro",
-					"label": "Journeys · Intro",
-					"type": "text",
-					"options": {
-						"rows": 2
-					}
-				},
-				{
-					"slug": "paths",
-					"label": "Journeys · Paths",
-					"type": "repeater",
-					"validation": {
-						"subFields": [
-							{
-								"slug": "title",
-								"label": "Title",
-								"type": "string",
-								"required": true
-							},
-							{
-								"slug": "description",
-								"label": "Description",
-								"type": "text"
-							},
-							{
-								"slug": "link_label",
-								"label": "Link label",
-								"type": "string"
-							},
-							{
-								"slug": "link_url",
-								"label": "Link URL",
-								"type": "url"
-							}
-						],
-						"maxItems": 4
-					}
-				},
-				{
-					"slug": "guide_title",
-					"label": "Free guide · Title",
-					"type": "string"
-				},
-				{
-					"slug": "guide_card_text",
-					"label": "Free guide · Short description",
-					"type": "text",
-					"options": {
-						"rows": 2
-					}
-				},
-				{
-					"slug": "guide_heading",
-					"label": "Free guide · Section heading",
-					"type": "string"
-				},
-				{
-					"slug": "guide_intro",
-					"label": "Free guide · Section intro",
-					"type": "text",
-					"options": {
-						"rows": 2
-					}
-				},
-				{
-					"slug": "guide_points",
-					"label": "Free guide · What's inside",
-					"type": "repeater",
-					"validation": {
-						"subFields": [
-							{
-								"slug": "text",
-								"label": "Point",
-								"type": "string",
-								"required": true
-							}
-						],
-						"maxItems": 8
-					}
-				},
-				{
-					"slug": "learn_heading",
-					"label": "Learning Center · Heading",
-					"type": "string"
-				},
-				{
-					"slug": "stats",
-					"label": "Stats",
-					"type": "repeater",
-					"validation": {
-						"subFields": [
-							{
-								"slug": "value",
-								"label": "Number",
-								"type": "string",
-								"required": true
-							},
-							{
-								"slug": "label",
-								"label": "Label",
-								"type": "string",
-								"required": true
-							}
-						],
-						"maxItems": 4
-					}
-				},
-				{
-					"slug": "quiz_heading",
-					"label": "Quiz · Heading",
-					"type": "string"
-				},
-				{
-					"slug": "quiz_intro",
-					"label": "Quiz · Intro",
-					"type": "text",
-					"options": {
-						"rows": 2
-					}
-				},
-				{
-					"slug": "reviews_heading",
-					"label": "Testimonials · Heading",
-					"type": "string"
-				},
-				{
-					"slug": "about_heading",
-					"label": "About · Heading",
-					"type": "string"
-				},
-				{
-					"slug": "about_body",
-					"label": "About · Text",
-					"type": "portableText"
-				},
-				{
-					"slug": "about_photo",
-					"label": "About · Photo",
-					"type": "image"
-				},
-				{
-					"slug": "faq_heading",
-					"label": "FAQ · Heading",
-					"type": "string"
-				},
-				{
-					"slug": "faq_intro",
-					"label": "FAQ · Intro",
-					"type": "text",
-					"options": {
-						"rows": 2
-					}
-				},
-				{
-					"slug": "contact_heading",
-					"label": "Consultation · Heading",
-					"type": "string"
-				},
-				{
-					"slug": "contact_intro",
-					"label": "Consultation · Intro",
-					"type": "text",
-					"options": {
-						"rows": 2
-					}
-				},
-				{
-					"slug": "contact_steps",
-					"label": "Consultation · Steps",
-					"type": "repeater",
-					"validation": {
-						"subFields": [
-							{
-								"slug": "title",
-								"label": "Step",
-								"type": "string",
-								"required": true
-							},
-							{
-								"slug": "detail",
-								"label": "Detail",
-								"type": "string"
-							}
-						],
-						"maxItems": 4
-					}
-				},
-				{
-					"slug": "footer_blurb",
-					"label": "Footer · About blurb",
-					"type": "text",
-					"options": {
-						"rows": 2
-					}
-				},
-				{
-					"slug": "disclaimer",
-					"label": "Footer · Legal disclaimer",
-					"type": "text",
-					"options": {
-						"rows": 2
-					}
-				}
-			]
-		},
-		{
-			"slug": "workshops",
-			"label": "Workshops",
-			"labelSingular": "Workshop",
-			"description": "The next upcoming workshop is promoted in the site banner and on the homepage.",
-			"icon": "calendar-blank",
-			"sortOrder": 2,
-			"routable": false,
-			"titleField": "title",
-			"dateField": "starts_at",
-			"admin": {
-				"listColumns": [
-					"starts_at",
-					"seats_left"
-				]
-			},
-			"supports": [
-				"drafts",
-				"revisions"
-			],
-			"fields": [
-				{
-					"slug": "title",
-					"label": "Title",
-					"type": "string",
-					"required": true
-				},
-				{
-					"slug": "short_title",
-					"label": "Banner name",
-					"type": "string"
-				},
-				{
-					"slug": "summary",
-					"label": "Description",
-					"type": "text",
-					"options": {
-						"rows": 3
-					}
-				},
-				{
-					"slug": "starts_at",
-					"label": "Starts",
-					"type": "datetime",
-					"required": true,
-					"indexed": true
-				},
-				{
-					"slug": "ends_at",
-					"label": "Ends",
-					"type": "datetime"
-				},
-				{
-					"slug": "location",
-					"label": "Location",
-					"type": "string"
-				},
-				{
-					"slug": "capacity",
-					"label": "Capacity",
-					"type": "integer",
-					"validation": {
-						"min": 0
-					}
-				},
-				{
-					"slug": "seats_left",
-					"label": "Seats left",
-					"type": "integer",
-					"validation": {
-						"min": 0
-					}
-				},
-				{
-					"slug": "rsvp_url",
-					"label": "Registration link",
-					"type": "url"
-				},
-				{
-					"slug": "image",
-					"label": "Image",
-					"type": "image"
-				}
-			]
-		},
-		{
-			"slug": "testimonials",
-			"label": "Testimonials",
-			"labelSingular": "Testimonial",
-			"icon": "quotes",
-			"sortOrder": 3,
-			"routable": false,
-			"titleField": "name",
-			"admin": {
-				"listColumns": [
-					"detail",
-					"sort_order"
-				]
-			},
-			"supports": [
-				"drafts"
-			],
-			"fields": [
-				{
-					"slug": "name",
-					"label": "Client name",
-					"type": "string",
-					"required": true
-				},
-				{
-					"slug": "detail",
-					"label": "Situation",
-					"type": "string"
-				},
-				{
-					"slug": "quote",
-					"label": "Quote",
-					"type": "text",
-					"required": true,
-					"options": {
-						"rows": 4
-					}
-				},
-				{
-					"slug": "photo",
-					"label": "Photo",
-					"type": "image"
-				},
-				{
-					"slug": "sort_order",
-					"label": "Display order",
-					"type": "integer",
-					"indexed": true,
-					"defaultValue": 10
-				}
-			]
-		},
-		{
-			"slug": "faqs",
-			"label": "FAQs",
-			"labelSingular": "FAQ",
-			"icon": "question",
-			"sortOrder": 4,
-			"routable": false,
-			"titleField": "question",
-			"admin": {
-				"listColumns": [
-					"sort_order"
-				]
-			},
-			"supports": [
-				"drafts"
-			],
-			"fields": [
-				{
-					"slug": "question",
-					"label": "Question",
-					"type": "string",
-					"required": true
-				},
-				{
-					"slug": "answer",
-					"label": "Answer",
-					"type": "text",
-					"required": true,
-					"options": {
-						"rows": 4
-					}
-				},
-				{
-					"slug": "sort_order",
-					"label": "Display order",
-					"type": "integer",
-					"indexed": true,
-					"defaultValue": 10
-				}
-			]
-		}
-	],
-	"taxonomies": [
-		{
-			"name": "category",
-			"label": "Categories",
-			"labelSingular": "Category",
-			"hierarchical": true,
-			"collections": [
-				"posts"
-			]
-		},
-		{
-			"name": "tag",
-			"label": "Tags",
-			"labelSingular": "Tag",
-			"hierarchical": false,
-			"collections": [
-				"posts"
-			]
-		}
-	],
-	"bylines": [
-		{
-			"id": "byline-randyl",
-			"slug": "randyl",
-			"displayName": "Randyl",
-			"bio": "Keller Williams Realty"
-		}
-	],
-	"menus": [
-		{
-			"name": "primary",
-			"label": "Header navigation",
-			"items": [
-				{
-					"type": "custom",
-					"label": "Learning Center",
-					"url": "/learn"
-				},
-				{
-					"type": "custom",
-					"label": "Workshops",
-					"url": "/#workshop"
-				},
-				{
-					"type": "custom",
-					"label": "Selling & Buying",
-					"url": "/#paths"
-				},
-				{
-					"type": "custom",
-					"label": "About",
-					"url": "/#about"
-				}
-			]
-		},
-		{
-			"name": "footer_learn",
-			"label": "Footer: Learn",
-			"items": [
-				{
-					"type": "custom",
-					"label": "Learning Center",
-					"url": "/learn"
-				},
-				{
-					"type": "custom",
-					"label": "Free Guides",
-					"url": "/#guide"
-				},
-				{
-					"type": "custom",
-					"label": "Workshops",
-					"url": "/#workshop"
-				},
-				{
-					"type": "custom",
-					"label": "Rightsizing Quiz",
-					"url": "/#quiz"
-				}
-			]
-		},
-		{
-			"name": "footer_services",
-			"label": "Footer: Services",
-			"items": [
-				{
-					"type": "custom",
-					"label": "Selling",
-					"url": "/learn?topic=the-selling-process"
-				},
-				{
-					"type": "custom",
-					"label": "Downsizing",
-					"url": "/learn?topic=right-sizing-your-life"
-				},
-				{
-					"type": "custom",
-					"label": "Inherited Homes",
-					"url": "/#paths"
-				},
-				{
-					"type": "custom",
-					"label": "Buying",
-					"url": "/#paths"
-				}
-			]
-		}
-	],
-	"content": {
-		"homepage": [
-			{
-				"id": "homepage",
-				"status": "published",
-				"data": {
-					"title": "Homepage",
-					"phone": "(555) 123-4567",
-					"email": "hello@randylhomes.com",
-					"address": "123 Main St, Austin, TX",
-					"hours": "Mon–Sat, 8am–7pm",
-					"brokerage": "Keller Williams Realty",
-					"hero_eyebrow": "Real estate guidance for your next chapter",
-					"hero_headline": "Make your next move with *clarity*, not pressure.",
-					"hero_intro": "Whether you're downsizing, selling a family home, or planning for retirement, get straightforward answers from a local expert, before you ever have to make a decision.",
-					"hero_image": {
-						"$media": {
-							"url": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1600&q=80",
-							"filename": "hero-living-room.jpg",
-							"alt": "A bright, welcoming living room"
-						}
-					},
-					"trust_points": [
-						{
-							"text": "*4.9* from 300+ reviews",
-							"show_stars": true
-						},
-						{
-							"text": "*20+ years* helping local families",
-							"show_stars": false
-						}
-					],
-					"paths_heading": "Where are you in your journey?",
-					"paths_intro": "Choose the situation closest to yours. We'll point you to the right guides, tools, and next steps.",
-					"paths": [
-						{
-							"title": "Thinking about downsizing",
-							"description": "The kids are grown and the house feels big. Is it time, and what would it look like?",
-							"link_label": "Explore downsizing",
-							"link_url": "/learn?topic=right-sizing-your-life"
-						},
-						{
-							"title": "Selling a family or inherited home",
-							"description": "Probate, sentimental belongings, siblings, and repairs. We'll walk you through it.",
-							"link_label": "See the step-by-step",
-							"link_url": "/learn?topic=the-selling-process"
-						},
-						{
-							"title": "Planning for retirement",
-							"description": "Unlock your home equity, compare 55+ communities, or relocate closer to family.",
-							"link_label": "Plan your move",
-							"link_url": "/learn?topic=next-chapter-planning"
-						},
-						{
-							"title": "Buying your next home",
-							"description": "Single-level living, low maintenance, the right location. Buy smart the second time around.",
-							"link_label": "Buyer's roadmap",
-							"link_url": "/#contact"
-						}
-					],
-					"guide_title": "The Rightsizing Playbook",
-					"guide_card_text": "9 steps to sell your family home, simplify your life, and move with confidence. 32 pages, plain English.",
-					"guide_heading": "Everything we wish every homeowner knew before they sold.",
-					"guide_intro": "Written for homeowners 40+ who are weighing their options. No jargon, no sales pitch.",
-					"guide_points": [
-						{
-							"text": "How to know if it's really the right time to sell"
-						},
-						{
-							"text": "What your home is likely worth, and what you'll actually net"
-						},
-						{
-							"text": "A room-by-room plan for sorting decades of belongings"
-						},
-						{
-							"text": "Buy first or sell first? How to avoid moving twice"
-						},
-						{
-							"text": "Common tax and timing questions to ask your advisor"
-						}
-					],
-					"learn_heading": "Plain-English answers to the questions we hear most.",
-					"stats": [
-						{
-							"value": "850+",
-							"label": "Families helped through a move"
-						},
-						{
-							"value": "20 yrs",
-							"label": "Serving our community"
-						},
-						{
-							"value": "140+",
-							"label": "Free articles & guides"
-						},
-						{
-							"value": "4.9 ★",
-							"label": "Average client rating"
-						}
-					],
-					"quiz_heading": "Is it time to rightsize?",
-					"quiz_intro": "Answer 8 quick questions about your home, lifestyle, and goals. You'll get a personalized readiness score and suggested next steps, free.",
-					"reviews_heading": "Families who've been where you are",
-					"about_heading": "No pressure. Just honest advice from someone who's been there.",
-					"about_body": [
-						{
-							"_type": "block",
-							"_key": "k0",
-							"style": "normal",
-							"markDefs": [],
-							"children": [
-								{
-									"_type": "span",
-									"_key": "k1",
-									"text": "For over 20 years, I've helped families in our community navigate some of life's biggest transitions. Many of my clients first reach out a year or more before they're ready, and that's exactly how it should be.",
-									"marks": []
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"_key": "k2",
-							"style": "normal",
-							"markDefs": [],
-							"children": [
-								{
-									"_type": "span",
-									"_key": "k3",
-									"text": "My job is to help you understand your options, so whatever you decide, you decide with confidence.",
-									"marks": []
-								}
-							]
-						}
-					],
-					"about_photo": {
-						"$media": {
-							"url": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=1000&q=80",
-							"filename": "randyl.jpg",
-							"alt": "Portrait of Randyl"
-						}
-					},
-					"faq_heading": "Good questions deserve straight answers.",
-					"faq_intro": "Don't see yours? Call or text. We're happy to talk, even if you're years away from moving.",
-					"contact_heading": "Get your free home value and a personalized plan.",
-					"contact_intro": "A friendly, no-obligation conversation about your goals, your timeline, and your options.",
-					"contact_steps": [
-						{
-							"title": "Tell us a little about your situation",
-							"detail": "Takes about 60 seconds."
-						},
-						{
-							"title": "We'll call you at a time that suits you",
-							"detail": "A real person, never an automated system."
-						},
-						{
-							"title": "Receive your custom home value & plan",
-							"detail": "Yours to keep, whatever you decide."
-						}
-					],
-					"footer_blurb": "Helping homeowners 40+ make confident, well-informed moves into their next chapter.",
-					"disclaimer": "© 2026 Randyl Homes Group · Keller Williams Realty. Each office independently owned and operated. Content is educational and not legal, tax, or financial advice."
-				}
-			}
-		],
-		"workshops": [
-			{
-				"id": "workshop-rightsizing-101",
-				"status": "published",
-				"data": {
-					"title": "Rightsizing 101: Your Questions, Answered in Person",
-					"short_title": "Rightsizing 101",
-					"summary": "A relaxed, no-pressure evening with Randyl, a local estate attorney, and a senior move manager. Coffee and dessert provided.",
-					"starts_at": "2026-12-03T18:30:00-06:00",
-					"ends_at": "2026-12-03T20:00:00-06:00",
-					"location": "Westlake Community Library · Also streaming online",
-					"capacity": 40,
-					"seats_left": 12,
-					"rsvp_url": "/#contact",
-					"image": {
-						"$media": {
-							"url": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80",
-							"filename": "workshop.jpg",
-							"alt": "A small group meeting around a table"
-						}
-					}
-				}
-			}
-		],
-		"testimonials": [
-			{
-				"id": "t-linda",
-				"status": "published",
-				"data": {
-					"name": "Linda M.",
-					"detail": "Downsized in Round Rock",
-					"sort_order": 1,
-					"photo": {
-						"$media": {
-							"url": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
-							"filename": "linda.jpg",
-							"alt": "Linda M."
-						}
-					},
-					"quote": "After 31 years in our home, we didn't know where to start. Randyl's guide and patience made it feel manageable. We never once felt rushed."
-				}
-			},
-			{
-				"id": "t-david",
-				"status": "published",
-				"data": {
-					"name": "David R.",
-					"detail": "Sold an inherited home",
-					"sort_order": 2,
-					"photo": {
-						"$media": {
-							"url": "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=300&q=80",
-							"filename": "david.jpg",
-							"alt": "David R."
-						}
-					},
-					"quote": "Selling my mother's house from out of state was overwhelming. Randyl handled the cleanout, repairs, and sale, and kept my siblings and me informed every step."
-				}
-			},
-			{
-				"id": "t-carol",
-				"status": "published",
-				"data": {
-					"name": "Carol & Jim T.",
-					"detail": "Moved to a 55+ community",
-					"sort_order": 3,
-					"photo": {
-						"$media": {
-							"url": "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=300&q=80",
-							"filename": "carol-jim.jpg",
-							"alt": "Carol and Jim T."
-						}
-					},
-					"quote": "We attended the workshop just to learn. Two years later, when we were ready, there was no question who we'd call."
-				}
-			}
-		],
-		"faqs": [
-			{
-				"id": "faq-1",
-				"status": "published",
-				"data": {
-					"sort_order": 1,
-					"question": "I'm not ready to sell yet. Is it too early to talk?",
-					"answer": "Not at all. Most of our clients start a conversation 6–24 months before they move. Planning early gives you more options, better timing, and far less stress."
-				}
-			},
-			{
-				"id": "faq-2",
-				"status": "published",
-				"data": {
-					"sort_order": 2,
-					"question": "Do I need to buy my next home before selling this one?",
-					"answer": "It depends on your finances and comfort level. There are several ways to avoid moving twice, including contingent offers, bridge financing, and rent-backs. We'll walk through each with you."
-				}
-			},
-			{
-				"id": "faq-3",
-				"status": "published",
-				"data": {
-					"sort_order": 3,
-					"question": "Can you help with sorting, donating, and moving belongings?",
-					"answer": "Yes. We work with trusted senior move managers, estate sale companies, and movers. We can coordinate as much or as little as you'd like."
-				}
-			},
-			{
-				"id": "faq-4",
-				"status": "published",
-				"data": {
-					"sort_order": 4,
-					"question": "What does a consultation cost?",
-					"answer": "Nothing. Consultations, home valuations, guides, and workshops are always free, with no obligation."
-				}
-			}
-		]
-	}
+  "$schema": "https://emdashcms.com/seed.schema.json",
+  "version": "1",
+  "meta": {
+    "name": "Randyl Homes Group",
+    "description": "Real estate guidance site for homeowners 40+: learning center, workshops, and lead capture.",
+    "author": "Randyl Homes Group"
+  },
+  "settings": {
+    "title": "Randyl Homes Group",
+    "tagline": "Real estate guidance for your next chapter",
+    "timezone": "America/Chicago"
+  },
+  "collections": [
+    {
+      "slug": "posts",
+      "label": "Articles",
+      "labelSingular": "Article",
+      "description": "Learning Center articles (imported from WordPress). Tick \"Feature on homepage\" to choose the lead article.",
+      "icon": "book-open",
+      "sortOrder": 1,
+      "urlPattern": "/learn/{slug}",
+      "supports": ["drafts", "revisions", "preview", "search", "seo"],
+      "dateField": "publishedAt",
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "excerpt",
+          "label": "Summary",
+          "type": "text",
+          "searchable": true,
+          "options": {
+            "rows": 3
+          }
+        },
+        {
+          "slug": "featured_image",
+          "label": "Featured image",
+          "type": "image"
+        },
+        {
+          "slug": "content",
+          "label": "Article",
+          "type": "portableText",
+          "searchable": true
+        },
+        {
+          "slug": "featured",
+          "label": "Feature on homepage",
+          "type": "boolean",
+          "defaultValue": false
+        }
+      ]
+    },
+    {
+      "slug": "homepage",
+      "label": "Homepage",
+      "labelSingular": "Homepage",
+      "description": "Homepage copy and contact details. Edit the single entry; do not add more.",
+      "icon": "house",
+      "sortOrder": 0,
+      "routable": false,
+      "titleField": "title",
+      "admin": {
+        "quickCreate": false
+      },
+      "supports": ["drafts", "revisions"],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Internal name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "phone",
+          "label": "Contact · Cell phone",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "office_phone",
+          "label": "Contact · Office phone (brokerage, required by law)",
+          "type": "string"
+        },
+        {
+          "slug": "email",
+          "label": "Contact · Email",
+          "type": "string"
+        },
+        {
+          "slug": "address",
+          "label": "Contact · Office address",
+          "type": "string"
+        },
+        {
+          "slug": "hours",
+          "label": "Contact · Hours",
+          "type": "string"
+        },
+        {
+          "slug": "brokerage",
+          "label": "Contact · Brokerage",
+          "type": "string"
+        },
+        {
+          "slug": "hero_eyebrow",
+          "label": "Hero · Eyebrow",
+          "type": "string"
+        },
+        {
+          "slug": "hero_headline",
+          "label": "Hero · Headline (wrap a word in *asterisks* to highlight it)",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "hero_intro",
+          "label": "Hero · Intro",
+          "type": "text",
+          "options": {
+            "rows": 3
+          }
+        },
+        {
+          "slug": "hero_image",
+          "label": "Hero · Image",
+          "type": "image"
+        },
+        {
+          "slug": "trust_points",
+          "label": "Hero · Trust points (wrap text in *asterisks* to bold it)",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "text",
+                "label": "Text",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "show_stars",
+                "label": "Show 5 stars",
+                "type": "boolean"
+              }
+            ],
+            "maxItems": 3
+          }
+        },
+        {
+          "slug": "paths_heading",
+          "label": "Journeys · Heading",
+          "type": "string"
+        },
+        {
+          "slug": "paths_intro",
+          "label": "Journeys · Intro",
+          "type": "text",
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "paths",
+          "label": "Journeys · Paths",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "title",
+                "label": "Title",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "description",
+                "label": "Description",
+                "type": "text"
+              },
+              {
+                "slug": "link_label",
+                "label": "Link label",
+                "type": "string"
+              },
+              {
+                "slug": "link_url",
+                "label": "Link URL",
+                "type": "url"
+              }
+            ],
+            "maxItems": 4
+          }
+        },
+        {
+          "slug": "guide_title",
+          "label": "Free guide · Title",
+          "type": "string"
+        },
+        {
+          "slug": "guide_card_text",
+          "label": "Free guide · Short description",
+          "type": "text",
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "guide_heading",
+          "label": "Free guide · Section heading",
+          "type": "string"
+        },
+        {
+          "slug": "guide_intro",
+          "label": "Free guide · Section intro",
+          "type": "text",
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "guide_points",
+          "label": "Free guide · What's inside",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "text",
+                "label": "Point",
+                "type": "string",
+                "required": true
+              }
+            ],
+            "maxItems": 8
+          }
+        },
+        {
+          "slug": "learn_heading",
+          "label": "Learning Center · Heading",
+          "type": "string"
+        },
+        {
+          "slug": "stats",
+          "label": "Stats",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "value",
+                "label": "Number",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "label",
+                "label": "Label",
+                "type": "string",
+                "required": true
+              }
+            ],
+            "maxItems": 4
+          }
+        },
+        {
+          "slug": "quiz_heading",
+          "label": "Quiz · Heading",
+          "type": "string"
+        },
+        {
+          "slug": "quiz_intro",
+          "label": "Quiz · Intro",
+          "type": "text",
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "reviews_heading",
+          "label": "Testimonials · Heading",
+          "type": "string"
+        },
+        {
+          "slug": "about_heading",
+          "label": "About · Heading",
+          "type": "string"
+        },
+        {
+          "slug": "about_body",
+          "label": "About · Text",
+          "type": "portableText"
+        },
+        {
+          "slug": "about_photo",
+          "label": "About · Photo",
+          "type": "image"
+        },
+        {
+          "slug": "faq_heading",
+          "label": "FAQ · Heading",
+          "type": "string"
+        },
+        {
+          "slug": "faq_intro",
+          "label": "FAQ · Intro",
+          "type": "text",
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "contact_heading",
+          "label": "Consultation · Heading",
+          "type": "string"
+        },
+        {
+          "slug": "contact_intro",
+          "label": "Consultation · Intro",
+          "type": "text",
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "contact_steps",
+          "label": "Consultation · Steps",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "title",
+                "label": "Step",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "detail",
+                "label": "Detail",
+                "type": "string"
+              }
+            ],
+            "maxItems": 4
+          }
+        },
+        {
+          "slug": "footer_blurb",
+          "label": "Footer · About blurb",
+          "type": "text",
+          "options": {
+            "rows": 2
+          }
+        },
+        {
+          "slug": "disclaimer",
+          "label": "Footer · Legal disclaimer",
+          "type": "text",
+          "options": {
+            "rows": 2
+          }
+        }
+      ]
+    },
+    {
+      "slug": "workshops",
+      "label": "Workshops",
+      "labelSingular": "Workshop",
+      "description": "The next upcoming workshop is promoted in the site banner and on the homepage.",
+      "icon": "calendar-blank",
+      "sortOrder": 2,
+      "routable": false,
+      "titleField": "title",
+      "dateField": "starts_at",
+      "admin": {
+        "listColumns": ["starts_at", "seats_left"]
+      },
+      "supports": ["drafts", "revisions"],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "short_title",
+          "label": "Banner name",
+          "type": "string"
+        },
+        {
+          "slug": "summary",
+          "label": "Description",
+          "type": "text",
+          "options": {
+            "rows": 3
+          }
+        },
+        {
+          "slug": "starts_at",
+          "label": "Starts",
+          "type": "datetime",
+          "required": true,
+          "indexed": true
+        },
+        {
+          "slug": "ends_at",
+          "label": "Ends",
+          "type": "datetime"
+        },
+        {
+          "slug": "location",
+          "label": "Location",
+          "type": "string"
+        },
+        {
+          "slug": "capacity",
+          "label": "Capacity",
+          "type": "integer",
+          "validation": {
+            "min": 0
+          }
+        },
+        {
+          "slug": "seats_left",
+          "label": "Seats left",
+          "type": "integer",
+          "validation": {
+            "min": 0
+          }
+        },
+        {
+          "slug": "rsvp_url",
+          "label": "Registration link",
+          "type": "url"
+        },
+        {
+          "slug": "image",
+          "label": "Image",
+          "type": "image"
+        }
+      ]
+    },
+    {
+      "slug": "testimonials",
+      "label": "Testimonials",
+      "labelSingular": "Testimonial",
+      "icon": "quotes",
+      "sortOrder": 3,
+      "routable": false,
+      "titleField": "name",
+      "admin": {
+        "listColumns": ["detail", "sort_order"]
+      },
+      "supports": ["drafts"],
+      "fields": [
+        {
+          "slug": "name",
+          "label": "Client name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "detail",
+          "label": "Situation",
+          "type": "string"
+        },
+        {
+          "slug": "quote",
+          "label": "Quote",
+          "type": "text",
+          "required": true,
+          "options": {
+            "rows": 4
+          }
+        },
+        {
+          "slug": "photo",
+          "label": "Photo",
+          "type": "image"
+        },
+        {
+          "slug": "sort_order",
+          "label": "Display order",
+          "type": "integer",
+          "indexed": true,
+          "defaultValue": 10
+        }
+      ]
+    },
+    {
+      "slug": "faqs",
+      "label": "FAQs",
+      "labelSingular": "FAQ",
+      "icon": "question",
+      "sortOrder": 4,
+      "routable": false,
+      "titleField": "question",
+      "admin": {
+        "listColumns": ["sort_order"]
+      },
+      "supports": ["drafts"],
+      "fields": [
+        {
+          "slug": "question",
+          "label": "Question",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "answer",
+          "label": "Answer",
+          "type": "text",
+          "required": true,
+          "options": {
+            "rows": 4
+          }
+        },
+        {
+          "slug": "sort_order",
+          "label": "Display order",
+          "type": "integer",
+          "indexed": true,
+          "defaultValue": 10
+        }
+      ]
+    }
+  ],
+  "taxonomies": [
+    {
+      "name": "category",
+      "label": "Categories",
+      "labelSingular": "Category",
+      "hierarchical": true,
+      "collections": ["posts"]
+    },
+    {
+      "name": "tag",
+      "label": "Tags",
+      "labelSingular": "Tag",
+      "hierarchical": false,
+      "collections": ["posts"]
+    }
+  ],
+  "bylines": [
+    {
+      "id": "byline-randyl",
+      "slug": "randyl",
+      "displayName": "Randyl",
+      "bio": "Keller Williams Realty"
+    }
+  ],
+  "menus": [
+    {
+      "name": "primary",
+      "label": "Header navigation",
+      "items": [
+        {
+          "type": "custom",
+          "label": "Learning Center",
+          "url": "/learn"
+        },
+        {
+          "type": "custom",
+          "label": "Workshops",
+          "url": "/#workshop"
+        },
+        {
+          "type": "custom",
+          "label": "Selling & Buying",
+          "url": "/#paths"
+        },
+        {
+          "type": "custom",
+          "label": "About",
+          "url": "/#about"
+        }
+      ]
+    },
+    {
+      "name": "footer_learn",
+      "label": "Footer: Learn",
+      "items": [
+        {
+          "type": "custom",
+          "label": "Learning Center",
+          "url": "/learn"
+        },
+        {
+          "type": "custom",
+          "label": "Free Guides",
+          "url": "/#guide"
+        },
+        {
+          "type": "custom",
+          "label": "Workshops",
+          "url": "/#workshop"
+        },
+        {
+          "type": "custom",
+          "label": "Rightsizing Quiz",
+          "url": "/#quiz"
+        }
+      ]
+    },
+    {
+      "name": "footer_services",
+      "label": "Footer: Services",
+      "items": [
+        {
+          "type": "custom",
+          "label": "Selling",
+          "url": "/learn?topic=the-selling-process"
+        },
+        {
+          "type": "custom",
+          "label": "Downsizing",
+          "url": "/learn?topic=right-sizing-your-life"
+        },
+        {
+          "type": "custom",
+          "label": "Inherited Homes",
+          "url": "/#paths"
+        },
+        {
+          "type": "custom",
+          "label": "Buying",
+          "url": "/#paths"
+        }
+      ]
+    }
+  ],
+  "content": {
+    "homepage": [
+      {
+        "id": "homepage",
+        "status": "published",
+        "data": {
+          "title": "Homepage",
+          "phone": "(610) 703-8137",
+          "email": "hello@randylhomes.com",
+          "address": "123 Main St, Austin, TX",
+          "hours": "Mon–Sat, 8am–7pm",
+          "brokerage": "Keller Williams Realty",
+          "hero_eyebrow": "Real estate guidance for your next chapter",
+          "hero_headline": "Make your next move with *clarity*, not pressure.",
+          "hero_intro": "Whether you're downsizing, selling a family home, or planning for retirement, get straightforward answers from a local expert, before you ever have to make a decision.",
+          "hero_image": {
+            "$media": {
+              "url": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1600&q=80",
+              "filename": "hero-living-room.jpg",
+              "alt": "A bright, welcoming living room"
+            }
+          },
+          "trust_points": [
+            {
+              "text": "*4.9* from 300+ reviews",
+              "show_stars": true
+            },
+            {
+              "text": "*20+ years* helping local families",
+              "show_stars": false
+            }
+          ],
+          "paths_heading": "Where are you in your journey?",
+          "paths_intro": "Choose the situation closest to yours. We'll point you to the right guides, tools, and next steps.",
+          "paths": [
+            {
+              "title": "Thinking about downsizing",
+              "description": "The kids are grown and the house feels big. Is it time, and what would it look like?",
+              "link_label": "Explore downsizing",
+              "link_url": "/learn?topic=right-sizing-your-life"
+            },
+            {
+              "title": "Selling a family or inherited home",
+              "description": "Probate, sentimental belongings, siblings, and repairs. We'll walk you through it.",
+              "link_label": "See the step-by-step",
+              "link_url": "/learn?topic=the-selling-process"
+            },
+            {
+              "title": "Planning for retirement",
+              "description": "Unlock your home equity, compare 55+ communities, or relocate closer to family.",
+              "link_label": "Plan your move",
+              "link_url": "/learn?topic=next-chapter-planning"
+            },
+            {
+              "title": "Buying your next home",
+              "description": "Single-level living, low maintenance, the right location. Buy smart the second time around.",
+              "link_label": "Buyer's roadmap",
+              "link_url": "/#contact"
+            }
+          ],
+          "guide_title": "The Rightsizing Playbook",
+          "guide_card_text": "9 steps to sell your family home, simplify your life, and move with confidence. 32 pages, plain English.",
+          "guide_heading": "Everything we wish every homeowner knew before they sold.",
+          "guide_intro": "Written for homeowners 40+ who are weighing their options. No jargon, no sales pitch.",
+          "guide_points": [
+            {
+              "text": "How to know if it's really the right time to sell"
+            },
+            {
+              "text": "What your home is likely worth, and what you'll actually net"
+            },
+            {
+              "text": "A room-by-room plan for sorting decades of belongings"
+            },
+            {
+              "text": "Buy first or sell first? How to avoid moving twice"
+            },
+            {
+              "text": "Common tax and timing questions to ask your advisor"
+            }
+          ],
+          "learn_heading": "Plain-English answers to the questions we hear most.",
+          "stats": [
+            {
+              "value": "850+",
+              "label": "Families helped through a move"
+            },
+            {
+              "value": "20 yrs",
+              "label": "Serving our community"
+            },
+            {
+              "value": "140+",
+              "label": "Free articles & guides"
+            },
+            {
+              "value": "4.9 ★",
+              "label": "Average client rating"
+            }
+          ],
+          "quiz_heading": "Is it time to rightsize?",
+          "quiz_intro": "Answer 8 quick questions about your home, lifestyle, and goals. You'll get a personalized readiness score and suggested next steps, free.",
+          "reviews_heading": "Families who've been where you are",
+          "about_heading": "No pressure. Just honest advice from someone who's been there.",
+          "about_body": [
+            {
+              "_type": "block",
+              "_key": "k0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k1",
+                  "text": "For over 20 years, I've helped families in our community navigate some of life's biggest transitions. Many of my clients first reach out a year or more before they're ready, and that's exactly how it should be.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k2",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k3",
+                  "text": "My job is to help you understand your options, so whatever you decide, you decide with confidence.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "about_photo": {
+            "$media": {
+              "url": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=1000&q=80",
+              "filename": "randyl.jpg",
+              "alt": "Portrait of Randyl"
+            }
+          },
+          "faq_heading": "Good questions deserve straight answers.",
+          "faq_intro": "Don't see yours? Call or text. We're happy to talk, even if you're years away from moving.",
+          "contact_heading": "Get your free home value and a personalized plan.",
+          "contact_intro": "A friendly, no-obligation conversation about your goals, your timeline, and your options.",
+          "contact_steps": [
+            {
+              "title": "Tell us a little about your situation",
+              "detail": "Takes about 60 seconds."
+            },
+            {
+              "title": "We'll call you at a time that suits you",
+              "detail": "A real person, never an automated system."
+            },
+            {
+              "title": "Receive your custom home value & plan",
+              "detail": "Yours to keep, whatever you decide."
+            }
+          ],
+          "footer_blurb": "Helping homeowners 40+ make confident, well-informed moves into their next chapter.",
+          "disclaimer": "© 2026 Randyl Homes Group · Keller Williams Realty. Each office independently owned and operated. Content is educational and not legal, tax, or financial advice.",
+          "office_phone": "(215) 340-5700"
+        }
+      }
+    ],
+    "workshops": [
+      {
+        "id": "workshop-rightsizing-101",
+        "status": "published",
+        "data": {
+          "title": "Rightsizing 101: Your Questions, Answered in Person",
+          "short_title": "Rightsizing 101",
+          "summary": "A relaxed, no-pressure evening with Randyl, a local estate attorney, and a senior move manager. Coffee and dessert provided.",
+          "starts_at": "2026-12-03T18:30:00-06:00",
+          "ends_at": "2026-12-03T20:00:00-06:00",
+          "location": "Westlake Community Library · Also streaming online",
+          "capacity": 40,
+          "seats_left": 12,
+          "rsvp_url": "/#contact",
+          "image": {
+            "$media": {
+              "url": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80",
+              "filename": "workshop.jpg",
+              "alt": "A small group meeting around a table"
+            }
+          }
+        }
+      }
+    ],
+    "testimonials": [
+      {
+        "id": "t-linda",
+        "status": "published",
+        "data": {
+          "name": "Linda M.",
+          "detail": "Downsized in Round Rock",
+          "sort_order": 1,
+          "photo": {
+            "$media": {
+              "url": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
+              "filename": "linda.jpg",
+              "alt": "Linda M."
+            }
+          },
+          "quote": "After 31 years in our home, we didn't know where to start. Randyl's guide and patience made it feel manageable. We never once felt rushed."
+        }
+      },
+      {
+        "id": "t-david",
+        "status": "published",
+        "data": {
+          "name": "David R.",
+          "detail": "Sold an inherited home",
+          "sort_order": 2,
+          "photo": {
+            "$media": {
+              "url": "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=300&q=80",
+              "filename": "david.jpg",
+              "alt": "David R."
+            }
+          },
+          "quote": "Selling my mother's house from out of state was overwhelming. Randyl handled the cleanout, repairs, and sale, and kept my siblings and me informed every step."
+        }
+      },
+      {
+        "id": "t-carol",
+        "status": "published",
+        "data": {
+          "name": "Carol & Jim T.",
+          "detail": "Moved to a 55+ community",
+          "sort_order": 3,
+          "photo": {
+            "$media": {
+              "url": "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=300&q=80",
+              "filename": "carol-jim.jpg",
+              "alt": "Carol and Jim T."
+            }
+          },
+          "quote": "We attended the workshop just to learn. Two years later, when we were ready, there was no question who we'd call."
+        }
+      }
+    ],
+    "faqs": [
+      {
+        "id": "faq-1",
+        "status": "published",
+        "data": {
+          "sort_order": 1,
+          "question": "I'm not ready to sell yet. Is it too early to talk?",
+          "answer": "Not at all. Most of our clients start a conversation 6–24 months before they move. Planning early gives you more options, better timing, and far less stress."
+        }
+      },
+      {
+        "id": "faq-2",
+        "status": "published",
+        "data": {
+          "sort_order": 2,
+          "question": "Do I need to buy my next home before selling this one?",
+          "answer": "It depends on your finances and comfort level. There are several ways to avoid moving twice, including contingent offers, bridge financing, and rent-backs. We'll walk through each with you."
+        }
+      },
+      {
+        "id": "faq-3",
+        "status": "published",
+        "data": {
+          "sort_order": 3,
+          "question": "Can you help with sorting, donating, and moving belongings?",
+          "answer": "Yes. We work with trusted senior move managers, estate sale companies, and movers. We can coordinate as much or as little as you'd like."
+        }
+      },
+      {
+        "id": "faq-4",
+        "status": "published",
+        "data": {
+          "sort_order": 4,
+          "question": "What does a consultation cost?",
+          "answer": "Nothing. Consultations, home valuations, guides, and workshops are always free, with no obligation."
+        }
+      }
+    ]
+  }
 }

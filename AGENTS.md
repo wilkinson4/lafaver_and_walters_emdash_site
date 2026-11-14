@@ -13,6 +13,9 @@ pnpm install                          # Install dependencies
 pnpm dev                              # Start the Astro dev server
 pnpm exec emdash types                # Regenerate TypeScript types from a running site
 pnpm exec emdash seed seed/seed.json  # Apply schema + sample content to ./data.db
+pnpm typecheck                        # astro check
+pnpm fix                              # Format everything with Prettier (.prettierrc.mjs, .prettierignore)
+pnpm format:check                     # Check formatting without writing
 ```
 
 The admin UI is at `http://localhost:4321/_emdash/admin`.
@@ -82,6 +85,7 @@ Site settings have `title` and `tagline`.
 - Learning Center "topics" are the `category` taxonomy (`?topic=<category-slug>`); `TopicNav` hides empty categories. `tag` is also on posts.
 - `posts.featured` ("Feature on homepage") picks the homepage lead article; otherwise the newest is used.
 - Imported bodies contain WordPress `htmlBlock`s. `src/components/ArticleHtmlBlock.astro` rebuilds Kadence buttons (`kadence/singlebtn`, stored as empty comments) from `originalAttrs`; other blocks use EmDash's `HtmlBlock`.
+- If an article's first block is a landscape YouTube embed, `learn/[slug].astro` shows it in place of the featured image (the image is still used for cards and share previews). `src/components/ArticleEmbed.astro` plays YouTube Shorts links (`youtube.com/shorts/ID`, which EmDash's `Embed` doesn't recognise) in a vertical frame; Shorts never replace the featured image.
 - Imported `pages` and the `primary-menu` menu exist but have no routes yet; the site uses the `primary`, `footer_learn` and `footer_services` menus.
 
 ## Plugins
@@ -92,8 +96,8 @@ Sandboxed plugins are enabled via `sandboxRunner: "@emdash-cms/sandbox-workerd/s
 
 Styling is **Tailwind CSS v4** (via `@tailwindcss/vite` in `astro.config.mjs`). Write utility classes in markup; don't add `<style>` blocks or new CSS files.
 
-- `src/styles/global.css` is the single stylesheet: `@theme` tokens (colours like `brand`, `ink`, `ivory`; fonts `font-serif`/`font-sans`; breakpoints `sm` 721px, `md` 1001px, `lg` 1101px), base styles, and shared `@utility` classes (`wrap`, `eyebrow`, `section-title`, `lead`, `btn` + `btn-red`/`btn-line`/`btn-black`/`btn-white`, `field-label`, `field-input`, `cover`). Use tokens instead of raw hex values; add a token or `@utility` when a value or pattern repeats.
+- `src/styles/global.css` is the single stylesheet: `@theme` tokens (colours like `brand`, `ink`, `ivory`; fonts `font-serif`/`font-sans`; breakpoints `sm` 721px, `md` 1001px, `lg` 1101px, `xl` 1280px), base styles, and shared `@utility` classes (`wrap`, `eyebrow`, `section-title`, `lead`, `btn` + `btn-red`/`btn-line`/`btn-black`/`btn-white`, `field-label`, `field-input`, `cover`). Use tokens instead of raw hex values; add a token or `@utility` when a value or pattern repeats.
 - The `--text-*` scale is redefined **without line-heights** (Tailwind's defaults set them); text inherits body line-height 1.7 unless a `leading-*` class is set.
 - `.article-body` (in `@layer components`) styles CMS Portable Text, which can't carry utility classes. Keep rich-text styling there.
 - Breakpoints are mobile-first (`md:` = 1001px and up).
-
+- PA advertising rules: wherever Randyl's cell number appears in the header/footer, the brokerage office number (`homepage.office_phone`) must appear at the same font size. Don't shrink or remove it.

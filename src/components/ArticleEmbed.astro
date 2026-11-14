@@ -1,0 +1,42 @@
+---
+/**
+ * Embed renderer for article bodies. EmDash's Embed doesn't recognise
+ * YouTube Shorts links, so play those in a vertical frame; everything else
+ * uses the default renderer.
+ */
+import { Embed } from "emdash/ui";
+import { youtubeVideo } from "../lib/site";
+
+interface Props {
+  node: {
+    _type: "embed";
+    _key: string;
+    url: string;
+    provider?: string;
+    html?: string;
+    caption?: string;
+  };
+}
+
+const { node } = Astro.props;
+const video = youtubeVideo(node?.url);
+---
+
+{video?.short ? (
+  <figure class="mx-auto my-6 max-w-90">
+    <iframe
+      class="aspect-9/16 w-full border-0"
+      src={`https://www.youtube.com/embed/${video.id}`}
+      title="YouTube video"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    />
+    {node.caption && (
+      <figcaption class="mt-2 text-center text-sm text-muted">
+        {node.caption}
+      </figcaption>
+    )}
+  </figure>
+) : (
+  <Embed node={node} />
+)}

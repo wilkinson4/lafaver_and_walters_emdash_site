@@ -9,6 +9,7 @@ export interface Homepage {
   status: string;
   title: string;
   phone: string;
+  office_phone?: string;
   email?: string;
   address?: string;
   hours?: string;

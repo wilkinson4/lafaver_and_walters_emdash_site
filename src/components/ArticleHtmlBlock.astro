@@ -8,48 +8,54 @@
 import { HtmlBlock } from "emdash/ui";
 
 interface Props {
-	node: {
-		_type: "htmlBlock";
-		_key: string;
-		html: string;
-		originalBlockName?: string;
-		originalAttrs?: { text?: unknown; link?: unknown };
-	};
+  node: {
+    _type: "htmlBlock";
+    _key: string;
+    html: string;
+    originalBlockName?: string;
+    originalAttrs?: { text?: unknown; link?: unknown };
+  };
 }
 
 const { node } = Astro.props;
 
 function safeUrl(value: unknown) {
-	if (typeof value !== "string" || !value.trim()) return undefined;
-	try {
-		const url = new URL(value.trim(), "https://placeholder.invalid");
-		return url.protocol === "https:" || url.protocol === "http:" ? url.href : undefined;
-	} catch {
-		return undefined;
-	}
+  if (typeof value !== "string" || !value.trim()) return undefined;
+  try {
+    const url = new URL(value.trim(), "https://placeholder.invalid");
+    return url.protocol === "https:" || url.protocol === "http:"
+      ? url.href
+      : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 const button =
-	node.originalBlockName === "kadence/singlebtn" && typeof node.originalAttrs?.text === "string"
-		? { text: node.originalAttrs.text, href: safeUrl(node.originalAttrs.link) }
-		: undefined;
-const external = button?.href && !button.href.startsWith("https://placeholder.invalid");
+  node.originalBlockName === "kadence/singlebtn" &&
+  typeof node.originalAttrs?.text === "string"
+    ? { text: node.originalAttrs.text, href: safeUrl(node.originalAttrs.link) }
+    : undefined;
+const external =
+  button?.href && !button.href.startsWith("https://placeholder.invalid");
 ---
 
-{
-	button ? (
-		button.href && (
-			<p>
-				<a
-					href={external ? button.href : button.href.replace("https://placeholder.invalid", "")}
-					class="btn btn-red no-underline!"
-					{...(external ? { target: "_blank", rel: "noopener" } : {})}
-				>
-					{button.text}
-				</a>
-			</p>
-		)
-	) : (
-		<HtmlBlock node={node} />
-	)
-}
+{button ? (
+  button.href && (
+    <p>
+      <a
+        href={
+          external
+            ? button.href
+            : button.href.replace("https://placeholder.invalid", "")
+        }
+        class="btn btn-red no-underline!"
+        {...(external ? { target: "_blank", rel: "noopener" } : {})}
+      >
+        {button.text}
+      </a>
+    </p>
+  )
+) : (
+  <HtmlBlock node={node} />
+)}

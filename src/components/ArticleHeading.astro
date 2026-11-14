@@ -2,11 +2,14 @@
 import { blockText, headingId, splitNumbered } from "../lib/site";
 
 interface Props {
-	node: { children?: unknown[] };
+  node: { children?: unknown[] };
 }
 
 const text = blockText(Astro.props.node as Parameters<typeof blockText>[0]);
 const { n, text: rest } = splitNumbered(text);
 ---
 
-<h2 id={headingId(text)}>{n && <span class="mr-2.5 text-brand">{n}</span>}{rest}</h2>
+<h2 id={headingId(text)}>
+  {n && <span class="mr-2.5 text-brand">{n}</span>}
+  {rest}
+</h2>

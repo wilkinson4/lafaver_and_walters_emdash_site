@@ -1,0 +1,8 @@
+# Vendored agent skills
+.agents
+.claude
+
+# Generated
+.emdash
+emdash-env.d.ts
+pnpm-lock.yaml
