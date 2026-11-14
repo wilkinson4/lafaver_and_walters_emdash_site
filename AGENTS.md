@@ -76,6 +76,10 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 
 Site settings have `title` and `tagline`.
 
+## Plugins
+
+Sandboxed plugins are enabled via `sandboxRunner: "@emdash-cms/sandbox-workerd/sandbox"` in `astro.config.mjs` (deps: `@emdash-cms/sandbox-workerd`, `workerd`). Admins can install registry plugins from **Registry** in the admin; plugin code runs in a separate workerd process (Miniflare in `pnpm dev`). Config-managed plugins go in `emdash({ plugins: [] })` (native, in-process) or `sandboxed: []` -- follow each package's instructions. Never set `sandbox: false` outside local debugging. Docs: https://docs.emdashcms.com/plugins/installing/
+
 ## Styling
 
 Styling is **Tailwind CSS v4** (via `@tailwindcss/vite` in `astro.config.mjs`). Write utility classes in markup; don't add `<style>` blocks or new CSS files.

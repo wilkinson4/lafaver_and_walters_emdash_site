@@ -3,7 +3,7 @@
 allowBuilds:
   esbuild: true
   sharp: true
-  workerd: false
+  workerd: false # binary comes from @cloudflare/workerd-<platform>; postinstall not needed
 
 # Supply-chain hardening: cooldown on brand-new releases (EmDash exempt)
 # and no non-registry transitive sources. (No trustPolicy: no-downgrade --

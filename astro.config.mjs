@@ -22,6 +22,8 @@ export default defineConfig({
 				directory: "./uploads",
 				baseUrl: "/_emdash/api/media/file",
 			}),
+			// Runs registry and `sandboxed: []` plugins in an isolated workerd process.
+			sandboxRunner: "@emdash-cms/sandbox-workerd/sandbox",
 		}),
 	],
 	vite: {

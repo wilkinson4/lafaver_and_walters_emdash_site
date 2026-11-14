@@ -33,6 +33,10 @@ pnpm dev
 
 Open http://localhost:4321/_emdash/admin to complete setup. The site runs at http://localhost:4321.
 
+## Plugins
+
+Plugin support is on: install sandboxed plugins from **Registry** in the admin (they run isolated in `workerd`). npm plugins are registered in `astro.config.mjs`. See https://docs.emdashcms.com/plugins/installing/.
+
 ## Styling
 
 Tailwind CSS v4. Design tokens (colours, fonts, breakpoints) and shared utilities live in `src/styles/global.css`; article rich text is styled by `.article-body` there.
