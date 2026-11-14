@@ -1,0 +1,22 @@
+---
+interface Props {
+	topics: { slug: string; label: string }[];
+	active?: string;
+}
+
+const { topics, active } = Astro.props;
+const chip = "border px-5 py-2.5 text-base font-medium hover:border-[#111] hover:bg-[#111] hover:text-white";
+const on = "border-[#111] bg-[#111] text-white";
+const off = "border-[#cfcac3] bg-white";
+---
+
+<nav class="mb-10 flex flex-wrap gap-2.5" aria-label="Topics">
+	<a href="/learn" class:list={[chip, active ? off : on]}>All Topics</a>
+	{
+		topics.map((t) => (
+			<a href={`/learn?topic=${t.slug}`} class:list={[chip, active === t.slug ? on : off]}>
+				{t.label}
+			</a>
+		))
+	}
+</nav>

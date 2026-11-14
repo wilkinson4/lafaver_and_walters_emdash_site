@@ -1,0 +1,1865 @@
+{
+	"$schema": "https://emdashcms.com/seed.schema.json",
+	"version": "1",
+	"meta": {
+		"name": "Randyl Homes Group",
+		"description": "Real estate guidance site for homeowners 40+: learning center, workshops, and lead capture.",
+		"author": "Randyl Homes Group"
+	},
+	"settings": {
+		"title": "Randyl Homes Group",
+		"tagline": "Real estate guidance for your next chapter",
+		"timezone": "America/Chicago"
+	},
+	"collections": [
+		{
+			"slug": "articles",
+			"label": "Articles",
+			"labelSingular": "Article",
+			"description": "Learning Center articles",
+			"icon": "book-open",
+			"sortOrder": 1,
+			"urlPattern": "/learn/{slug}",
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"search",
+				"seo"
+			],
+			"dateField": "publishedAt",
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "excerpt",
+					"label": "Summary",
+					"type": "text",
+					"searchable": true,
+					"options": {
+						"rows": 3
+					}
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured image",
+					"type": "image"
+				},
+				{
+					"slug": "featured",
+					"label": "Feature on homepage",
+					"type": "boolean",
+					"defaultValue": false
+				},
+				{
+					"slug": "content",
+					"label": "Article",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"slug": "homepage",
+			"label": "Homepage",
+			"labelSingular": "Homepage",
+			"description": "Homepage copy and contact details. Edit the single entry; do not add more.",
+			"icon": "house",
+			"sortOrder": 0,
+			"routable": false,
+			"titleField": "title",
+			"admin": {
+				"quickCreate": false
+			},
+			"supports": [
+				"drafts",
+				"revisions"
+			],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Internal name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "phone",
+					"label": "Contact · Phone",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "email",
+					"label": "Contact · Email",
+					"type": "string"
+				},
+				{
+					"slug": "address",
+					"label": "Contact · Office address",
+					"type": "string"
+				},
+				{
+					"slug": "hours",
+					"label": "Contact · Hours",
+					"type": "string"
+				},
+				{
+					"slug": "brokerage",
+					"label": "Contact · Brokerage",
+					"type": "string"
+				},
+				{
+					"slug": "hero_eyebrow",
+					"label": "Hero · Eyebrow",
+					"type": "string"
+				},
+				{
+					"slug": "hero_headline",
+					"label": "Hero · Headline (wrap a word in *asterisks* to highlight it)",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "hero_intro",
+					"label": "Hero · Intro",
+					"type": "text",
+					"options": {
+						"rows": 3
+					}
+				},
+				{
+					"slug": "hero_image",
+					"label": "Hero · Image",
+					"type": "image"
+				},
+				{
+					"slug": "trust_points",
+					"label": "Hero · Trust points (wrap text in *asterisks* to bold it)",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "text",
+								"label": "Text",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "show_stars",
+								"label": "Show 5 stars",
+								"type": "boolean"
+							}
+						],
+						"maxItems": 3
+					}
+				},
+				{
+					"slug": "paths_heading",
+					"label": "Journeys · Heading",
+					"type": "string"
+				},
+				{
+					"slug": "paths_intro",
+					"label": "Journeys · Intro",
+					"type": "text",
+					"options": {
+						"rows": 2
+					}
+				},
+				{
+					"slug": "paths",
+					"label": "Journeys · Paths",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "title",
+								"label": "Title",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "description",
+								"label": "Description",
+								"type": "text"
+							},
+							{
+								"slug": "link_label",
+								"label": "Link label",
+								"type": "string"
+							},
+							{
+								"slug": "link_url",
+								"label": "Link URL",
+								"type": "url"
+							}
+						],
+						"maxItems": 4
+					}
+				},
+				{
+					"slug": "guide_title",
+					"label": "Free guide · Title",
+					"type": "string"
+				},
+				{
+					"slug": "guide_card_text",
+					"label": "Free guide · Short description",
+					"type": "text",
+					"options": {
+						"rows": 2
+					}
+				},
+				{
+					"slug": "guide_heading",
+					"label": "Free guide · Section heading",
+					"type": "string"
+				},
+				{
+					"slug": "guide_intro",
+					"label": "Free guide · Section intro",
+					"type": "text",
+					"options": {
+						"rows": 2
+					}
+				},
+				{
+					"slug": "guide_points",
+					"label": "Free guide · What's inside",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "text",
+								"label": "Point",
+								"type": "string",
+								"required": true
+							}
+						],
+						"maxItems": 8
+					}
+				},
+				{
+					"slug": "learn_heading",
+					"label": "Learning Center · Heading",
+					"type": "string"
+				},
+				{
+					"slug": "stats",
+					"label": "Stats",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "value",
+								"label": "Number",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "label",
+								"label": "Label",
+								"type": "string",
+								"required": true
+							}
+						],
+						"maxItems": 4
+					}
+				},
+				{
+					"slug": "quiz_heading",
+					"label": "Quiz · Heading",
+					"type": "string"
+				},
+				{
+					"slug": "quiz_intro",
+					"label": "Quiz · Intro",
+					"type": "text",
+					"options": {
+						"rows": 2
+					}
+				},
+				{
+					"slug": "reviews_heading",
+					"label": "Testimonials · Heading",
+					"type": "string"
+				},
+				{
+					"slug": "about_heading",
+					"label": "About · Heading",
+					"type": "string"
+				},
+				{
+					"slug": "about_body",
+					"label": "About · Text",
+					"type": "portableText"
+				},
+				{
+					"slug": "about_photo",
+					"label": "About · Photo",
+					"type": "image"
+				},
+				{
+					"slug": "faq_heading",
+					"label": "FAQ · Heading",
+					"type": "string"
+				},
+				{
+					"slug": "faq_intro",
+					"label": "FAQ · Intro",
+					"type": "text",
+					"options": {
+						"rows": 2
+					}
+				},
+				{
+					"slug": "contact_heading",
+					"label": "Consultation · Heading",
+					"type": "string"
+				},
+				{
+					"slug": "contact_intro",
+					"label": "Consultation · Intro",
+					"type": "text",
+					"options": {
+						"rows": 2
+					}
+				},
+				{
+					"slug": "contact_steps",
+					"label": "Consultation · Steps",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "title",
+								"label": "Step",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "detail",
+								"label": "Detail",
+								"type": "string"
+							}
+						],
+						"maxItems": 4
+					}
+				},
+				{
+					"slug": "footer_blurb",
+					"label": "Footer · About blurb",
+					"type": "text",
+					"options": {
+						"rows": 2
+					}
+				},
+				{
+					"slug": "disclaimer",
+					"label": "Footer · Legal disclaimer",
+					"type": "text",
+					"options": {
+						"rows": 2
+					}
+				}
+			]
+		},
+		{
+			"slug": "workshops",
+			"label": "Workshops",
+			"labelSingular": "Workshop",
+			"description": "The next upcoming workshop is promoted in the site banner and on the homepage.",
+			"icon": "calendar-blank",
+			"sortOrder": 2,
+			"routable": false,
+			"titleField": "title",
+			"dateField": "starts_at",
+			"admin": {
+				"listColumns": [
+					"starts_at",
+					"seats_left"
+				]
+			},
+			"supports": [
+				"drafts",
+				"revisions"
+			],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "short_title",
+					"label": "Banner name",
+					"type": "string"
+				},
+				{
+					"slug": "summary",
+					"label": "Description",
+					"type": "text",
+					"options": {
+						"rows": 3
+					}
+				},
+				{
+					"slug": "starts_at",
+					"label": "Starts",
+					"type": "datetime",
+					"required": true,
+					"indexed": true
+				},
+				{
+					"slug": "ends_at",
+					"label": "Ends",
+					"type": "datetime"
+				},
+				{
+					"slug": "location",
+					"label": "Location",
+					"type": "string"
+				},
+				{
+					"slug": "capacity",
+					"label": "Capacity",
+					"type": "integer",
+					"validation": {
+						"min": 0
+					}
+				},
+				{
+					"slug": "seats_left",
+					"label": "Seats left",
+					"type": "integer",
+					"validation": {
+						"min": 0
+					}
+				},
+				{
+					"slug": "rsvp_url",
+					"label": "Registration link",
+					"type": "url"
+				},
+				{
+					"slug": "image",
+					"label": "Image",
+					"type": "image"
+				}
+			]
+		},
+		{
+			"slug": "testimonials",
+			"label": "Testimonials",
+			"labelSingular": "Testimonial",
+			"icon": "quotes",
+			"sortOrder": 3,
+			"routable": false,
+			"titleField": "name",
+			"admin": {
+				"listColumns": [
+					"detail",
+					"sort_order"
+				]
+			},
+			"supports": [
+				"drafts"
+			],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Client name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "detail",
+					"label": "Situation",
+					"type": "string"
+				},
+				{
+					"slug": "quote",
+					"label": "Quote",
+					"type": "text",
+					"required": true,
+					"options": {
+						"rows": 4
+					}
+				},
+				{
+					"slug": "photo",
+					"label": "Photo",
+					"type": "image"
+				},
+				{
+					"slug": "sort_order",
+					"label": "Display order",
+					"type": "integer",
+					"indexed": true,
+					"defaultValue": 10
+				}
+			]
+		},
+		{
+			"slug": "faqs",
+			"label": "FAQs",
+			"labelSingular": "FAQ",
+			"icon": "question",
+			"sortOrder": 4,
+			"routable": false,
+			"titleField": "question",
+			"admin": {
+				"listColumns": [
+					"sort_order"
+				]
+			},
+			"supports": [
+				"drafts"
+			],
+			"fields": [
+				{
+					"slug": "question",
+					"label": "Question",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "answer",
+					"label": "Answer",
+					"type": "text",
+					"required": true,
+					"options": {
+						"rows": 4
+					}
+				},
+				{
+					"slug": "sort_order",
+					"label": "Display order",
+					"type": "integer",
+					"indexed": true,
+					"defaultValue": 10
+				}
+			]
+		}
+	],
+	"taxonomies": [
+		{
+			"name": "topic",
+			"label": "Topics",
+			"labelSingular": "Topic",
+			"hierarchical": false,
+			"collections": [
+				"articles"
+			],
+			"terms": [
+				{
+					"slug": "downsizing",
+					"label": "Downsizing"
+				},
+				{
+					"slug": "selling",
+					"label": "Selling"
+				},
+				{
+					"slug": "inherited-homes",
+					"label": "Inherited Homes"
+				},
+				{
+					"slug": "retirement-equity",
+					"label": "Retirement & Equity"
+				},
+				{
+					"slug": "55-plus-living",
+					"label": "55+ Living"
+				},
+				{
+					"slug": "market-updates",
+					"label": "Market Updates"
+				}
+			]
+		}
+	],
+	"bylines": [
+		{
+			"id": "byline-randyl",
+			"slug": "randyl",
+			"displayName": "Randyl",
+			"bio": "Keller Williams Realty"
+		}
+	],
+	"menus": [
+		{
+			"name": "primary",
+			"label": "Header navigation",
+			"items": [
+				{
+					"type": "custom",
+					"label": "Learning Center",
+					"url": "/learn"
+				},
+				{
+					"type": "custom",
+					"label": "Workshops",
+					"url": "/#workshop"
+				},
+				{
+					"type": "custom",
+					"label": "Selling & Buying",
+					"url": "/#paths"
+				},
+				{
+					"type": "custom",
+					"label": "About",
+					"url": "/#about"
+				}
+			]
+		},
+		{
+			"name": "footer_learn",
+			"label": "Footer: Learn",
+			"items": [
+				{
+					"type": "custom",
+					"label": "Learning Center",
+					"url": "/learn"
+				},
+				{
+					"type": "custom",
+					"label": "Free Guides",
+					"url": "/#guide"
+				},
+				{
+					"type": "custom",
+					"label": "Workshops",
+					"url": "/#workshop"
+				},
+				{
+					"type": "custom",
+					"label": "Rightsizing Quiz",
+					"url": "/#quiz"
+				}
+			]
+		},
+		{
+			"name": "footer_services",
+			"label": "Footer: Services",
+			"items": [
+				{
+					"type": "custom",
+					"label": "Selling",
+					"url": "/learn?topic=selling"
+				},
+				{
+					"type": "custom",
+					"label": "Downsizing",
+					"url": "/learn?topic=downsizing"
+				},
+				{
+					"type": "custom",
+					"label": "Inherited Homes",
+					"url": "/learn?topic=inherited-homes"
+				},
+				{
+					"type": "custom",
+					"label": "Buying",
+					"url": "/#paths"
+				}
+			]
+		}
+	],
+	"content": {
+		"homepage": [
+			{
+				"id": "homepage",
+				"status": "published",
+				"data": {
+					"title": "Homepage",
+					"phone": "(555) 123-4567",
+					"email": "hello@randylhomes.com",
+					"address": "123 Main St, Austin, TX",
+					"hours": "Mon–Sat, 8am–7pm",
+					"brokerage": "Keller Williams Realty",
+					"hero_eyebrow": "Real estate guidance for your next chapter",
+					"hero_headline": "Make your next move with *clarity*, not pressure.",
+					"hero_intro": "Whether you're downsizing, selling a family home, or planning for retirement, get straightforward answers from a local expert, before you ever have to make a decision.",
+					"hero_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1600&q=80",
+							"filename": "hero-living-room.jpg",
+							"alt": "A bright, welcoming living room"
+						}
+					},
+					"trust_points": [
+						{
+							"text": "*4.9* from 300+ reviews",
+							"show_stars": true
+						},
+						{
+							"text": "*20+ years* helping local families",
+							"show_stars": false
+						}
+					],
+					"paths_heading": "Where are you in your journey?",
+					"paths_intro": "Choose the situation closest to yours. We'll point you to the right guides, tools, and next steps.",
+					"paths": [
+						{
+							"title": "Thinking about downsizing",
+							"description": "The kids are grown and the house feels big. Is it time, and what would it look like?",
+							"link_label": "Explore downsizing",
+							"link_url": "/learn?topic=downsizing"
+						},
+						{
+							"title": "Selling a family or inherited home",
+							"description": "Probate, sentimental belongings, siblings, and repairs. We'll walk you through it.",
+							"link_label": "See the step-by-step",
+							"link_url": "/learn?topic=inherited-homes"
+						},
+						{
+							"title": "Planning for retirement",
+							"description": "Unlock your home equity, compare 55+ communities, or relocate closer to family.",
+							"link_label": "Plan your move",
+							"link_url": "/learn?topic=retirement-equity"
+						},
+						{
+							"title": "Buying your next home",
+							"description": "Single-level living, low maintenance, the right location. Buy smart the second time around.",
+							"link_label": "Buyer's roadmap",
+							"link_url": "/#contact"
+						}
+					],
+					"guide_title": "The Rightsizing Playbook",
+					"guide_card_text": "9 steps to sell your family home, simplify your life, and move with confidence. 32 pages, plain English.",
+					"guide_heading": "Everything we wish every homeowner knew before they sold.",
+					"guide_intro": "Written for homeowners 40+ who are weighing their options. No jargon, no sales pitch.",
+					"guide_points": [
+						{
+							"text": "How to know if it's really the right time to sell"
+						},
+						{
+							"text": "What your home is likely worth, and what you'll actually net"
+						},
+						{
+							"text": "A room-by-room plan for sorting decades of belongings"
+						},
+						{
+							"text": "Buy first or sell first? How to avoid moving twice"
+						},
+						{
+							"text": "Common tax and timing questions to ask your advisor"
+						}
+					],
+					"learn_heading": "Plain-English answers to the questions we hear most.",
+					"stats": [
+						{
+							"value": "850+",
+							"label": "Families helped through a move"
+						},
+						{
+							"value": "20 yrs",
+							"label": "Serving our community"
+						},
+						{
+							"value": "140+",
+							"label": "Free articles & guides"
+						},
+						{
+							"value": "4.9 ★",
+							"label": "Average client rating"
+						}
+					],
+					"quiz_heading": "Is it time to rightsize?",
+					"quiz_intro": "Answer 8 quick questions about your home, lifestyle, and goals. You'll get a personalized readiness score and suggested next steps, free.",
+					"reviews_heading": "Families who've been where you are",
+					"about_heading": "No pressure. Just honest advice from someone who's been there.",
+					"about_body": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "For over 20 years, I've helped families in our community navigate some of life's biggest transitions. Many of my clients first reach out a year or more before they're ready, and that's exactly how it should be.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k3",
+									"text": "My job is to help you understand your options, so whatever you decide, you decide with confidence.",
+									"marks": []
+								}
+							]
+						}
+					],
+					"about_photo": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=1000&q=80",
+							"filename": "randyl.jpg",
+							"alt": "Portrait of Randyl"
+						}
+					},
+					"faq_heading": "Good questions deserve straight answers.",
+					"faq_intro": "Don't see yours? Call or text. We're happy to talk, even if you're years away from moving.",
+					"contact_heading": "Get your free home value and a personalized plan.",
+					"contact_intro": "A friendly, no-obligation conversation about your goals, your timeline, and your options.",
+					"contact_steps": [
+						{
+							"title": "Tell us a little about your situation",
+							"detail": "Takes about 60 seconds."
+						},
+						{
+							"title": "We'll call you at a time that suits you",
+							"detail": "A real person, never an automated system."
+						},
+						{
+							"title": "Receive your custom home value & plan",
+							"detail": "Yours to keep, whatever you decide."
+						}
+					],
+					"footer_blurb": "Helping homeowners 40+ make confident, well-informed moves into their next chapter.",
+					"disclaimer": "© 2026 Randyl Homes Group · Keller Williams Realty. Each office independently owned and operated. Content is educational and not legal, tax, or financial advice."
+				}
+			}
+		],
+		"workshops": [
+			{
+				"id": "workshop-rightsizing-101",
+				"status": "published",
+				"data": {
+					"title": "Rightsizing 101: Your Questions, Answered in Person",
+					"short_title": "Rightsizing 101",
+					"summary": "A relaxed, no-pressure evening with Randyl, a local estate attorney, and a senior move manager. Coffee and dessert provided.",
+					"starts_at": "2026-12-03T18:30:00-06:00",
+					"ends_at": "2026-12-03T20:00:00-06:00",
+					"location": "Westlake Community Library · Also streaming online",
+					"capacity": 40,
+					"seats_left": 12,
+					"rsvp_url": "/#contact",
+					"image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80",
+							"filename": "workshop.jpg",
+							"alt": "A small group meeting around a table"
+						}
+					}
+				}
+			}
+		],
+		"testimonials": [
+			{
+				"id": "t-linda",
+				"status": "published",
+				"data": {
+					"name": "Linda M.",
+					"detail": "Downsized in Round Rock",
+					"sort_order": 1,
+					"photo": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
+							"filename": "linda.jpg",
+							"alt": "Linda M."
+						}
+					},
+					"quote": "After 31 years in our home, we didn't know where to start. Randyl's guide and patience made it feel manageable. We never once felt rushed."
+				}
+			},
+			{
+				"id": "t-david",
+				"status": "published",
+				"data": {
+					"name": "David R.",
+					"detail": "Sold an inherited home",
+					"sort_order": 2,
+					"photo": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=300&q=80",
+							"filename": "david.jpg",
+							"alt": "David R."
+						}
+					},
+					"quote": "Selling my mother's house from out of state was overwhelming. Randyl handled the cleanout, repairs, and sale, and kept my siblings and me informed every step."
+				}
+			},
+			{
+				"id": "t-carol",
+				"status": "published",
+				"data": {
+					"name": "Carol & Jim T.",
+					"detail": "Moved to a 55+ community",
+					"sort_order": 3,
+					"photo": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=300&q=80",
+							"filename": "carol-jim.jpg",
+							"alt": "Carol and Jim T."
+						}
+					},
+					"quote": "We attended the workshop just to learn. Two years later, when we were ready, there was no question who we'd call."
+				}
+			}
+		],
+		"faqs": [
+			{
+				"id": "faq-1",
+				"status": "published",
+				"data": {
+					"sort_order": 1,
+					"question": "I'm not ready to sell yet. Is it too early to talk?",
+					"answer": "Not at all. Most of our clients start a conversation 6–24 months before they move. Planning early gives you more options, better timing, and far less stress."
+				}
+			},
+			{
+				"id": "faq-2",
+				"status": "published",
+				"data": {
+					"sort_order": 2,
+					"question": "Do I need to buy my next home before selling this one?",
+					"answer": "It depends on your finances and comfort level. There are several ways to avoid moving twice, including contingent offers, bridge financing, and rent-backs. We'll walk through each with you."
+				}
+			},
+			{
+				"id": "faq-3",
+				"status": "published",
+				"data": {
+					"sort_order": 3,
+					"question": "Can you help with sorting, donating, and moving belongings?",
+					"answer": "Yes. We work with trusted senior move managers, estate sale companies, and movers. We can coordinate as much or as little as you'd like."
+				}
+			},
+			{
+				"id": "faq-4",
+				"status": "published",
+				"data": {
+					"sort_order": 4,
+					"question": "What does a consultation cost?",
+					"answer": "Nothing. Consultations, home valuations, guides, and workshops are always free, with no obligation."
+				}
+			}
+		],
+		"articles": [
+			{
+				"id": "a-downsize",
+				"slug": "downsize-or-stay-put",
+				"status": "published",
+				"bylines": [
+					{
+						"byline": "byline-randyl"
+					}
+				],
+				"taxonomies": {
+					"topic": [
+						"downsizing"
+					]
+				},
+				"data": {
+					"title": "Downsize or Stay Put? 7 Questions to Ask Before You Decide",
+					"excerpt": "Before you call a moving company or a contractor, sit down with these seven questions. They'll tell you more about your next move than any market report.",
+					"featured": true,
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=1600&q=80",
+							"filename": "kitchen-table.jpg",
+							"alt": "A sunny kitchen with a table set for planning"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k4",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k5",
+									"text": "For many homeowners in their 40s, 50s, and 60s, the question comes up gradually. Maybe it's a staircase that feels steeper than it used to, a yard that takes up every Saturday, or rooms that haven't been used since the kids moved out. Whatever prompted it, deciding whether to downsize is as much a lifestyle decision as a financial one.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k6",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k7",
+									"text": "There's no universal right answer. But there ",
+									"marks": []
+								},
+								{
+									"_type": "span",
+									"_key": "k8",
+									"text": "are",
+									"marks": [
+										"strong"
+									]
+								},
+								{
+									"_type": "span",
+									"_key": "k9",
+									"text": " right questions. Here are the seven we walk through with every family we work with.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "ka",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "kb",
+									"text": "1. How well does your home fit the life you live today?",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "kc",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "kd",
+									"text": "Homes are usually bought for the life we expected to have over the next 10–15 years. Take an honest inventory: Which rooms do you use every week? Which ones mostly hold furniture and memories? Is the layout still convenient, or are you working around it?",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "ke",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "kf",
+									"text": "Randyl's tip:",
+									"marks": [
+										"strong"
+									]
+								},
+								{
+									"_type": "span",
+									"_key": "kg",
+									"text": " Try the \"one-week walk.\" For seven days, jot down every room you actually use. Most families are surprised by how much of their home sits empty.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "kh",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ki",
+									"text": "2. What will your home realistically need in the next 10 years?",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "kj",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "kk",
+									"text": "Roofs, HVAC systems, water heaters, and windows all have lifespans. If several big-ticket items are due soon, it's worth weighing whether you'd rather invest in this home or put that money toward one that better suits your next chapter.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "kl",
+							"style": "normal",
+							"listItem": "bullet",
+							"level": 1,
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "km",
+									"text": "Roof: typically 20–30 years",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "kn",
+							"style": "normal",
+							"listItem": "bullet",
+							"level": 1,
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ko",
+									"text": "HVAC system: typically 15–20 years",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "kp",
+							"style": "normal",
+							"listItem": "bullet",
+							"level": 1,
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "kq",
+									"text": "Water heater: typically 8–12 years",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "kr",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ks",
+									"text": "3. How much equity do you have, and what would you net?",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "kt",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ku",
+									"text": "Many long-time homeowners are sitting on significant equity. Knowing your home's current market value, minus your mortgage balance and selling costs, gives you a clear picture of what you could put toward your next home, retirement, or family.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "kv",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "kw",
+									"text": "4. Where do you want to be, and who do you want to be near?",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "kx",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ky",
+									"text": "Proximity to grandchildren, aging parents, doctors, or friends often matters more than square footage. Some clients move across town; others relocate entirely. Start with the people and places that matter most, then look at homes.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "kz",
+							"style": "blockquote",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k10",
+									"text": "\"The best moves start with the life you want, not the house you're leaving.\"",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k11",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k12",
+									"text": "5. What would you do with all of your belongings?",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k13",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k14",
+									"text": "For many families, this is the hardest part, emotionally and practically. Decades of furniture, keepsakes, and heirlooms deserve a thoughtful plan. Senior move managers, estate sale companies, and family \"claim days\" can make the process far less overwhelming.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k15",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k16",
+									"text": "6. Should you buy first or sell first?",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k17",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k18",
+									"text": "Selling first gives you certainty about your budget; buying first avoids a temporary move. Options like contingent offers, bridge loans, and rent-back agreements can help you get the best of both. The right choice depends on your finances and comfort with risk.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k19",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1a",
+									"text": "7. What does \"simpler\" actually mean to you?",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1b",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1c",
+									"text": "For some, it's single-level living. For others, it's no yard work, a lock-and-leave home for travel, or a community with built-in social life. Define it clearly, and it becomes much easier to recognize the right next home when you see it.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1d",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1e",
+									"text": "The bottom line",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1f",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1g",
+									"text": "You don't need to have every answer today. Most of our clients spend months, sometimes years, thinking through these questions. The goal is simply to make your next move on your own terms, with clear information and no pressure.",
+									"marks": []
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "a-parents-home",
+				"slug": "selling-a-parents-home",
+				"status": "published",
+				"bylines": [
+					{
+						"byline": "byline-randyl"
+					}
+				],
+				"taxonomies": {
+					"topic": [
+						"inherited-homes"
+					]
+				},
+				"data": {
+					"title": "Selling a Parent's Home: A Step-by-Step Guide for Families",
+					"excerpt": "From paperwork to the last walk-through, here's how families can sell a parent's home with less stress and fewer surprises.",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1582063289852-62e3ba2747f8?w=1200&q=80",
+							"filename": "family-home.jpg",
+							"alt": "A classic family home exterior"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k1h",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1i",
+									"text": "Selling a parent's home is rarely just a real estate transaction. It often comes during a season of grief or caregiving, with siblings, paperwork, and decades of belongings to sort through. A clear sequence of steps makes it far more manageable.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1j",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1k",
+									"text": "1. Confirm who has authority to sell",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1l",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1m",
+									"text": "Before anything else, find out who can legally sign. That may be your parent, an agent under a power of attorney, a trustee, or an executor once the estate is opened. An estate attorney can confirm what applies in your situation.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1n",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1o",
+									"text": "2. Secure and insure the property",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1p",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1q",
+									"text": "Vacant homes need attention. Check that insurance is still in force, change the locks if needed, and arrange regular visits to collect mail and check for leaks.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1r",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1s",
+									"text": "3. Sort belongings before you list",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1t",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1u",
+									"text": "Give family members time to choose keepsakes, then plan for donation, estate sale, and disposal. A senior move manager can coordinate the whole process if you live out of town.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1v",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1w",
+									"text": "4. Decide on repairs and pricing together",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1x",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1y",
+									"text": "Agree as a family on how much to invest before listing. Sometimes a light refresh pays off; sometimes selling as-is is the better path. A pricing review should come before any repair decisions.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1z",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k20",
+									"text": "Randyl's tip:",
+									"marks": [
+										"strong"
+									]
+								},
+								{
+									"_type": "span",
+									"_key": "k21",
+									"text": " Choose one sibling as the point of contact. Decisions move faster, and everyone still gets the same updates.",
+									"marks": []
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "a-equity",
+				"slug": "how-much-home-equity-do-you-have",
+				"status": "published",
+				"bylines": [
+					{
+						"byline": "byline-randyl"
+					}
+				],
+				"taxonomies": {
+					"topic": [
+						"retirement-equity"
+					]
+				},
+				"data": {
+					"title": "How Much Home Equity Do You Really Have? (And How to Use It)",
+					"excerpt": "Your equity is more than a number on a statement. Here's how to estimate it, and the most common ways homeowners put it to work.",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80",
+							"filename": "home-keys.jpg",
+							"alt": "Keys and a model house on a table"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k22",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k23",
+									"text": "For many long-time homeowners, the house is their largest asset. But the number that matters isn't the price on a listing site; it's what you'd actually walk away with.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k24",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k25",
+									"text": "Start with a realistic market value",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k26",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k27",
+									"text": "Online estimates are a starting point. A local comparative market analysis looks at recent nearby sales, your home's condition, and current demand.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k28",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k29",
+									"text": "Subtract what you owe and what it costs to sell",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2a",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2b",
+									"text": "Take your estimated value, subtract your remaining mortgage or home equity loan balance, then subtract typical selling costs such as commissions, closing costs, and any repairs or concessions.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2c",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2d",
+									"text": "Common ways to use your equity",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2e",
+							"style": "normal",
+							"listItem": "bullet",
+							"level": 1,
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2f",
+									"text": "Buy your next home with a smaller mortgage, or none at all",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2g",
+							"style": "normal",
+							"listItem": "bullet",
+							"level": 1,
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2h",
+									"text": "Add to retirement savings or an emergency fund",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2i",
+							"style": "normal",
+							"listItem": "bullet",
+							"level": 1,
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2j",
+									"text": "Help children or grandchildren, or fund care for a parent",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2k",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2l",
+									"text": "Talk with a financial or tax advisor about how a sale fits into your overall plan.",
+									"marks": []
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "a-repairs",
+				"slug": "repairs-worth-making-before-you-sell",
+				"status": "published",
+				"bylines": [
+					{
+						"byline": "byline-randyl"
+					}
+				],
+				"taxonomies": {
+					"topic": [
+						"selling"
+					]
+				},
+				"data": {
+					"title": "Which Repairs Are Worth Making Before You Sell, and Which Aren't",
+					"excerpt": "Not every project pays for itself. Here's how to decide where a little effort makes a big difference, and where to save your money.",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80",
+							"filename": "updated-home.jpg",
+							"alt": "An updated home interior ready for sale"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k2m",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2n",
+									"text": "When you've lived in a home for decades, it's easy to see a long list of projects. The good news: buyers don't expect perfection, and most big renovations don't return what they cost before a sale.",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2o",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2p",
+									"text": "Usually worth it",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2q",
+							"style": "normal",
+							"listItem": "bullet",
+							"level": 1,
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2r",
+									"text": "Fresh, neutral paint in main living areas",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2s",
+							"style": "normal",
+							"listItem": "bullet",
+							"level": 1,
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2t",
+									"text": "Fixing leaks, broken fixtures, and anything a home inspector will flag",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2u",
+							"style": "normal",
+							"listItem": "bullet",
+							"level": 1,
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2v",
+									"text": "Deep cleaning, decluttering, and simple curb appeal",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2w",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2x",
+									"text": "Usually not worth it",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2y",
+							"style": "normal",
+							"listItem": "bullet",
+							"level": 1,
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2z",
+									"text": "Full kitchen or bathroom remodels right before listing",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k30",
+							"style": "normal",
+							"listItem": "bullet",
+							"level": 1,
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k31",
+									"text": "Highly personal upgrades that suit your taste, not the market's",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k32",
+							"style": "h2",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k33",
+									"text": "When in doubt, ask first",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k34",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k35",
+									"text": "Before you call a contractor, ask your agent which items buyers in your price range care about. A short walk-through can save thousands.",
+									"marks": []
+								}
+							]
+						}
+					]
+				}
+			}
+		]
+	}
+}

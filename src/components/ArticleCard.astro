@@ -1,0 +1,35 @@
+---
+import { Image } from "emdash/ui";
+import { readMinutes } from "../lib/site";
+
+interface Props {
+	article: {
+		id: string;
+		data: {
+			title: string;
+			excerpt?: string | null;
+			featured_image?: Parameters<typeof Image>[0]["image"];
+			content?: unknown[] | null;
+			terms?: Record<string, { label: string }[]>;
+		};
+	};
+	showExcerpt?: boolean;
+	surface?: "ivory" | "white";
+}
+
+const { article, showExcerpt = false, surface = "ivory" } = Astro.props;
+const topic = article.data.terms?.topic?.[0]?.label;
+---
+
+<a
+	href={`/learn/${article.id}`}
+	class:list={["block transition duration-200 hover:-translate-y-1", surface === "white" ? "bg-white" : "bg-ivory"]}
+>
+	<div class="cover h-52.5 bg-[#ddd]">{article.data.featured_image && <Image image={article.data.featured_image} />}</div>
+	<div class="p-6.5">
+		{topic && <div class="text-sm font-bold tracking-[2px] text-brand uppercase">{topic}</div>}
+		<h3 class="mt-2 mb-2.5 font-serif text-[23px] leading-[1.3] font-medium">{article.data.title}</h3>
+		{showExcerpt && article.data.excerpt && <p class="mb-2.5 text-base text-muted">{article.data.excerpt}</p>}
+		<small class="text-[15px] text-muted">{readMinutes(article.data.content as never)} min read</small>
+	</div>
+</a>
