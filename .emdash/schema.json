@@ -362,6 +362,27 @@
           }
         },
         {
+          "slug": "broker_license",
+          "label": "Footer · Broker license number",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "copyright",
+          "label": "Footer · Copyright (© and the current year are added automatically)",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "eeo_statement",
+          "label": "Footer · Keller Williams EEO / Fair Housing statement",
+          "type": "text",
+          "required": false,
+          "unique": false
+        },
+        {
           "slug": "disclaimer",
           "label": "Footer · Legal disclaimer",
           "type": "text",
@@ -666,5 +687,5 @@
       ]
     }
   ],
-  "version": "508c034d6377a4d1"
+  "version": "9e0183b212cfb49b"
 }

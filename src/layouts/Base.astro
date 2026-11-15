@@ -244,9 +244,21 @@ const pageCtx = createPublicPageContext({
             </div>
           ))}
         </div>
-        <div class="flex flex-col justify-between gap-7.5 border-t border-line-dark pt-6.5 text-sm text-muted-dark sm:flex-row">
-          <span>{home?.disclaimer}</span>
-          <span>Equal Housing Opportunity</span>
+        <div class="border-t border-line-dark pt-6.5 text-sm text-muted-dark">
+          <div class="flex flex-col justify-between gap-x-7.5 gap-y-2 sm:flex-row">
+            <span>
+              {home?.copyright &&
+                `© ${new Date().getFullYear()} ${home.copyright}`}
+            </span>
+            <span>
+              {home?.broker_license && (
+                <>Broker License: {home.broker_license} · </>
+              )}
+              Equal Housing Opportunity
+            </span>
+          </div>
+          {home?.eeo_statement && <p class="mt-4">{home.eeo_statement}</p>}
+          {home?.disclaimer && <p class="mt-2">{home.disclaimer}</p>}
         </div>
       </div>
     </footer>

@@ -41,6 +41,9 @@ export interface Homepage {
   contact_intro?: string;
   contact_steps?: { "title": string; "detail"?: string | null }[];
   footer_blurb?: string;
+  broker_license?: string;
+  copyright?: string;
+  eeo_statement?: string;
   disclaimer?: string;
   createdAt: Date;
   updatedAt: Date;

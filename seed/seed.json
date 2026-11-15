@@ -356,6 +356,21 @@
           }
         },
         {
+          "slug": "broker_license",
+          "label": "Footer · Broker license number",
+          "type": "string"
+        },
+        {
+          "slug": "copyright",
+          "label": "Footer · Copyright (© and the current year are added automatically)",
+          "type": "string"
+        },
+        {
+          "slug": "eeo_statement",
+          "label": "Footer · Keller Williams EEO / Fair Housing statement",
+          "type": "text"
+        },
+        {
           "slug": "disclaimer",
           "label": "Footer · Legal disclaimer",
           "type": "text",
@@ -793,8 +808,11 @@
             }
           ],
           "footer_blurb": "Helping homeowners 40+ make confident, well-informed moves into their next chapter.",
-          "disclaimer": "© 2026 Randyl Homes Group · Keller Williams Realty. Each office independently owned and operated. Content is educational and not legal, tax, or financial advice.",
-          "office_phone": "(215) 340-5700"
+          "disclaimer": "Content is educational and not legal, tax, or financial advice.",
+          "office_phone": "(215) 340-5700",
+          "broker_license": "RB062907C",
+          "copyright": "All Rights Reserved The Randyl Walters Team Keller Williams Real Estate",
+          "eeo_statement": "Keller Williams Realty, Inc., a franchise company, is an Equal Opportunity Employer and supports the Fair Housing Act. Each Keller Williams® office is independently owned and operated."
         }
       }
     ],
