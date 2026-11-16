@@ -61,34 +61,38 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 
 ## Pages
 
-| Page        | Path               | What it shows                                  |
-| ----------- | ------------------ | ---------------------------------------------- |
-| Home        | `/`                | Site title + tagline, links into Posts / About |
-| All posts   | `/posts`           | Post list                                      |
-| Post detail | `/posts/[slug]`    | Post content                                   |
-| Page        | `/[slug]`          | Static page content (e.g. `/about`)            |
-| Category    | `/category/[slug]` | Posts filtered by category                     |
-| Tag         | `/tag/[slug]`      | Posts filtered by tag                          |
+| Page            | Path                          | What it shows                                                           |
+| --------------- | ----------------------------- | ----------------------------------------------------------------------- |
+| Home            | `/`                           | `homepage` singleton, articles, testimonials, FAQs, lead forms          |
+| Learning Center | `/learn` (`?topic=`, `?tag=`) | Posts, filterable by category (parents include subcategories) or tag    |
+| Article         | `/learn/[slug]`               | Post content, guide + home-value forms                                  |
+| Page            | `/[slug]`                     | Published `pages` entries (About, Pricing, tools, Sellers/Buyers, etc.) |
 
 ## Schema
 
-- `posts` collection: `title`, `featured_image`, `content` (Portable Text), `excerpt` (text).
-- `pages` collection: `title`, `content` (Portable Text).
-- Taxonomies: `category`, `tag`.
-- Single `primary` menu.
-
-Site settings have `title` and `tagline`.
+- `posts` (Articles): imported from WordPress. Taxonomies `category` (hierarchical: Sellers, Buyers, Local Living, Right-Sizing Your Life parents) and `tag`.
+- `pages`: imported from WordPress, rendered by `src/pages/[slug].astro`; SEO panel enabled (pages are in the sitemap).
+- `homepage` singleton, `testimonials` (real Google reviews), `faqs`, `team` (`/about` team grid), `workshops` (currently empty; banner falls back to a tagline).
+- Menus: `primary` (supports one level of dropdown children), `footer_learn`, `footer_services`.
+- Site settings: `title`, `tagline`, `logo` (header), `social` (footer links).
 
 ## Site content model
 
 - Learning Center articles are the `posts` collection (labelled "Articles"; imported from WordPress with the emdash-exporter plugin), served at `/learn/{slug}`. A pattern redirect sends old `/blog/[slug]` URLs there.
 - Learning Center "topics" are the `category` taxonomy (`?topic=<category-slug>`); `TopicNav` hides empty categories. `tag` is also on posts.
+- Topic chips update the article list in place: links with `data-swap="<element id>"` are handled by the swap script in `Base.astro` (fetches the page or `data-swap-src`, replaces that element; `data-swap-history` updates the URL for back/forward). `/learn` swaps `#learn-results`; the homepage swaps `#home-articles` from the `/partials/home-articles?topic=` fragment without changing the URL. Plain links still work without JS.
+- Homepage topic chips come from `homepage.featured_topics` (category labels; empty = the 4 busiest parents). Its options are fixed in the schema, so add new top-level categories there too.
+- `/#<topic-slug>` (e.g. `/#sellers`, `/#buyers`, used by the Sellers/Buyers menu items and homepage path cards) scrolls to the homepage Learning Center and selects that featured topic (script at the end of `index.astro`, matching chips by `data-topic`). The old `/sellers-start-here` and `/buyers-start-here` link pages are unpublished and redirect there.
 - `posts.featured` ("Feature on homepage") picks the homepage lead article; otherwise the newest is used.
 - Imported bodies contain WordPress `htmlBlock`s. `src/components/ArticleHtmlBlock.astro` rebuilds Kadence buttons (`kadence/singlebtn`, stored as empty comments) from `originalAttrs`; other blocks use EmDash's `HtmlBlock`.
 - If an article's first block is a landscape YouTube embed, `learn/[slug].astro` shows it in place of the featured image (the image is still used for cards and share previews). `src/components/ArticleEmbed.astro` plays YouTube Shorts links (`youtube.com/shorts/ID`, which EmDash's `Embed` doesn't recognise) in a vertical frame; Shorts never replace the featured image.
-- Imported `pages` and the `primary-menu` menu exist but have no routes yet; the site uses the `primary`, `footer_learn` and `footer_services` menus.
+- Page shortcodes: a paragraph containing only `[name args]` in a page body is replaced by a component (`splitShortcodes` in `src/lib/site.ts`, mapped in `src/pages/[slug].astro`): `[team]`, `[closing-cost-calculator]`, `[equity-calculator]`, `[mortgage-calculator]`, `[mortgage-rates]`, `[market-chart median-price|days-on-market]`. Components live in `src/components/tools/` and `TeamGrid.astro`; equity data is in `src/lib/median-prices.ts`.
+- WordPress URLs are preserved with 301 redirects (admin → Redirects, group "WordPress"): root post slugs → `/learn/<slug>`, `/category/...` → `/learn?topic=`, `/tag/...` → `/learn?tag=`, `/contact-us` → `/#contact`, retired pages → `/`.
+- Tracking: GA4 (`G-4RZRQK05GB`) and Meta Pixel (`458970391416189`) load from `Base.astro` in production builds only; successful lead forms fire `generate_lead` / `Lead` events. The privacy policy describes both.
 
 ## Plugins
+
+`plugins/lead-forms` is a native plugin registered in `astro.config.mjs`. Every `form[data-lead="contact|guide|home-value"]` is posted by the script in `Base.astro` to `/_emdash/api/plugins/lead-forms/submit`; submissions are validated, rate-limited per IP, saved to plugin storage, and emailed to `LEAD_FORMS_TO` (default `lafaverandwalters@gmail.com`) with Reply-To set to the visitor. In dev, emails are captured at `/_emdash/api/dev/emails`; production needs an email provider (SMTP) configured in EmDash or messages are only stored.
 
 Sandboxed plugins are enabled via `sandboxRunner: "@emdash-cms/sandbox-workerd/sandbox"` in `astro.config.mjs` (deps: `@emdash-cms/sandbox-workerd`, `workerd`). Admins can install registry plugins from **Registry** in the admin; plugin code runs in a separate workerd process (Miniflare in `pnpm dev`). Config-managed plugins go in `emdash({ plugins: [] })` (native, in-process) or `sandboxed: []` -- follow each package's instructions. Never set `sandbox: false` outside local debugging. Docs: https://docs.emdashcms.com/plugins/installing/
 

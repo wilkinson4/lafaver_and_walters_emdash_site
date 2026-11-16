@@ -52,12 +52,24 @@ if (Astro.cache?.enabled) {
   }
 }
 
-const settings = settingsResult.data as
-  { title?: string; tagline?: string; timezone?: string } | undefined;
-const siteTitle = settings?.title || "Randyl Homes Group";
+const settings = settingsResult.data;
+const siteTitle = settings?.title || "LaFaver & Walters Realty";
+const logo = settings?.logo;
+const socialLabels: Record<string, string> = {
+  facebook: "Facebook",
+  instagram: "Instagram",
+  youtube: "YouTube",
+  linkedin: "LinkedIn",
+  twitter: "X",
+};
+const social = Object.entries(settings?.social ?? {}).filter(
+  (entry): entry is [string, string] => !!entry[1] && entry[0] in socialLabels,
+);
 const timezone = settings?.timezone || DEFAULT_TIMEZONE;
 const fullTitle =
-  title === siteTitle || title.endsWith(` | ${siteTitle}`)
+  title === siteTitle ||
+  title.startsWith(`${siteTitle} | `) ||
+  title.endsWith(` | ${siteTitle}`)
     ? title
     : `${title} | ${siteTitle}`;
 
@@ -126,34 +138,90 @@ const pageCtx = createPublicPageContext({
       class="sticky top-0 z-30 border-b border-line bg-white shadow-[0_2px_14px_rgba(0,0,0,0.05)] print:hidden"
       aria-label="Main"
     >
-      <div class="wrap flex h-19 items-center justify-between gap-4 sm:h-23 sm:gap-10 xl:gap-6">
-        <a href="/" class="font-serif text-[26px] leading-none sm:text-[30px]">
-          Randyl<span class="text-brand">.</span>
-          <small class="mt-1.5 block font-sans text-xs tracking-[2px] whitespace-nowrap text-muted uppercase">
-            {brokerage}
-          </small>
+      <div class="wrap flex h-19 items-center justify-between gap-4 sm:h-23 sm:gap-8 xl:gap-6">
+        <a href="/" class="shrink-0" aria-label={`${siteTitle} home`}>
+          {logo?.url ? (
+            <img
+              src={logo.url}
+              alt={logo.alt || siteTitle}
+              width={logo.width}
+              height={logo.height}
+              class="h-14 w-auto sm:h-20"
+            />
+          ) : (
+            <span class="font-serif text-[24px] leading-none sm:text-[28px]">
+              {siteTitle}
+            </span>
+          )}
         </a>
-        <div class="hidden gap-7.5 text-[17px] font-medium whitespace-nowrap lg:flex">
-          {primary.data?.items.map((item) => (
-            <a
-              href={item.url}
-              target={item.target}
-              class:list={[
-                "border-b-2 py-1.5 hover:border-brand",
-                isActive(item.url) ? "border-brand" : "border-transparent",
-              ]}
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
-        <div class="flex items-center gap-5.5">
+        <ul class="hidden items-center gap-6 text-[17px] font-medium whitespace-nowrap lg:flex">
+          {primary.data?.items.map((item) =>
+            item.children?.length ? (
+              <li class="group relative" data-dropdown>
+                <button
+                  type="button"
+                  aria-expanded="false"
+                  class:list={[
+                    "flex cursor-pointer items-center gap-1 border-b-2 py-1.5 hover:border-brand",
+                    item.children.some((c) => isActive(c.url))
+                      ? "border-brand"
+                      : "border-transparent",
+                  ]}
+                >
+                  {item.label}
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 12 12"
+                    class="size-3 transition-transform group-hover:rotate-180 group-[.open]:rotate-180"
+                  >
+                    <path
+                      d="M2 4l4 4 4-4"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                    />
+                  </svg>
+                </button>
+                <ul class="invisible absolute top-full left-1/2 z-40 min-w-64 -translate-x-1/2 border-t-3 border-brand bg-white py-2 opacity-0 shadow-[0_18px_40px_rgba(0,0,0,0.12)] transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 group-[.open]:visible group-[.open]:opacity-100">
+                  {item.children.map((child) => (
+                    <li>
+                      <a
+                        href={child.url}
+                        target={child.target}
+                        class:list={[
+                          "block px-5 py-2.5 text-base hover:bg-ivory hover:text-brand",
+                          isActive(child.url) && "text-brand",
+                        ]}
+                      >
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ) : (
+              <li>
+                <a
+                  href={item.url}
+                  target={item.target}
+                  class:list={[
+                    "block border-b-2 py-1.5 hover:border-brand",
+                    isActive(item.url) ? "border-brand" : "border-transparent",
+                  ]}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )}
+        </ul>
+        <div class="flex items-center gap-3 sm:gap-5.5">
           {phone && (
-            <div class="hidden grid-cols-[auto_auto] items-baseline gap-x-2 leading-[1.25] whitespace-nowrap xl:grid">
+            <div class="hidden grid-cols-[auto_auto] items-baseline gap-x-2 gap-y-1 leading-[1.25] whitespace-nowrap xl:grid">
               <small class="text-right text-[13px] text-muted">
                 {officePhone ? "Cell / text" : "Call or text anytime"}
               </small>
-              <a href={telHref(phone)} class="text-xl font-bold">
+              <a href={telHref(phone)} class="text-5px font-bold">
                 {phone}
               </a>
               {/* PA advertising rules: the brokerage number must match the agent's in size. */}
@@ -162,7 +230,7 @@ const pageCtx = createPublicPageContext({
                   <small class="text-right text-[13px] text-muted">
                     Office
                   </small>
-                  <a href={telHref(officePhone)} class="text-xl font-bold">
+                  <a href={telHref(officePhone)} class="text-5px font-bold">
                     {officePhone}
                   </a>
                 </>
@@ -171,8 +239,102 @@ const pageCtx = createPublicPageContext({
           )}
           <a
             href="/#contact"
-            class="btn btn-red px-4 py-3 text-[15px] sm:px-8 sm:py-4.5 sm:text-[17px]"
+            class="btn btn-red hidden px-8 py-4.5 text-[17px] sm:inline-flex"
           >
+            Free Consultation
+          </a>
+          <button
+            type="button"
+            class="-mr-2 cursor-pointer p-2 lg:hidden"
+            aria-controls="mobile-nav"
+            aria-expanded="false"
+            data-menu-toggle
+          >
+            <span class="sr-only">Menu</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="size-7">
+              <path
+                d="M3 6h18M3 12h18M3 18h18"
+                stroke="currentColor"
+                stroke-width="2"
+                class="[[aria-expanded=true]_&]:hidden"
+              />
+              <path
+                d="M5 5l14 14M19 5L5 19"
+                stroke="currentColor"
+                stroke-width="2"
+                class="hidden [[aria-expanded=true]_&]:block"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div
+        id="mobile-nav"
+        class="hidden max-h-[calc(100dvh-76px)] overflow-y-auto border-t border-line lg:hidden"
+      >
+        <ul class="wrap py-3 text-lg font-medium">
+          {primary.data?.items.map((item) => (
+            <li class="border-b border-line last:border-0">
+              {item.children?.length ? (
+                <details>
+                  <summary class="flex cursor-pointer list-none items-center justify-between py-3.5">
+                    {item.label}
+                    <span
+                      aria-hidden="true"
+                      class="inline-block text-brand transition-transform [details[open]_&]:rotate-45"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <ul class="pb-3 pl-4 text-base font-normal">
+                    {item.children.map((child) => (
+                      <li>
+                        <a
+                          href={child.url}
+                          target={child.target}
+                          class="block py-2"
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ) : (
+                <a
+                  href={item.url}
+                  target={item.target}
+                  class:list={[
+                    "block py-3.5",
+                    isActive(item.url) && "text-brand",
+                  ]}
+                >
+                  {item.label}
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+        <div class="wrap grid gap-3 border-t border-line py-5">
+          {phone && (
+            <div class="grid grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-1">
+              <small class="text-[15px] text-muted">
+                {officePhone ? "Cell / text" : "Call or text"}
+              </small>
+              <a href={telHref(phone)} class="text-xl font-bold">
+                {phone}
+              </a>
+              {officePhone && (
+                <>
+                  <small class="text-[15px] text-muted">Office</small>
+                  <a href={telHref(officePhone)} class="text-xl font-bold">
+                    {officePhone}
+                  </a>
+                </>
+              )}
+            </div>
+          )}
+          <a href="/#contact" class="btn btn-red justify-center sm:hidden">
             Free Consultation
           </a>
         </div>
@@ -186,18 +348,34 @@ const pageCtx = createPublicPageContext({
     <footer class="bg-black pt-20 pb-10 text-base text-[#f5f5f5] print:hidden">
       <div class="wrap">
         <div class="mb-15 grid grid-cols-2 gap-10 sm:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div>
+          <div class="col-span-2 sm:col-span-1">
             <a
               href="/"
-              class="font-serif text-[26px] leading-none sm:text-[30px]"
+              class="font-serif text-[26px] leading-tight sm:text-[28px]"
             >
-              Randyl<span class="text-brand-light">.</span>
-              <small class="mt-1.5 block font-sans text-xs tracking-[2px] whitespace-nowrap text-muted-dark uppercase">
+              {siteTitle}
+              <small class="mt-2 block font-sans text-xs tracking-[2px] text-muted-dark uppercase">
                 {brokerage}
               </small>
             </a>
             {home?.footer_blurb && (
               <p class="mt-5 text-muted-dark">{home.footer_blurb}</p>
+            )}
+            {social.length > 0 && (
+              <ul class="mt-5 flex gap-4 text-sm font-semibold tracking-[1px] uppercase">
+                {social.map(([key, url]) => (
+                  <li>
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener"
+                      class="text-brand-light hover:text-white"
+                    >
+                      {socialLabels[key]}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
           {[
@@ -205,7 +383,12 @@ const pageCtx = createPublicPageContext({
             { heading: "Services", menu: footerServices.data },
             { heading: "Contact", menu: null },
           ].map(({ heading, menu }) => (
-            <div>
+            <div
+              class:list={[
+                "min-w-0 [overflow-wrap:anywhere]",
+                heading === "Contact" && "col-span-2 sm:col-span-1",
+              ]}
+            >
               <h2 class="mb-4.5 text-[15px] font-bold tracking-[2px] text-brand-light uppercase">
                 {heading}
               </h2>
@@ -264,25 +447,253 @@ const pageCtx = createPublicPageContext({
     </footer>
 
     <script>
-      // Lead forms are not connected to a delivery service yet; acknowledge without sending.
+      // In-place updates for links marked `data-swap="<id>"` (topic chips,
+      // pagination): fetch `data-swap-src` (or the href), replace the element
+      // with that id, and keep focus. `data-swap-history` updates the URL so
+      // back/forward work; `data-swap-scroll` scrolls the region into view.
+      // Without JS (or if the fetch fails) the link navigates normally.
+      let pending: AbortController | undefined;
+
+      async function swapRegion(
+        target: string,
+        url: string,
+        opts: { push?: string; scroll?: boolean; focusHref?: string } = {},
+      ) {
+        const region = document.getElementById(target);
+        if (!region) return false;
+        pending?.abort();
+        const controller = (pending = new AbortController());
+        region.setAttribute("aria-busy", "true");
+        try {
+          const res = await fetch(url, { signal: controller.signal });
+          if (!res.ok) return false;
+          const doc = new DOMParser().parseFromString(
+            await res.text(),
+            "text/html",
+          );
+          const next = doc.getElementById(target);
+          if (!next) return false;
+          region.replaceWith(next);
+          if (opts.push) {
+            if (!history.state?.swap) {
+              history.replaceState({ swap: target }, "");
+            }
+            history.pushState({ swap: target }, "", opts.push);
+          }
+          // Full pages carry a title; partial fragments don't.
+          if (doc.title) document.title = doc.title;
+          if (opts.focusHref) {
+            next
+              .querySelector<HTMLElement>(
+                `a[href="${CSS.escape(opts.focusHref)}"]`,
+              )
+              ?.focus({ preventScroll: true });
+          }
+          if (opts.scroll && next.getBoundingClientRect().top < 0) {
+            next.scrollIntoView({ behavior: "smooth" });
+          }
+          return true;
+        } catch (err) {
+          return (err as Error).name === "AbortError";
+        } finally {
+          if (pending === controller) region.removeAttribute("aria-busy");
+        }
+      }
+
+      document.addEventListener("click", async (event) => {
+        const link = (event.target as Element).closest<HTMLAnchorElement>(
+          "a[data-swap]",
+        );
+        if (
+          !link ||
+          event.defaultPrevented ||
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey
+        ) {
+          return;
+        }
+        event.preventDefault();
+        const ok = await swapRegion(
+          link.dataset.swap!,
+          link.dataset.swapSrc || link.href,
+          {
+            push: link.hasAttribute("data-swap-history")
+              ? link.href
+              : undefined,
+            scroll: link.hasAttribute("data-swap-scroll"),
+            focusHref: link.getAttribute("href") ?? undefined,
+          },
+        );
+        if (!ok) location.href = link.href;
+      });
+
+      addEventListener("popstate", async (event) => {
+        const target = event.state?.swap;
+        if (target && !(await swapRegion(target, location.href))) {
+          location.reload();
+        }
+      });
+    </script>
+
+    <script>
+      const toggle =
+        document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+      const mobileNav = document.getElementById("mobile-nav");
+      toggle?.addEventListener("click", () => {
+        const open = toggle.getAttribute("aria-expanded") !== "true";
+        toggle.setAttribute("aria-expanded", String(open));
+        mobileNav?.classList.toggle("hidden", !open);
+      });
+      // Close the mobile menu when a link is followed (incl. same-page hashes).
+      mobileNav?.addEventListener("click", (event) => {
+        if (!(event.target as Element).closest("a")) return;
+        toggle?.setAttribute("aria-expanded", "false");
+        mobileNav.classList.add("hidden");
+      });
+
+      const dropdowns = [
+        ...document.querySelectorAll<HTMLElement>("[data-dropdown]"),
+      ];
+      const setOpen = (dropdown: HTMLElement, open: boolean) => {
+        dropdown.classList.toggle("open", open);
+        dropdown
+          .querySelector("button")
+          ?.setAttribute("aria-expanded", String(open));
+      };
+      for (const dropdown of dropdowns) {
+        dropdown.querySelector("button")?.addEventListener("click", () => {
+          const open = !dropdown.classList.contains("open");
+          dropdowns.forEach((d) => setOpen(d, false));
+          setOpen(dropdown, open);
+        });
+      }
+      document.addEventListener("click", (event) => {
+        for (const d of dropdowns) {
+          if (!d.contains(event.target as Node)) setOpen(d, false);
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        for (const d of dropdowns) {
+          if (d.classList.contains("open")) {
+            setOpen(d, false);
+            d.querySelector("button")?.focus();
+          }
+        }
+      });
+
       for (const form of document.querySelectorAll<HTMLFormElement>(
         "form[data-lead]",
       )) {
-        form.addEventListener("submit", (event) => {
+        // Honeypot: hidden from people, often filled in by bots.
+        const trap = document.createElement("input");
+        Object.assign(trap, {
+          name: "website",
+          tabIndex: -1,
+          autocomplete: "off",
+        });
+        trap.setAttribute("aria-hidden", "true");
+        trap.style.cssText = "position:absolute;left:-9999px;opacity:0";
+        form.append(trap);
+
+        form.addEventListener("submit", async (event) => {
           event.preventDefault();
+          const button = form.querySelector<HTMLButtonElement>("button");
           let note = form.querySelector<HTMLElement>(".form-note");
           if (!note) {
             note = document.createElement("p");
-            note.className =
-              "form-note mt-2.5 text-[15px] font-semibold text-brand";
+            note.className = "form-note mt-2.5 text-[15px] font-semibold";
             note.setAttribute("role", "status");
             form.append(note);
           }
-          note.textContent =
-            "Thanks! (Preview only: this form isn't connected yet.)";
+          const body = Object.fromEntries(
+            [...new FormData(form)].filter(
+              ([, v]) => typeof v === "string" && v,
+            ),
+          );
+          body.form = form.dataset.lead || "contact";
+          body.page = location.pathname;
+          if (button) button.disabled = true;
+          note.className =
+            "form-note mt-2.5 text-[15px] font-semibold text-muted";
+          note.textContent = "Sending…";
+          try {
+            const res = await fetch("/_emdash/api/plugins/lead-forms/submit", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(body),
+            });
+            const json = await res.json().catch(() => null);
+            if (!res.ok || !json?.success) {
+              throw new Error(json?.error?.message || "Something went wrong.");
+            }
+            form.reset();
+            const w = window as unknown as {
+              gtag?: (...args: unknown[]) => void;
+              fbq?: (...args: unknown[]) => void;
+            };
+            w.gtag?.("event", "generate_lead", { form: body.form });
+            w.fbq?.("track", "Lead");
+            note.className =
+              "form-note mt-2.5 text-[15px] font-semibold text-brand";
+            note.textContent =
+              "Thank you! We'll be in touch within one business day.";
+          } catch (error) {
+            note.className =
+              "form-note mt-2.5 text-[15px] font-semibold text-brand";
+            note.textContent = `${(error as Error).message} You can also call or text us anytime.`;
+          } finally {
+            if (button) button.disabled = false;
+          }
         });
       }
     </script>
+    {import.meta.env.PROD && (
+      <>
+        <script
+          is:inline
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-4RZRQK05GB"
+        ></script>
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag("js", new Date());
+          gtag("config", "G-4RZRQK05GB");
+
+          !(function (f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function () {
+              n.callMethod
+                ? n.callMethod.apply(n, arguments)
+                : n.queue.push(arguments);
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = "2.0";
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s);
+          })(
+            window,
+            document,
+            "script",
+            "https://connect.facebook.net/en_US/fbevents.js",
+          );
+          fbq("init", "458970391416189");
+          fbq("track", "PageView");
+        </script>
+      </>
+    )}
     <EmDashBodyEnd page={pageCtx} />
   </body>
 </html>

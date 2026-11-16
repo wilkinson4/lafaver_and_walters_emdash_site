@@ -1,0 +1,32 @@
+---
+/** GLVR ShowingTime market chart. The provider renders at a fixed size, so pick one per breakpoint. */
+interface Props {
+  chart: string;
+}
+
+const CHARTS: Record<string, { id: string; title: string }> = {
+  "median-price": { id: "tttQ7-8dl", title: "Median sale price chart" },
+  "days-on-market": { id: "tttQL-g6V", title: "Median days on market chart" },
+};
+const chart = CHARTS[Astro.props.chart];
+const sizes = [
+  { w: 400, h: 300, class: "sm:hidden" },
+  { w: 640, h: 480, class: "hidden sm:block md:hidden" },
+  { w: 800, h: 600, class: "hidden md:block" },
+];
+---
+
+{chart && (
+  <div class="tool-frame">
+    {sizes.map((s) => (
+      <iframe
+        class:list={["mx-auto max-w-full border-0", s.class]}
+        width={s.w}
+        height={s.h}
+        src={`https://glvr.stats.showingtime.com/infoserv/s-v1/${chart.id}.HTML?w=${s.w}&h=${s.h}`}
+        title={chart.title}
+        loading="lazy"
+      />
+    ))}
+  </div>
+)}

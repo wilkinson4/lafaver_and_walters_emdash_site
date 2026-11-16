@@ -1,0 +1,94 @@
+---
+/**
+ * Total transaction cost estimate, ported from the WordPress pricing page.
+ * Commission is 3% + $675; PA transfer tax is split between buyer and seller.
+ */
+---
+
+<form
+  class="tool-card"
+  data-cost-calc
+  aria-labelledby="cost-calc-title"
+  onsubmit="return false"
+>
+  <h3 id="cost-calc-title" class="tool-title">
+    Estimate Your Total Costs
+  </h3>
+  <div class="grid gap-4.5 sm:grid-cols-2">
+    <label class="field-label">
+      Are you the buyer or seller?
+      <select name="role" class="field-input mt-1.5 font-normal">
+        <option value="seller">Seller</option>
+        <option value="buyer">Buyer</option>
+      </select>
+    </label>
+    <label class="field-label">
+      Sale price ($)
+      <input
+        name="price"
+        type="number"
+        min="0"
+        step="1000"
+        inputmode="numeric"
+        placeholder="e.g. 400000"
+        class="field-input mt-1.5 font-normal"
+      />
+    </label>
+    <label class="field-label">
+      Location (transfer tax rate)
+      <select name="taxRate" class="field-input mt-1.5 font-normal">
+        <option value="0.02">Standard (2%)</option>
+        <option value="0.025">City of Allentown (2.5%)</option>
+      </select>
+    </label>
+    <label class="field-label" data-buyer-only hidden>
+      Financing type
+      <select name="financing" class="field-input mt-1.5 font-normal">
+        <option value="mortgage">Mortgage</option>
+        <option value="cash">Cash</option>
+      </select>
+    </label>
+  </div>
+  <div class="mt-6 border-t border-line pt-5" aria-live="polite">
+    <div class="text-[15px] font-semibold tracking-[2px] text-muted uppercase">
+      Estimated total cost
+    </div>
+    <output name="total" class="block font-serif text-[40px] text-brand">
+      $0
+    </output>
+    <p data-mortgage-note hidden class="text-[15px] text-muted">
+      * Down payment is not included in this estimate.
+    </p>
+  </div>
+</form>
+
+<script>
+  for (const form of document.querySelectorAll<HTMLFormElement>(
+    "form[data-cost-calc]",
+  )) {
+    const field = (name: string) =>
+      form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement;
+    const buyerOnly = form.querySelector<HTMLElement>("[data-buyer-only]")!;
+    const note = form.querySelector<HTMLElement>("[data-mortgage-note]")!;
+    const total = form.elements.namedItem("total") as HTMLOutputElement;
+
+    const update = () => {
+      const buyer = field("role").value === "buyer";
+      const mortgage = buyer && field("financing").value === "mortgage";
+      const price = Number(field("price").value) || 0;
+      const commission = price * 0.03 + 675;
+      const transferTax = price * (Number(field("taxRate").value) / 2);
+      const sum = buyer
+        ? commission +
+          transferTax +
+          price * 0.01 + // title fees
+          (mortgage ? price * 0.035 : 0) // lender fees
+        : commission + transferTax + 300; // seller fees
+      buyerOnly.hidden = !buyer;
+      note.hidden = !mortgage;
+      total.value = `$${Math.ceil(price ? sum : 0).toLocaleString("en-US")}`;
+    };
+    form.addEventListener("input", update);
+    update();
+  }
+</script>

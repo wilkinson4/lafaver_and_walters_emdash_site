@@ -1,33 +1,112 @@
 ---
+import type { TaxonomyTerm } from "emdash";
+import { topicTotal } from "../lib/site";
+
 interface Props {
-  topics: { slug: string; label: string; count?: number }[];
+  /** Category tree from getTaxonomyTerms (parents with nested children). */
+  topics: TaxonomyTerm[];
   active?: string;
+  /** Label of the first chip, which clears the topic. */
+  allLabel?: string;
+  /** Sort chips busiest-first (otherwise keep the given order). */
+  sort?: boolean;
+  /** Show the "In {parent}:" row of subtopic chips. */
+  subtopics?: boolean;
+  /** Link for a topic chip (no slug = the first chip). Used without JS. */
+  href?: (slug?: string) => string;
+  /**
+   * Update the element with id `target` in place instead of navigating
+   * (handled by the swap script in Base.astro). `src` is the URL to fetch,
+   * defaulting to the chip's href; `history` also updates the address bar.
+   */
+  swap?: {
+    target: string;
+    src?: (slug?: string) => string;
+    history?: boolean;
+  };
 }
 
-// Hide empty categories (WordPress imports bring many) and list the busiest first.
-const topics = Astro.props.topics
-  .filter(
-    (t) =>
-      t.count === undefined || t.count > 0 || t.slug === Astro.props.active,
-  )
-  .toSorted((a, b) => (b.count ?? 0) - (a.count ?? 0));
-const { active } = Astro.props;
+const {
+  topics,
+  active,
+  allLabel = "All Topics",
+  sort = true,
+  subtopics: showSubtopics = true,
+  href = (slug) => (slug ? `/learn?topic=${slug}` : "/learn"),
+  swap,
+} = Astro.props;
+
+// Hide empty categories (WordPress imports bring many).
+const visible = (terms: TaxonomyTerm[]) => {
+  const shown = terms.filter((t) => topicTotal(t) > 0 || t.slug === active);
+  return sort ? shown.toSorted((a, b) => topicTotal(b) - topicTotal(a)) : shown;
+};
+
+const parents = visible(topics);
+const current = parents.find(
+  (p) => p.slug === active || p.children.some((c) => c.slug === active),
+);
+const subtopics = showSubtopics && current ? visible(current.children) : [];
+
+const swapAttrs = (slug?: string) =>
+  swap
+    ? {
+        "data-swap": swap.target,
+        "data-topic": slug ?? "",
+        "data-swap-src": swap.src?.(slug),
+        "data-swap-history": swap.history ? "" : undefined,
+      }
+    : {};
+
 const chip =
   "border px-5 py-2.5 text-base font-medium hover:border-[#111] hover:bg-[#111] hover:text-white";
 const on = "border-[#111] bg-[#111] text-white";
 const off = "border-[#cfcac3] bg-white";
+const subChip =
+  "border px-4 py-1.5 text-[15px] hover:border-brand hover:text-brand";
 ---
 
-<nav class="mb-10 flex flex-wrap gap-2.5" aria-label="Topics">
-  <a href="/learn" class:list={[chip, active ? off : on]}>
-    All Topics
-  </a>
-  {topics.map((t) => (
+<nav class="mb-10" aria-label="Topics">
+  <div class="flex flex-wrap gap-2.5">
     <a
-      href={`/learn?topic=${t.slug}`}
-      class:list={[chip, active === t.slug ? on : off]}
+      href={href()}
+      class:list={[chip, active ? off : on]}
+      aria-current={active ? undefined : "true"}
+      {...swapAttrs()}
     >
-      {t.label}
+      {allLabel}
     </a>
-  ))}
+    {parents.map((t) => (
+      <a
+        href={href(t.slug)}
+        class:list={[chip, current?.slug === t.slug ? on : off]}
+        aria-current={active === t.slug ? "true" : undefined}
+        {...swapAttrs(t.slug)}
+      >
+        {t.label}
+      </a>
+    ))}
+  </div>
+  {subtopics.length > 0 && current && (
+    <div class="mt-4 flex flex-wrap items-center gap-2">
+      <span class="mr-1 text-[15px] font-semibold text-muted">
+        In {current.label}:
+      </span>
+      {subtopics.map((t) => (
+        <a
+          href={href(t.slug)}
+          class:list={[
+            subChip,
+            active === t.slug
+              ? "border-brand bg-brand text-white hover:text-white"
+              : "border-[#cfcac3] bg-white",
+          ]}
+          aria-current={active === t.slug ? "true" : undefined}
+          {...swapAttrs(t.slug)}
+        >
+          {t.label}
+        </a>
+      ))}
+    </div>
+  )}
 </nav>

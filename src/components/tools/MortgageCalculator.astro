@@ -1,0 +1,33 @@
+---
+/** Embedded calculator from MortgageCalculator.org (free webmaster widget). */
+const params = new URLSearchParams({
+  downpayment: "80000",
+  homevalue: "400000",
+  loanamount: "320000",
+  interestrate: "7",
+  loanterm: "30",
+  propertytax: "2700",
+  pmi: "1",
+  homeinsurance: "1500",
+  monthlyhoa: "0",
+});
+---
+
+<div class="tool-frame">
+  <iframe
+    class="h-[1200px] w-full border-0"
+    src={`https://www.mortgagecalculator.org/webmasters/?${params}`}
+    title="Mortgage calculator"
+    loading="lazy"
+  />
+  <p class="mt-2 text-sm text-muted">
+    Calculator by
+    <a
+      href="https://www.mortgagecalculator.org/"
+      target="_blank"
+      rel="noopener"
+    >
+      MortgageCalculator.org
+    </a>
+  </p>
+</div>

@@ -1,0 +1,15 @@
+---
+import HomeArticles from "../../components/HomeArticles.astro";
+import { getHomeArticles } from "../../lib/site";
+
+// HTML fragment fetched by the homepage topic chips (see Base.astro swap script).
+export const partial = true;
+
+const { cacheHints, ...learn } = await getHomeArticles(
+  Astro.url.searchParams.get("topic") ?? undefined,
+);
+if (Astro.cache?.enabled) for (const hint of cacheHints) Astro.cache.set(hint);
+Astro.response.headers.set("X-Robots-Tag", "noindex");
+---
+
+<HomeArticles {...learn} />

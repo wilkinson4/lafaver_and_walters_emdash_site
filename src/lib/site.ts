@@ -1,6 +1,11 @@
-import { getEmDashCollection, getSiteSettings } from "emdash";
+import {
+  getEmDashCollection,
+  getSiteSettings,
+  getTaxonomyTermsWithCacheHint,
+} from "emdash";
+import type { TaxonomyTerm } from "emdash";
 
-export const DEFAULT_TIMEZONE = "America/Chicago";
+export const DEFAULT_TIMEZONE = "America/New_York";
 
 export async function getHomepage() {
   const { entries, cacheHint } = await getEmDashCollection("homepage", {
@@ -134,4 +139,118 @@ export function youtubeVideo(
   return id && YOUTUBE_ID.test(id)
     ? { id, short: host === "youtube.com" && first === "shorts" }
     : null;
+}
+
+const SHORTCODE = /^\s*\[([a-z][a-z-]*)(?:\s+([\w-]+))?\]\s*$/;
+
+export type BodySegment<T> =
+  | { kind: "blocks"; blocks: T[] }
+  | { kind: "shortcode"; name: string; arg?: string };
+
+/**
+ * Splits Portable Text at paragraphs that contain only a shortcode such as
+ * `[equity-calculator]` or `[market-chart median-price]`, so editors can place
+ * interactive tools anywhere in a page.
+ */
+export function splitShortcodes<T extends PTBlock>(
+  content: T[] | null | undefined,
+): BodySegment<T>[] {
+  const segments: BodySegment<T>[] = [];
+  for (const block of content ?? []) {
+    const match =
+      block._type === "block" && (block.style ?? "normal") === "normal"
+        ? blockText(block).match(SHORTCODE)
+        : null;
+    const last = segments.at(-1);
+    if (match) {
+      segments.push({ kind: "shortcode", name: match[1], arg: match[2] });
+    } else if (last?.kind === "blocks") {
+      last.blocks.push(block);
+    } else {
+      segments.push({ kind: "blocks", blocks: [block] });
+    }
+  }
+  return segments;
+}
+
+/** Public URL for an image field value (local media or external). */
+export function imageUrl(
+  image:
+    { src?: string; meta?: { storageKey?: string } | null } | null | undefined,
+) {
+  if (image?.src) return image.src;
+  const key = image?.meta?.storageKey;
+  return key ? `/_emdash/api/media/file/${key}` : null;
+}
+
+/** Posts in a category including its subcategories (may double-count posts filed in both). */
+export function topicTotal(term: TaxonomyTerm): number {
+  return (
+    (term.count ?? 0) +
+    term.children.reduce((sum, child) => sum + topicTotal(child), 0)
+  );
+}
+
+/** Depth-first search of a category tree by slug. */
+export function findTopic(
+  terms: TaxonomyTerm[],
+  slug: string,
+): TaxonomyTerm | undefined {
+  for (const term of terms) {
+    if (term.slug === slug) return term;
+    const child = findTopic(term.children, slug);
+    if (child) return child;
+  }
+}
+
+/** A category's slug plus all its descendants' slugs, for `where` filters. */
+export function topicSlugs(term: TaxonomyTerm): string[] {
+  return [term.slug, ...term.children.flatMap(topicSlugs)];
+}
+
+/** Busiest-first top-level topics, used when no featured topics are chosen. */
+const BUSIEST_TOPIC_COUNT = 4;
+
+/**
+ * Data for the homepage Learning Center block: the featured topic chips
+ * (homepage `featured_topics`, matched by label or slug) and the articles for
+ * the selected topic (or all articles when none is selected).
+ */
+export async function getHomeArticles(topicSlug?: string) {
+  const [{ home, cacheHint: homeHint }, topicsResult] = await Promise.all([
+    getHomepage(),
+    getTaxonomyTermsWithCacheHint("category"),
+  ]);
+  const tree = topicsResult.data;
+  const flat = (terms: TaxonomyTerm[]): TaxonomyTerm[] =>
+    terms.flatMap((t) => [t, ...flat(t.children)]);
+  const key = (v: string) => v.trim().toLowerCase();
+  const chosen = (home?.data.featured_topics ?? [])
+    .map((name) =>
+      flat(tree).find(
+        (t) => key(t.label) === key(name) || t.slug === key(name),
+      ),
+    )
+    .filter((t): t is TaxonomyTerm => !!t && topicTotal(t) > 0);
+  const topics = chosen.length
+    ? chosen
+    : tree
+        .filter((t) => topicTotal(t) > 0)
+        .toSorted((a, b) => topicTotal(b) - topicTotal(a))
+        .slice(0, BUSIEST_TOPIC_COUNT);
+
+  const topic = topicSlug ? findTopic(tree, topicSlug) : undefined;
+  const { entries, cacheHint } = await getEmDashCollection("posts", {
+    orderBy: { published_at: "desc" },
+    limit: 12,
+    where: topic ? { category: topicSlugs(topic) } : {},
+  });
+  const lead = entries.find((a) => a.data.featured) ?? entries[0];
+  return {
+    topics,
+    topic,
+    lead,
+    more: entries.filter((a) => a !== lead).slice(0, 3),
+    cacheHints: [homeHint, topicsResult.cacheHint, cacheHint],
+  };
 }

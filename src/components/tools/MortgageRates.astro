@@ -1,0 +1,37 @@
+---
+/** Mortgage News Daily rates widget (small on phones, large otherwise). */
+const sizes = [
+  { w: 250, h: 280, query: "t=small&sc=true", class: "sm:hidden" },
+  { w: 650, h: 290, query: "t=large&sn=true", class: "hidden sm:block" },
+];
+---
+
+<div class="tool-frame">
+  {sizes.map((s) => (
+    <div class:list={["mx-auto text-xs", s.class]} style={`width:${s.w}px`}>
+      <a
+        href="https://www.mortgagenewsdaily.com/mortgage-rates"
+        target="_blank"
+        rel="noopener"
+        class="block bg-[#004a60] py-1 text-center text-white"
+      >
+        Mortgage Interest Rates
+      </a>
+      <iframe
+        class="block w-full border-x border-[#004a60]"
+        height={s.h}
+        src={`https://widgets.mortgagenewsdaily.com/widget/f/rates?${s.query}&c=004a60&u=&cbu=&w=${s.w - 2}&h=${s.h}`}
+        title="Today's mortgage rates"
+        loading="lazy"
+      />
+      <a
+        href="https://www.mortgagenewsdaily.com/mortgage-rates"
+        target="_blank"
+        rel="noopener"
+        class="block bg-[#004a60] py-1 text-center text-white"
+      >
+        View more mortgage rates
+      </a>
+    </div>
+  ))}
+</div>

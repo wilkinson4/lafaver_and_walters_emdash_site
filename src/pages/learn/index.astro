@@ -1,22 +1,33 @@
 ---
-import { getEmDashCollection, getTaxonomyTermsWithCacheHint } from "emdash";
+import {
+  getEmDashCollection,
+  getTaxonomyTermsWithCacheHint,
+  getTerm,
+} from "emdash";
 import Base from "../../layouts/Base.astro";
 import ArticleCard from "../../components/ArticleCard.astro";
 import TopicNav from "../../components/TopicNav.astro";
+import { findTopic, topicSlugs } from "../../lib/site";
 
 const topicSlug = Astro.url.searchParams.get("topic") ?? undefined;
+const tagSlug = Astro.url.searchParams.get("tag") ?? undefined;
 const cursor = Astro.url.searchParams.get("cursor") ?? undefined;
 
-const topicsResult = await getTaxonomyTermsWithCacheHint("category");
-const topic = topicSlug
-  ? topicsResult.data.find((t) => t.slug === topicSlug)
-  : undefined;
+const [topicsResult, tag] = await Promise.all([
+  getTaxonomyTermsWithCacheHint("category"),
+  tagSlug ? getTerm("tag", tagSlug, { includeCounts: false }) : null,
+]);
+const topic = topicSlug ? findTopic(topicsResult.data, topicSlug) : undefined;
+const heading = topic ?? tag ?? undefined;
 
 const { entries, nextCursor, cacheHint } = await getEmDashCollection("posts", {
   orderBy: { published_at: "desc" },
   limit: 12,
   cursor,
-  ...(topic ? { where: { category: topic.slug } } : {}),
+  where: {
+    ...(topic ? { category: topicSlugs(topic) } : {}),
+    ...(tag ? { tag: tag.slug } : {}),
+  },
 });
 if (Astro.cache?.enabled) {
   Astro.cache.set(topicsResult.cacheHint);
@@ -24,29 +35,37 @@ if (Astro.cache?.enabled) {
 }
 
 const nextHref = nextCursor
-  ? `/learn?${new URLSearchParams({ ...(topic ? { topic: topic.slug } : {}), cursor: nextCursor })}`
+  ? `/learn?${new URLSearchParams({
+      ...(topic ? { topic: topic.slug } : {}),
+      ...(tag ? { tag: tag.slug } : {}),
+      cursor: nextCursor,
+    })}`
   : null;
 ---
 
 <Base
-  title={topic ? `${topic.label} | Learning Center` : "Learning Center"}
+  title={heading ? `${heading.label} | Learning Center` : "Learning Center"}
   description="Plain-English answers to the questions homeowners ask most about downsizing, selling, and planning their next move."
 >
   <section class="bg-ivory pt-17.5 pb-27.5">
-    <div class="wrap">
+    <div id="learn-results" class="wrap group/swap scroll-mt-32">
       <div class="eyebrow">The Learning Center</div>
       <h1 class="mt-3 mb-4.5 font-serif text-[44px] leading-[1.1] font-medium md:text-[56px]">
-        {topic
-          ? topic.label
+        {heading
+          ? heading.label
           : "Plain-English answers to the questions we hear most."}
       </h1>
       <p class="lead mb-9">
         Free guides and articles for homeowners weighing their next move. No
         jargon, no sales pitch.
       </p>
-      <TopicNav topics={topicsResult.data} active={topic?.slug} />
+      <TopicNav
+        topics={topicsResult.data}
+        active={topic?.slug}
+        swap={{ target: "learn-results", history: true }}
+      />
       {entries.length > 0 ? (
-        <div class="grid gap-7 sm:grid-cols-2 md:grid-cols-3">
+        <div class="grid gap-7 transition-opacity group-aria-busy/swap:opacity-50 sm:grid-cols-2 md:grid-cols-3">
           {entries.map((a) => (
             <ArticleCard article={a} showExcerpt surface="white" />
           ))}
@@ -54,14 +73,25 @@ const nextHref = nextCursor
       ) : (
         <p class="lead">
           No articles in this topic yet.{" "}
-          <a href="/learn" class="underline">
+          <a
+            href="/learn"
+            class="underline"
+            data-swap="learn-results"
+            data-swap-history
+          >
             See all articles →
           </a>
         </p>
       )}
       {nextHref && (
         <div class="mt-12.5 text-center">
-          <a href={nextHref} class="btn btn-black">
+          <a
+            href={nextHref}
+            class="btn btn-black"
+            data-swap="learn-results"
+            data-swap-history
+            data-swap-scroll
+          >
             More articles →
           </a>
         </div>

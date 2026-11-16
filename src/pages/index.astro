@@ -1,17 +1,13 @@
 ---
-import {
-  getEmDashCollection,
-  getTaxonomyTermsWithCacheHint,
-  getSiteSettings,
-} from "emdash";
+import { getEmDashCollection, getSiteSettings } from "emdash";
 import { Image, PortableText } from "emdash/ui";
 import Base from "../layouts/Base.astro";
-import TopicNav from "../components/TopicNav.astro";
+import HomeArticles from "../components/HomeArticles.astro";
 import {
+  getHomeArticles,
   getHomepage,
   getNextWorkshop,
   emphasis,
-  readMinutes,
   telHref,
   workshopParts,
   DEFAULT_TIMEZONE,
@@ -23,35 +19,32 @@ const [
   articlesResult,
   testimonialsResult,
   faqsResult,
-  topicsResult,
   settings,
 ] = await Promise.all([
   getHomepage(),
   getNextWorkshop(),
-  getEmDashCollection("posts", {
-    orderBy: { published_at: "desc" },
-    limit: 12,
-  }),
+  getHomeArticles(Astro.url.searchParams.get("topic") ?? undefined),
   getEmDashCollection("testimonials", {
     orderBy: { sort_order: "asc" },
-    limit: 3,
+    limit: 12,
   }),
   getEmDashCollection("faqs", { orderBy: { sort_order: "asc" }, limit: 12 }),
-  getTaxonomyTermsWithCacheHint("category"),
   getSiteSettings(),
 ]);
 if (Astro.cache?.enabled) {
   for (const r of [
     homeResult,
     workshopResult,
-    articlesResult,
     testimonialsResult,
     faqsResult,
-    topicsResult,
   ]) {
     Astro.cache.set(r.cacheHint);
   }
+  for (const hint of articlesResult.cacheHints) Astro.cache.set(hint);
 }
+
+const siteTitle = settings?.title || "LaFaver & Walters Realty";
+const GOOGLE_REVIEWS_URL = "https://g.page/r/CeKZRZ4oOx6qEBM/";
 
 const entry = homeResult.home;
 if (!entry) {
@@ -65,11 +58,7 @@ const edit = entry.edit;
 const timezone =
   (settings as { timezone?: string } | undefined)?.timezone || DEFAULT_TIMEZONE;
 
-const articles = articlesResult.entries;
-const featured = articles.find((a) => a.data.featured) ?? articles[0];
-const moreArticles = articles.filter((a) => a !== featured).slice(0, 3);
-const topicOf = (a: (typeof articles)[number]) =>
-  a.data.terms?.category?.[0]?.label;
+const { cacheHints: _, ...learn } = articlesResult;
 
 const workshop = workshopResult.workshop;
 const w = workshop
@@ -87,11 +76,7 @@ const finalBg =
 ---
 
 <Base
-  title={
-    home.hero_eyebrow
-      ? `Randyl Homes Group | ${home.hero_eyebrow}`
-      : "Randyl Homes Group"
-  }
+  title={home.hero_eyebrow ? `${siteTitle} | ${home.hero_eyebrow}` : siteTitle}
 >
   <header class="grid min-h-[700px] md:grid-cols-[1.05fr_1fr]">
     <div class="flex flex-col justify-center px-5 py-12.5 sm:px-10 sm:py-17.5 md:py-22.5 md:pr-17.5 md:pl-[max(40px,calc((100vw_-_1280px)/2_+_40px))]">
@@ -221,7 +206,7 @@ const finalBg =
             {home.guide_card_text}
           </p>
           <div class="absolute right-9.5 bottom-9.5 left-9.5 border-t border-white/40 pt-3.5 text-[13px] tracking-[2px] uppercase">
-            Randyl Homes · Keller Williams
+            {siteTitle}
           </div>
         </div>
       </div>
@@ -246,7 +231,7 @@ const finalBg =
             </li>
           ))}
         </ul>
-        <form class="grid gap-3 sm:grid-cols-[1fr_1fr_auto]" data-lead>
+        <form class="grid gap-3 sm:grid-cols-[1fr_1fr_auto]" data-lead="guide">
           <div>
             <label for="g-name" class="field-label">
               First name
@@ -293,77 +278,19 @@ const finalBg =
           Browse All Articles →
         </a>
       </div>
-      <TopicNav topics={topicsResult.data} />
-      {featured ? (
-        <div class="grid gap-10 md:grid-cols-[1.25fr_1fr]">
-          <a href={`/learn/${featured.id}`} class="flex flex-col bg-white">
-            <div class="cover h-85 bg-[#ddd]">
-              {featured.data.featured_image && (
-                <Image image={featured.data.featured_image} />
-              )}
-            </div>
-            <div class="p-9">
-              {topicOf(featured) && (
-                <div class="text-sm font-bold tracking-[2px] text-brand uppercase">
-                  {topicOf(featured)}
-                </div>
-              )}
-              <h3 class="mt-2.5 mb-3.5 font-serif text-[34px] leading-[1.2] font-medium">
-                {featured.data.title}
-              </h3>
-              <p class="mb-5 text-muted">{featured.data.excerpt}</p>
-              <div class="flex gap-4.5 text-[15px] text-[#666]">
-                <span>{readMinutes(featured.data.content)} min read</span>
-                <span>·</span>
-                <span class="border-b-2 border-brand pb-0.5 font-semibold text-ink">
-                  Read the article
-                </span>
-              </div>
-            </div>
-          </a>
-          <div class="flex flex-col gap-5">
-            {moreArticles.map((a) => (
-              <a
-                href={`/learn/${a.id}`}
-                class="grid grid-cols-[100px_1fr] gap-5.5 bg-white p-4 transition duration-200 hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] sm:grid-cols-[150px_1fr]"
-              >
-                <div class="cover min-h-32.5 bg-[#ddd]">
-                  {a.data.featured_image && (
-                    <Image image={a.data.featured_image} />
-                  )}
-                </div>
-                <div>
-                  {topicOf(a) && (
-                    <div class="text-sm font-bold tracking-[2px] text-brand uppercase">
-                      {topicOf(a)}
-                    </div>
-                  )}
-                  <h4 class="mt-1.5 mb-2 font-serif text-[22px] leading-[1.3] font-medium">
-                    {a.data.title}
-                  </h4>
-                  <div class="text-[15px] text-[#666]">
-                    {readMinutes(a.data.content)} min read
-                  </div>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div class="bg-white p-10">No articles published yet.</div>
-      )}
+      <HomeArticles {...learn} />
     </div>
   </section>
 
   {(home.stats ?? []).length > 0 && (
-    <div class="border-y border-line py-20">
+    <div class="border-y border-line py-14 sm:py-20">
       <div
-        class="wrap grid gap-7.5 sm:grid-cols-2 sm:gap-0 md:grid-cols-4"
+        class="wrap flex flex-col divide-y divide-line text-center sm:flex-row sm:divide-x sm:divide-y-0"
         {...edit.stats}
       >
         {(home.stats ?? []).map((s) => (
-          <div class="border-l-2 border-brand px-7.5">
-            <b class="block font-serif text-[52px] leading-[1.1] font-medium">
+          <div class="flex-1 px-5 py-6 sm:py-0">
+            <b class="block font-serif text-[44px] leading-[1.1] font-medium text-brand md:text-[52px]">
               {s.value}
             </b>
             <p class="mt-1.5 text-[17px] text-muted">{s.label}</p>
@@ -477,21 +404,25 @@ const finalBg =
             {home.reviews_heading}
           </h2>
         </div>
-        <div class="grid gap-7 md:grid-cols-3">
+        <div class="gap-7 md:columns-2 lg:columns-3">
           {testimonialsResult.entries.map((t) => (
-            <div class="flex flex-col border-t-3 border-brand bg-white px-9 py-10 shadow-[0_8px_30px_rgba(0,0,0,0.05)]">
+            <div class="mb-7 flex break-inside-avoid flex-col border-t-3 border-brand bg-white px-8 py-9 shadow-[0_8px_30px_rgba(0,0,0,0.05)]">
               <span class="tracking-[2px] text-star" aria-label="5 stars">
                 ★★★★★
               </span>
               <blockquote
-                class="mt-4.5 mb-7.5 flex-1 font-serif text-[22px] leading-[1.55] italic"
+                class="mt-4.5 mb-7 font-serif text-[19px] leading-[1.6] italic"
                 {...t.edit.quote}
               >
                 "{t.data.quote}"
               </blockquote>
               <div class="flex items-center gap-4">
-                <div class="cover size-15 flex-none rounded-full bg-[#ddd]">
-                  {t.data.photo && <Image image={t.data.photo} alt="" />}
+                <div class="cover grid size-13 flex-none place-items-center rounded-full bg-brand font-serif text-xl text-white">
+                  {t.data.photo ? (
+                    <Image image={t.data.photo} alt="" />
+                  ) : (
+                    <span aria-hidden="true">{t.data.name?.charAt(0)}</span>
+                  )}
                 </div>
                 <div>
                   <b class="block text-lg" {...t.edit.name}>
@@ -505,13 +436,23 @@ const finalBg =
             </div>
           ))}
         </div>
+        <div class="mt-6 text-center">
+          <a
+            href={GOOGLE_REVIEWS_URL}
+            target="_blank"
+            rel="noopener"
+            class="btn btn-line"
+          >
+            Read More Reviews on Google
+          </a>
+        </div>
       </div>
     </section>
   )}
 
-  <div class="grid md:grid-cols-2" id="about">
+  <div class="grid md:grid-cols-[2fr_3fr]" id="about">
     <div
-      class="cover min-h-[420px] bg-[#ccc] grayscale md:min-h-[600px] [&_img]:object-[center_20%]"
+      class="cover aspect-square bg-[#ccc] grayscale md:aspect-auto md:min-h-[40vw] [&_img]:object-[center_20%]"
       {...edit.about_photo}
     >
       {home.about_photo && <Image image={home.about_photo} />}
@@ -600,7 +541,7 @@ const finalBg =
       </div>
       <form
         class="border-t-4 border-brand bg-white p-7.5 shadow-[0_24px_60px_rgba(0,0,0,0.1)] sm:p-11.5"
-        data-lead
+        data-lead="contact"
       >
         <h3 class="mb-1.5 font-serif text-[32px] font-medium">
           Request a Free Consultation
@@ -640,11 +581,23 @@ const finalBg =
             <option>Just exploring my options</option>
           </select>
         </div>
-        <fieldset>
+        <div class="mb-4">
+          <label for="c-message" class="field-label">
+            Anything we should know? (optional)
+          </label>
+          <textarea
+            id="c-message"
+            name="message"
+            rows="3"
+            maxlength="4000"
+            class="field-input"
+          ></textarea>
+        </div>
+        <fieldset class="min-w-0">
           <legend class="text-[15px] font-semibold">
             Best way to reach me
           </legend>
-          <div class="mt-1.5 mb-6 flex gap-5.5 text-[17px]">
+          <div class="mt-1.5 mb-6 flex flex-wrap gap-x-5.5 gap-y-2 text-[17px]">
             {[
               ["phone", "Phone call"],
               ["text", "Text"],
@@ -663,10 +616,36 @@ const finalBg =
             ))}
           </div>
         </fieldset>
-        <button class="btn btn-red w-full justify-center">
+        <button class="btn btn-red w-full justify-center text-center whitespace-normal">
           Request My Free Consultation
         </button>
       </form>
     </div>
   </section>
+
+  <script>
+    // `/#sellers`, `/#buyers` (any featured topic slug) scroll to the Learning
+    // Center and select that topic, e.g. from the Sellers/Buyers menu links.
+    const selectTopicFromHash = () => {
+      const slug = decodeURIComponent(location.hash.slice(1));
+      if (!/^[a-z0-9-]+$/.test(slug)) return;
+      const chip = document.querySelector<HTMLAnchorElement>(
+        `#home-articles a[data-topic="${slug}"]`,
+      );
+      if (!chip) return;
+      document.getElementById("learn")?.scrollIntoView();
+      if (chip.getAttribute("aria-current") !== "true") chip.click();
+    };
+    // Wait until every module script (incl. the swap handler in Base.astro)
+    // has registered its listeners, so the chip click updates in place.
+    addEventListener("DOMContentLoaded", selectTopicFromHash);
+    addEventListener("hashchange", selectTopicFromHash);
+    // Re-clicking a link to the current hash doesn't fire hashchange.
+    document.addEventListener("click", (event) => {
+      const link = (event.target as Element).closest<HTMLAnchorElement>(
+        'a[href^="/#"]',
+      );
+      if (link && link.hash === location.hash) selectTopicFromHash();
+    });
+  </script>
 </Base>

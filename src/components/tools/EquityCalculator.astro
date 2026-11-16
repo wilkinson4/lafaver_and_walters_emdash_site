@@ -1,0 +1,209 @@
+---
+/**
+ * Home equity estimate from local median-price appreciation, ported from the
+ * WordPress equity calculator.
+ */
+import { FIRST_YEAR, LAST_YEAR, MEDIAN_PRICES } from "../../lib/median-prices";
+
+const districts = Object.keys(MEDIAN_PRICES);
+const years = Array.from(
+  { length: LAST_YEAR - FIRST_YEAR + 1 },
+  (_, i) => FIRST_YEAR + i,
+);
+const input = "field-input mt-1.5 font-normal";
+const hint = "mt-1.5 text-sm font-normal text-muted";
+---
+
+<form
+  class="tool-card"
+  data-equity-calc
+  data-prices={JSON.stringify(MEDIAN_PRICES)}
+  data-first-year={FIRST_YEAR}
+  data-last-year={LAST_YEAR}
+  aria-labelledby="equity-title"
+>
+  <h3 id="equity-title" class="tool-title">
+    Home Equity Estimator
+  </h3>
+  <div class="grid gap-4.5 sm:grid-cols-2">
+    <label class="field-label">
+      School district
+      <select name="district" required class={input}>
+        <option value="">Select district</option>
+        {districts.map((d) => (
+          <option>{d}</option>
+        ))}
+      </select>
+    </label>
+    <label class="field-label">
+      Purchase year
+      <select name="year" required class={input}>
+        <option value="">Select year</option>
+        {years.map((y) => (
+          <option>{y}</option>
+        ))}
+      </select>
+    </label>
+    <label class="field-label sm:col-span-2">
+      Purchase price ($)
+      <input
+        name="purchasePrice"
+        type="number"
+        min="1"
+        required
+        inputmode="numeric"
+        class={input}
+      />
+    </label>
+    <label class="field-label">
+      Original mortgage amount ($, if financed)
+      <input
+        name="mortgage"
+        type="number"
+        min="0"
+        inputmode="numeric"
+        class={input}
+      />
+    </label>
+    <label class="field-label">
+      Original interest rate (%)
+      <input
+        name="rate"
+        type="number"
+        min="0"
+        max="20"
+        step="0.01"
+        inputmode="decimal"
+        class={input}
+      />
+    </label>
+    <label class="field-label sm:col-span-2">
+      Current loan payoff (optional)
+      <input
+        name="payoff"
+        type="number"
+        min="0"
+        inputmode="numeric"
+        class={input}
+      />
+      <span class:list={[hint, "block"]}>
+        Enter your current payoff, or your original mortgage amount and interest
+        rate. If you enter a payoff (including $0 for a paid-off home), the
+        mortgage amount and rate are ignored.
+      </span>
+    </label>
+  </div>
+  <div class="mt-6 flex flex-wrap gap-3">
+    <button class="btn btn-red px-7 py-4">Calculate Equity</button>
+    <button type="reset" class="btn btn-line px-7 py-4">
+      Reset
+    </button>
+  </div>
+  <p data-error role="alert" class="mt-4 font-semibold text-brand"></p>
+  <div
+    data-results
+    hidden
+    class="mt-2 border-t border-line pt-5"
+    aria-live="polite"
+  >
+    <dl class="grid gap-x-6 gap-y-1 text-lg sm:grid-cols-[auto_1fr]">
+      <dt class="text-muted">Estimated home value</dt>
+      <dd data-value class="font-semibold"></dd>
+      <dt class="text-muted">Estimated remaining loan balance</dt>
+      <dd data-balance class="font-semibold"></dd>
+    </dl>
+    <div class="mt-4 text-[15px] font-semibold tracking-[2px] text-muted uppercase">
+      Estimated equity
+    </div>
+    <div data-equity class="font-serif text-[40px] text-brand"></div>
+    <p class:list={[hint, "text-[15px]"]}>
+      This is an estimate based on local MLS median prices. For a detailed
+      pricing strategy and a custom plan, <a href="/#contact">contact us</a>.
+    </p>
+  </div>
+</form>
+
+<script>
+  const money = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
+
+  for (const form of document.querySelectorAll<HTMLFormElement>(
+    "form[data-equity-calc]",
+  )) {
+    const prices: Record<string, number[]> = JSON.parse(form.dataset.prices!);
+    const firstYear = Number(form.dataset.firstYear);
+    const lastYear = Number(form.dataset.lastYear);
+    const error = form.querySelector<HTMLElement>("[data-error]")!;
+    const results = form.querySelector<HTMLElement>("[data-results]")!;
+    const out = (name: string) =>
+      form.querySelector<HTMLElement>(`[data-${name}]`)!;
+    const num = (name: string) => {
+      const v = (form.elements.namedItem(name) as HTMLInputElement).value;
+      return v === "" ? NaN : Number(v);
+    };
+    const fail = (msg: string) => {
+      error.textContent = msg;
+      results.hidden = true;
+    };
+
+    form.addEventListener("reset", () => {
+      error.textContent = "";
+      results.hidden = true;
+    });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const district = (
+        form.elements.namedItem("district") as HTMLSelectElement
+      ).value;
+      const year = num("year");
+      const price = num("purchasePrice");
+      const mortgage = num("mortgage");
+      const rate = num("rate");
+      const payoff = num("payoff");
+      const hasPayoff = payoff >= 0;
+      const hasMortgage = mortgage > 0;
+      const hasRate = rate > 0;
+
+      const series = prices[district];
+      if (!series) return fail("Please select a school district.");
+      if (!(year >= firstYear && year <= lastYear))
+        return fail(
+          `Select a purchase year between ${firstYear} and ${lastYear}.`,
+        );
+      if (!(price > 0))
+        return fail("Enter a valid purchase price greater than zero.");
+      if (hasRate && rate > 20)
+        return fail("Please enter an interest rate of 20% or less.");
+      if (!hasPayoff && hasMortgage && !hasRate)
+        return fail(
+          "Enter an interest rate to estimate your remaining balance, or enter your current payoff instead.",
+        );
+
+      const value =
+        price * (series[lastYear - firstYear] / series[year - firstYear]);
+      let balance = 0;
+      if (hasPayoff) {
+        balance = payoff;
+      } else if (hasMortgage) {
+        // Remaining balance on a 30-year fixed loan after the elapsed months.
+        const months = (lastYear - year) * 12;
+        const r = rate / 100 / 12;
+        const n = 360;
+        const growth = Math.pow(1 + r, months);
+        const payment =
+          (mortgage * (r * Math.pow(1 + r, n))) / (Math.pow(1 + r, n) - 1);
+        balance = Math.max(0, mortgage * growth - payment * ((growth - 1) / r));
+      }
+      const equity = value - balance;
+      if (!Number.isFinite(equity))
+        return fail(
+          "Something went wrong with the calculation. Please double-check your inputs or contact us.",
+        );
+
+      error.textContent = "";
+      out("value").textContent = money(value);
+      out("balance").textContent = money(balance);
+      out("equity").textContent = money(equity);
+      results.hidden = false;
+    });
+  }
+</script>

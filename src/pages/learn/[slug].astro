@@ -73,7 +73,8 @@ const related = recent.entries
 
 const seo = getSeoMeta(article, {
   siteTitle:
-    (settings as { title?: string } | undefined)?.title ?? "Randyl Homes Group",
+    (settings as { title?: string } | undefined)?.title ??
+    "LaFaver & Walters Realty",
   siteUrl: Astro.url.origin,
   path: `/learn/${slug}`,
 });
@@ -218,7 +219,7 @@ const avatar = "cover rounded-full bg-[#ddd] grayscale";
             <p class="mb-4.5 text-[17px] leading-[1.6] text-muted">
               {home?.guide_card_text}
             </p>
-            <form data-lead>
+            <form data-lead="guide">
               <div class="flex flex-col gap-2.5 sm:flex-row">
                 <input
                   type="email"
@@ -282,7 +283,7 @@ const avatar = "cover rounded-full bg-[#ddd] grayscale";
           )}
           <form
             class="border-t-4 border-brand bg-white p-8 shadow-[0_10px_30px_rgba(0,0,0,0.06)]"
-            data-lead
+            data-lead="home-value"
           >
             <div class="eyebrow">Free · No Obligation</div>
             <h2 class="mt-2 mb-2.5 font-serif text-[26px] leading-[1.25] font-medium">

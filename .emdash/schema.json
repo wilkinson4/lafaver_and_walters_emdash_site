@@ -226,6 +226,24 @@
           "unique": false
         },
         {
+          "slug": "featured_topics",
+          "label": "Learning Center · Featured topics (filters shown on the homepage; leave empty to show the busiest topics)",
+          "type": "multiSelect",
+          "required": false,
+          "unique": false,
+          "validation": {
+            "options": [
+              "Sellers",
+              "Buyers",
+              "Right-Sizing Your Life",
+              "Local Living",
+              "Hiring an Agent",
+              "Market Reports",
+              "General Real Estate"
+            ]
+          }
+        },
+        {
           "slug": "stats",
           "label": "Stats",
           "type": "repeater",
@@ -685,7 +703,76 @@
           "unique": false
         }
       ]
+    },
+    {
+      "slug": "team",
+      "label": "Team",
+      "labelSingular": "Team member",
+      "icon": "users",
+      "supports": [
+        "drafts"
+      ],
+      "hidden": false,
+      "fields": [
+        {
+          "slug": "name",
+          "label": "Name",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "role",
+          "label": "Role",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "credentials",
+          "label": "Credentials / specialty",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "tagline",
+          "label": "Tagline",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "photo",
+          "label": "Headshot",
+          "type": "image",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "bio",
+          "label": "Bio",
+          "type": "portableText",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "email",
+          "label": "Email",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "sort_order",
+          "label": "Display order",
+          "type": "integer",
+          "required": false,
+          "unique": false,
+          "defaultValue": 10
+        }
+      ]
     }
   ],
-  "version": "9e0183b212cfb49b"
+  "version": "95b33e2594a86f43"
 }

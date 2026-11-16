@@ -1,0 +1,66 @@
+---
+/** Team members from the `team` collection, in display order. */
+import { getEmDashCollection } from "emdash";
+import { Image, PortableText } from "emdash/ui";
+
+const { entries, cacheHint } = await getEmDashCollection("team", {
+  orderBy: { sort_order: "asc" },
+  limit: 50,
+});
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+---
+
+{entries.length > 0 && (
+  <div class="tool-wide grid gap-x-7 gap-y-10 sm:grid-cols-2">
+    {entries.map((member) => {
+      const m = member.data;
+      return (
+        <article class="flex flex-col bg-white">
+          <div class="cover aspect-4/5 bg-[#ddd]" {...member.edit.photo}>
+            {m.photo && <Image image={m.photo} alt={m.photo.alt || m.name} />}
+          </div>
+          <div class="flex flex-1 flex-col p-7">
+            <h3
+              class="font-serif text-[28px] leading-tight font-medium"
+              {...member.edit.name}
+            >
+              {m.name}
+            </h3>
+            <p class="mt-1 text-base font-semibold text-brand">
+              {m.role}
+              {m.credentials && (
+                <span class="block font-normal text-muted">
+                  {m.credentials}
+                </span>
+              )}
+            </p>
+            {m.tagline && (
+              <p class="mt-3 font-serif text-lg italic">“{m.tagline}”</p>
+            )}
+            {m.bio?.length ? (
+              <details class="group mt-4 text-[17px] leading-[1.7] text-[#444]">
+                <summary class="cursor-pointer font-semibold text-ink marker:text-brand">
+                  <span class="group-open:hidden">
+                    Read {m.name.split(" ")[0]}’s bio
+                  </span>
+                  <span class="hidden group-open:inline">Hide bio</span>
+                </summary>
+                <div class="mt-3 [&_p]:mb-3">
+                  <PortableText value={m.bio} />
+                </div>
+              </details>
+            ) : null}
+            {m.email && (
+              <a
+                href={`mailto:${m.email}`}
+                class="mt-auto pt-4 text-base text-muted underline underline-offset-3"
+              >
+                {m.email}
+              </a>
+            )}
+          </div>
+        </article>
+      );
+    })}
+  </div>
+)}

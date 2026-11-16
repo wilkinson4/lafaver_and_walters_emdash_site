@@ -1,0 +1,162 @@
+---
+import { decodeSlug, getEmDashEntry, getSeoMeta } from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../layouts/Base.astro";
+import ArticleEmbed from "../components/ArticleEmbed.astro";
+import ArticleHtmlBlock from "../components/ArticleHtmlBlock.astro";
+import TeamGrid from "../components/TeamGrid.astro";
+import CostCalculator from "../components/tools/CostCalculator.astro";
+import EquityCalculator from "../components/tools/EquityCalculator.astro";
+import MarketChart from "../components/tools/MarketChart.astro";
+import MortgageCalculator from "../components/tools/MortgageCalculator.astro";
+import MortgageRates from "../components/tools/MortgageRates.astro";
+import {
+  blockText,
+  getHomepage,
+  imageUrl,
+  splitShortcodes,
+  telHref,
+} from "../lib/site";
+
+const slug = decodeSlug(Astro.params.slug);
+if (!slug) return Astro.rewrite("/404");
+
+const [{ entry: page, cacheHint }, homeResult] = await Promise.all([
+  getEmDashEntry("pages", slug),
+  getHomepage(),
+]);
+if (!page) return Astro.rewrite("/404");
+if (Astro.cache?.enabled) {
+  Astro.cache.set(cacheHint);
+  Astro.cache.set(homeResult.cacheHint);
+}
+
+const home = homeResult.home?.data;
+const data = page.data;
+const content = data.content ?? [];
+// Imported pages often open with their own photo; don't repeat the featured image.
+const opensWithImage = content
+  .slice(0, 4)
+  .some((b: { _type?: string }) => b._type === "image");
+const hero = !opensWithImage ? data.featured_image : null;
+const firstParagraph = content
+  .filter(
+    (b: { _type?: string; style?: string }) =>
+      b._type === "block" && (b.style ?? "normal") === "normal",
+  )
+  .map(blockText)
+  .find((t: string) => t.trim().length > 60);
+// SEO panel first, then fields imported from WordPress, then the page itself.
+const seo = getSeoMeta(page, {
+  defaultTitle: data.seo_title || undefined,
+  defaultDescription:
+    data.seo_description ||
+    data.excerpt ||
+    (firstParagraph ? firstParagraph.trim().slice(0, 160) : undefined),
+  defaultOgImage: imageUrl(data.featured_image) ?? undefined,
+  siteUrl: Astro.url.origin,
+  path: `/${slug}`,
+});
+const segments = splitShortcodes(content);
+const components = {
+  type: { embed: ArticleEmbed, htmlBlock: ArticleHtmlBlock },
+};
+---
+
+<Base
+  title={seo.title}
+  pageTitle={seo.ogTitle}
+  description={seo.description}
+  canonical={seo.canonical}
+  image={seo.ogImage}
+  content={{ collection: "pages", id: data.id, slug }}
+>
+  <header class="bg-ivory pt-17.5 pb-12.5">
+    <div class="wrap">
+      <div class="mb-6.5 text-[15px] text-muted [&_a]:underline [&_a]:underline-offset-3">
+        <a href="/">Home</a> › {data.title}
+      </div>
+      <h1
+        class="max-w-240 font-serif text-[40px] leading-[1.1] font-medium md:text-[56px]"
+        {...page.edit.title}
+      >
+        {data.title}
+      </h1>
+      {data.excerpt && (
+        <p class="lead mt-5 max-w-205 text-[21px]" {...page.edit.excerpt}>
+          {data.excerpt}
+        </p>
+      )}
+    </div>
+  </header>
+
+  {hero && (
+    <div class="bg-ivory">
+      <div class="wrap">
+        <div
+          class="cover relative z-1 -mb-25 h-60 bg-[#ddd] sm:h-105"
+          {...page.edit.featured_image}
+        >
+          <Image image={hero} priority />
+        </div>
+      </div>
+    </div>
+  )}
+
+  <div class:list={["wrap pb-25", hero ? "pt-37.5" : "pt-15"]}>
+    <div class="page-body mx-auto">
+      {segments.map((segment) =>
+        segment.kind === "blocks" ? (
+          <div class="article-body max-w-none">
+            <PortableText value={segment.blocks} components={components} />
+          </div>
+        ) : segment.name === "team" ? (
+          <TeamGrid />
+        ) : segment.name === "closing-cost-calculator" ? (
+          <CostCalculator />
+        ) : segment.name === "equity-calculator" ? (
+          <EquityCalculator />
+        ) : segment.name === "mortgage-calculator" ? (
+          <MortgageCalculator />
+        ) : segment.name === "mortgage-rates" ? (
+          <MortgageRates />
+        ) : segment.name === "market-chart" && segment.arg ? (
+          <MarketChart chart={segment.arg} />
+        ) : null,
+      )}
+    </div>
+  </div>
+
+  <section class="bg-black py-20 text-white print:hidden">
+    <div class="wrap flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+      <div>
+        <div class="eyebrow text-brand-light">Free · No Pressure</div>
+        <h2 class="mt-2 font-serif text-[34px] leading-tight font-medium sm:text-[42px]">
+          Let’s talk about your next move.
+        </h2>
+      </div>
+      <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+        {/* PA advertising rules: the office number must match the agent's in size. */}
+        {home?.phone && (
+          <a href={telHref(home.phone)} class="text-xl font-bold">
+            <small class="block text-[13px] font-normal text-muted-dark">
+              Cell / text
+            </small>
+            {home.phone}
+          </a>
+        )}
+        {home?.office_phone && (
+          <a href={telHref(home.office_phone)} class="text-xl font-bold">
+            <small class="block text-[13px] font-normal text-muted-dark">
+              Office
+            </small>
+            {home.office_phone}
+          </a>
+        )}
+        <a href="/#contact" class="btn btn-red">
+          Free Consultation
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

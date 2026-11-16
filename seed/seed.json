@@ -2,14 +2,17 @@
   "$schema": "https://emdashcms.com/seed.schema.json",
   "version": "1",
   "meta": {
-    "name": "Randyl Homes Group",
-    "description": "Real estate guidance site for homeowners 40+: learning center, workshops, and lead capture.",
-    "author": "Randyl Homes Group"
+    "name": "LaFaver & Walters Realty",
+    "description": "Real estate guidance site for LaFaver & Walters Realty (Keller Williams): learning center, tools, team, and lead capture.",
+    "author": "LaFaver & Walters Realty"
   },
   "settings": {
-    "title": "Randyl Homes Group",
+    "title": "LaFaver & Walters Realty",
     "tagline": "Real estate guidance for your next chapter",
-    "timezone": "America/Chicago"
+    "timezone": "America/New_York",
+    "social": {
+      "facebook": "https://www.facebook.com/TheRandylWaltersTeam"
+    }
   },
   "collections": [
     {
@@ -244,6 +247,22 @@
           "slug": "learn_heading",
           "label": "Learning Center · Heading",
           "type": "string"
+        },
+        {
+          "slug": "featured_topics",
+          "label": "Learning Center · Featured topics (filters shown on the homepage; leave empty to show the busiest topics)",
+          "type": "multiSelect",
+          "validation": {
+            "options": [
+              "Sellers",
+              "Buyers",
+              "Right-Sizing Your Life",
+              "Local Living",
+              "Hiring an Agent",
+              "Market Reports",
+              "General Real Estate"
+            ]
+          }
         },
         {
           "slug": "stats",
@@ -542,6 +561,65 @@
           "defaultValue": 10
         }
       ]
+    },
+    {
+      "slug": "team",
+      "label": "Team",
+      "labelSingular": "Team member",
+      "icon": "users",
+      "sortOrder": 5,
+      "routable": false,
+      "titleField": "name",
+      "admin": {
+        "listColumns": ["role", "sort_order"]
+      },
+      "supports": ["drafts"],
+      "fields": [
+        {
+          "slug": "name",
+          "label": "Name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "role",
+          "label": "Role",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "credentials",
+          "label": "Credentials / specialty",
+          "type": "string"
+        },
+        {
+          "slug": "tagline",
+          "label": "Tagline",
+          "type": "string"
+        },
+        {
+          "slug": "photo",
+          "label": "Headshot",
+          "type": "image"
+        },
+        {
+          "slug": "bio",
+          "label": "Bio",
+          "type": "portableText"
+        },
+        {
+          "slug": "email",
+          "label": "Email",
+          "type": "string"
+        },
+        {
+          "slug": "sort_order",
+          "label": "Display order",
+          "type": "integer",
+          "indexed": true,
+          "defaultValue": 10
+        }
+      ]
     }
   ],
   "taxonomies": [
@@ -575,23 +653,72 @@
       "items": [
         {
           "type": "custom",
+          "label": "Sellers",
+          "url": "/#sellers"
+        },
+        {
+          "type": "custom",
+          "label": "Buyers",
+          "url": "/#buyers"
+        },
+        {
+          "type": "custom",
+          "label": "Pricing",
+          "url": "#",
+          "children": [
+            {
+              "type": "custom",
+              "label": "Pricing & Fees",
+              "url": "/pricing"
+            },
+            {
+              "type": "custom",
+              "label": "Closing Costs Explained (PA)",
+              "url": "/closing-costs-explained-pennsylvania"
+            },
+            {
+              "type": "custom",
+              "label": "A Line-by-Line Look at Closing Costs",
+              "url": "/a-line-by-line-look-at-closing-costs-in-pennsylvania"
+            },
+            {
+              "type": "custom",
+              "label": "Costs to Budget For Beyond Closing",
+              "url": "/costs-to-budget-for-beyond-closing"
+            }
+          ]
+        },
+        {
+          "type": "custom",
+          "label": "Tools",
+          "url": "#",
+          "children": [
+            {
+              "type": "custom",
+              "label": "Mortgage Calculator",
+              "url": "/mortgage-calculator"
+            },
+            {
+              "type": "custom",
+              "label": "Equity Calculator",
+              "url": "/equity-calculator"
+            },
+            {
+              "type": "custom",
+              "label": "Market Report",
+              "url": "/market-report"
+            }
+          ]
+        },
+        {
+          "type": "custom",
           "label": "Learning Center",
           "url": "/learn"
         },
         {
           "type": "custom",
-          "label": "Workshops",
-          "url": "/#workshop"
-        },
-        {
-          "type": "custom",
-          "label": "Selling & Buying",
-          "url": "/#paths"
-        },
-        {
-          "type": "custom",
           "label": "About",
-          "url": "/#about"
+          "url": "/about"
         }
       ]
     },
@@ -606,13 +733,18 @@
         },
         {
           "type": "custom",
-          "label": "Free Guides",
-          "url": "/#guide"
+          "label": "Right-Size Roadmap",
+          "url": "/right-size-roadmap"
         },
         {
           "type": "custom",
-          "label": "Workshops",
-          "url": "/#workshop"
+          "label": "Market Report",
+          "url": "/market-report"
+        },
+        {
+          "type": "custom",
+          "label": "Free Guide",
+          "url": "/#guide"
         },
         {
           "type": "custom",
@@ -628,7 +760,12 @@
         {
           "type": "custom",
           "label": "Selling",
-          "url": "/learn?topic=the-selling-process"
+          "url": "/#sellers"
+        },
+        {
+          "type": "custom",
+          "label": "Buying",
+          "url": "/#buyers"
         },
         {
           "type": "custom",
@@ -637,13 +774,13 @@
         },
         {
           "type": "custom",
-          "label": "Inherited Homes",
-          "url": "/#paths"
+          "label": "Pricing & Fees",
+          "url": "/pricing"
         },
         {
           "type": "custom",
-          "label": "Buying",
-          "url": "/#paths"
+          "label": "Our Team",
+          "url": "/about"
         }
       ]
     }
@@ -656,10 +793,10 @@
         "data": {
           "title": "Homepage",
           "phone": "(610) 703-8137",
-          "email": "hello@randylhomes.com",
-          "address": "123 Main St, Austin, TX",
-          "hours": "Mon–Sat, 8am–7pm",
-          "brokerage": "Keller Williams Realty",
+          "email": "lafaverandwalters@gmail.com",
+          "address": "259 Veterans Lane, Doylestown, PA 18901",
+          "hours": "",
+          "brokerage": "Keller Williams Real Estate",
           "hero_eyebrow": "Real estate guidance for your next chapter",
           "hero_headline": "Make your next move with *clarity*, not pressure.",
           "hero_intro": "Whether you're downsizing, selling a family home, or planning for retirement, get straightforward answers from a local expert, before you ever have to make a decision.",
@@ -693,7 +830,7 @@
               "title": "Selling a family or inherited home",
               "description": "Probate, sentimental belongings, siblings, and repairs. We'll walk you through it.",
               "link_label": "See the step-by-step",
-              "link_url": "/learn?topic=the-selling-process"
+              "link_url": "/#sellers"
             },
             {
               "title": "Planning for retirement",
@@ -705,7 +842,7 @@
               "title": "Buying your next home",
               "description": "Single-level living, low maintenance, the right location. Buy smart the second time around.",
               "link_label": "Buyer's roadmap",
-              "link_url": "/#contact"
+              "link_url": "/#buyers"
             }
           ],
           "guide_title": "The Rightsizing Playbook",
@@ -730,21 +867,23 @@
             }
           ],
           "learn_heading": "Plain-English answers to the questions we hear most.",
+          "featured_topics": [
+            "Sellers",
+            "Right-Sizing Your Life",
+            "Local Living",
+            "Buyers"
+          ],
           "stats": [
             {
-              "value": "850+",
-              "label": "Families helped through a move"
+              "value": "24+",
+              "label": "Years in business"
             },
             {
-              "value": "20 yrs",
-              "label": "Serving our community"
+              "value": "#1",
+              "label": "Brokerage in the world"
             },
             {
-              "value": "140+",
-              "label": "Free articles & guides"
-            },
-            {
-              "value": "4.9 ★",
+              "value": "5.0 ★",
               "label": "Average client rating"
             }
           ],
@@ -784,9 +923,9 @@
           ],
           "about_photo": {
             "$media": {
-              "url": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=1000&q=80",
-              "filename": "randyl.jpg",
-              "alt": "Portrait of Randyl"
+              "url": "https://comehometopa.com/wp-content/uploads/2026/06/9a2dd0f1-4e6a-4494-a20a-9cea7c1e807f-e1780317344397.jpg",
+              "filename": "9a2dd0f1-4e6a-4494-a20a-9cea7c1e807f-e1780317344397.jpg",
+              "alt": "Randyl Walters"
             }
           },
           "faq_heading": "Good questions deserve straight answers.",
@@ -811,85 +950,99 @@
           "disclaimer": "Content is educational and not legal, tax, or financial advice.",
           "office_phone": "(215) 340-5700",
           "broker_license": "RB062907C",
-          "copyright": "All Rights Reserved The Randyl Walters Team Keller Williams Real Estate",
+          "copyright": "LaFaver & Walters Realty · Keller Williams Real Estate. All rights reserved.",
           "eeo_statement": "Keller Williams Realty, Inc., a franchise company, is an Equal Opportunity Employer and supports the Fair Housing Act. Each Keller Williams® office is independently owned and operated."
         }
       }
     ],
-    "workshops": [
-      {
-        "id": "workshop-rightsizing-101",
-        "status": "published",
-        "data": {
-          "title": "Rightsizing 101: Your Questions, Answered in Person",
-          "short_title": "Rightsizing 101",
-          "summary": "A relaxed, no-pressure evening with Randyl, a local estate attorney, and a senior move manager. Coffee and dessert provided.",
-          "starts_at": "2026-12-03T18:30:00-06:00",
-          "ends_at": "2026-12-03T20:00:00-06:00",
-          "location": "Westlake Community Library · Also streaming online",
-          "capacity": 40,
-          "seats_left": 12,
-          "rsvp_url": "/#contact",
-          "image": {
-            "$media": {
-              "url": "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80",
-              "filename": "workshop.jpg",
-              "alt": "A small group meeting around a table"
-            }
-          }
-        }
-      }
-    ],
+    "workshops": [],
     "testimonials": [
       {
-        "id": "t-linda",
+        "id": "t-eric-r",
+        "slug": "eric-r",
         "status": "published",
         "data": {
-          "name": "Linda M.",
-          "detail": "Downsized in Round Rock",
-          "sort_order": 1,
-          "photo": {
-            "$media": {
-              "url": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&q=80",
-              "filename": "linda.jpg",
-              "alt": "Linda M."
-            }
-          },
-          "quote": "After 31 years in our home, we didn't know where to start. Randyl's guide and patience made it feel manageable. We never once felt rushed."
+          "name": "Eric R.",
+          "detail": "Google review",
+          "quote": "Working with Randyl has been nothing short of exceptional. From start to finish—on both the buying and selling side—she has been an absolute professional. Her patience, dedication, and deep understanding of her clients’ needs set her apart in the real estate world.",
+          "sort_order": 1
         }
       },
       {
-        "id": "t-david",
+        "id": "t-lindsay-y",
+        "slug": "lindsay-y",
         "status": "published",
         "data": {
-          "name": "David R.",
-          "detail": "Sold an inherited home",
-          "sort_order": 2,
-          "photo": {
-            "$media": {
-              "url": "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=300&q=80",
-              "filename": "david.jpg",
-              "alt": "David R."
-            }
-          },
-          "quote": "Selling my mother's house from out of state was overwhelming. Randyl handled the cleanout, repairs, and sale, and kept my siblings and me informed every step."
+          "name": "Lindsay Y.",
+          "detail": "Google review",
+          "quote": "Randyl was a pleasure to work with. She made the process of selling my home quite easy. Randyl was communicative, knowledgeable, and on top of everything. I definitely recommend working with her and plan to recommend her to family and friends.",
+          "sort_order": 2
         }
       },
       {
-        "id": "t-carol",
+        "id": "t-dale-c",
+        "slug": "dale-c",
         "status": "published",
         "data": {
-          "name": "Carol & Jim T.",
-          "detail": "Moved to a 55+ community",
-          "sort_order": 3,
-          "photo": {
-            "$media": {
-              "url": "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=300&q=80",
-              "filename": "carol-jim.jpg",
-              "alt": "Carol and Jim T."
-            }
-          },
-          "quote": "We attended the workshop just to learn. Two years later, when we were ready, there was no question who we'd call."
+          "name": "Dale C.",
+          "detail": "Google review",
+          "quote": "Randyl is a true professional!! I live in TN and had a property I needed to sell in NEW TRIPOLI. I asked Randyl to represent me for the sale and it was the best decision I could have made. Randyl is very knowledgeable in all aspects of the Real Estate Industry.",
+          "sort_order": 3
+        }
+      },
+      {
+        "id": "t-jennifer",
+        "slug": "jennifer",
+        "status": "published",
+        "data": {
+          "name": "Jennifer",
+          "detail": "Google review",
+          "quote": "Randyl is the perfect mix of professionalism, knowledge, experience, and overall wonderful human. She helped us sell our house at the worst time of year, the holidays. We had already committed to purchasing our new home in another state and were on a bit of a time crunch to sell. It was not an easy process but Randyl's calm reassurance helped us get through it and meet our deadline. I would highly recommend Randyl to anyone looking to buy or sell.",
+          "sort_order": 4
+        }
+      },
+      {
+        "id": "t-martin-b",
+        "slug": "martin-b",
+        "status": "published",
+        "data": {
+          "name": "Martin B.",
+          "detail": "Google review",
+          "quote": "Randyl and her team were awesome through the entire process. She was knowledgeable and able to guide us the whole way through. I couldn't recommend her enough! Thank you!",
+          "sort_order": 5
+        }
+      },
+      {
+        "id": "t-helen-w",
+        "slug": "helen-w",
+        "status": "published",
+        "data": {
+          "name": "Helen W.",
+          "detail": "Google review",
+          "quote": "Started working with Randyl when we were in the thinking about selling our home phase. From that point onward she was a valuable resource for questions that ranged from what projects should we complete before putting the house on the market, to when to start looking for a new home and where to look. In today's market a seller/buyer needs to have someone who is not only knowledgeable, but responsive and thorough as well.",
+          "sort_order": 6
+        }
+      },
+      {
+        "id": "t-elisa",
+        "slug": "elisa",
+        "status": "published",
+        "data": {
+          "name": "Elisa",
+          "detail": "Google review",
+          "quote": "Randyl is extremely knowledgeable and professional. Using Keller Williams' network, she assisted me in finding a local realtor in Massachusetts to sell my home. She personally interviewed the agent herself before passing along my contact information. Highly recommend working with her. She is always focused on what is in her customer's best interest!",
+          "sort_order": 7
+        }
+      },
+      {
+        "id": "t-crissi",
+        "slug": "crissi",
+        "status": "published",
+        "data": {
+          "name": "Crissi",
+          "detail": "Google review",
+          "quote": "Amazing agent/person! I have worked with Randyl for several transactions. She is knowledgeable, always prepared, an advocate, and so pleasant! Above all else… she is honest and communicates well. I ALWAYS want her on my team!!!",
+          "sort_order": 8
         }
       }
     ],
@@ -928,6 +1081,157 @@
           "sort_order": 4,
           "question": "What does a consultation cost?",
           "answer": "Nothing. Consultations, home valuations, guides, and workshops are always free, with no obligation."
+        }
+      }
+    ],
+    "team": [
+      {
+        "id": "team-randyl-walters",
+        "slug": "randyl-walters",
+        "status": "published",
+        "data": {
+          "name": "Randyl Walters",
+          "role": "Realtor®, Partner",
+          "credentials": "Mortgage Loan Originator, GRTS",
+          "tagline": "Obsessed With Real Estate. Totally Fine Otherwise.",
+          "bio": [
+            {
+              "_type": "block",
+              "_key": "170aa72edeb4",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "31e4b226d9a6",
+                  "text": "Randyl has been helping Lehigh Valley families buy and sell homes for 24+ years—which is either impressive or concerning, depending on who you ask. As both a licensed realtor and mortgage loan originator, she can walk you through the entire process from “should I do this?” to “wait, I own a house now?”",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "0015f09b8186",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "e419876c7c9c",
+                  "text": "Before real estate, she spent her post-Lafayette College years climbing the corporate ladder in sales, marketing, and finance. Turns out she preferred helping people move into their dream homes over quarterly earnings reports. Go figure.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "efdd22263047",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "9afda4a77037",
+                  "text": "When she’s not coordinating same-day closings or explaining tax implications, you’ll find her writing, reading science fiction novels (yes, the nerdy ones with dragons), or explaining to Chris why Star Wars is technically fantasy, not sci-fi. He still does not care.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "98e5c47ef02c",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ce125b133032",
+                  "text": "She’s been known to crack dad jokes at closing tables and actually mean them. Her clients describe her as “surprisingly normal for someone who thinks about real estate this much.”",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "email": "randylwalters@KW.com",
+          "sort_order": 1
+        }
+      },
+      {
+        "id": "team-joanna-lafaver",
+        "slug": "joanna-lafaver",
+        "status": "published",
+        "data": {
+          "name": "Joanna LaFaver",
+          "role": "Realtor®, Partner",
+          "sort_order": 2
+        }
+      },
+      {
+        "id": "team-chris-walters",
+        "slug": "chris-walters",
+        "status": "published",
+        "data": {
+          "name": "Chris Walters",
+          "role": "Realtor®",
+          "credentials": "Buyer Specialist",
+          "tagline": "Would Rather Be Riding—But He’ll Help You Move First",
+          "bio": [
+            {
+              "_type": "block",
+              "_key": "b9064eac0270",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "cd23889604be",
+                  "text": "Chris came to real estate after careers in microelectronics and as a master electrician—because apparently, one career path was too boring. He started his own microelectronics business, worked for a big corporation, then became an electrician because why not? He was qualified. Now he helps people buy and sell homes while secretly cataloging every electrical code violation he sees. (Don’t worry, he’s polite about it.)",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "411cd6cafbfd",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "73f951a05028",
+                  "text": "When he’s not helping empty nesters navigate downsizing logistics, he’s either on his motorcycle or thinking about being on his motorcycle. Occasionally both at the same time, which Randyl has asked him to stop doing.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "114648271e50",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "90f940a6a27e",
+                  "text": "His clients describe him as “unsettlingly helpful” and “the only realtor who actually understood what the home inspector was talking about.” One couple tried to hire him to just follow them around and fix things. He politely declined. Probably.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "email": "chriswalters@KW.com",
+          "sort_order": 3
+        }
+      },
+      {
+        "id": "team-crystal-ligenzowski",
+        "slug": "crystal-ligenzowski",
+        "status": "published",
+        "data": {
+          "name": "Crystal Ligenzowski",
+          "role": "Realtor®",
+          "credentials": "Transaction Concierge",
+          "sort_order": 4
         }
       }
     ]
