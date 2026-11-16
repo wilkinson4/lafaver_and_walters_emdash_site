@@ -1,10 +1,16 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "lafaver-walters",
+  "name": "comehometopa",
   "main": "./src/worker.ts",
   "compatibility_date": "2026-02-24",
   "compatibility_flags": ["nodejs_compat"],
-  "d1_databases": [{ "binding": "DB", "database_name": "lafaver-walters" }],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "lafaver-walters",
+      "database_id": "1347f381-162e-40a6-a028-5f4d48de1897",
+    },
+  ],
   "r2_buckets": [
     { "binding": "MEDIA", "bucket_name": "lafaver-walters-media" },
   ],
