@@ -53,6 +53,8 @@ if (Astro.cache?.enabled) {
 }
 
 const settings = settingsResult.data;
+// Analytics load only on the live production site, not while it is in staging.
+const loadAnalytics = import.meta.env.PROD && !settings?.staging;
 const siteTitle = settings?.title || "LaFaver & Walters Realty";
 const logo = settings?.logo;
 const socialLabels: Record<string, string> = {
@@ -672,7 +674,7 @@ const pageCtx = createPublicPageContext({
         });
       }
     </script>
-    {import.meta.env.PROD && (
+    {loadAnalytics && (
       <>
         <script
           is:inline
