@@ -65,7 +65,10 @@ const nextHref = nextCursor
         swap={{ target: "learn-results", history: true }}
       />
       {entries.length > 0 ? (
-        <div class="grid gap-7 transition-opacity group-aria-busy/swap:opacity-50 sm:grid-cols-2 md:grid-cols-3">
+        <div
+          data-swap-animate
+          class="grid gap-7 transition-opacity group-aria-busy/swap:opacity-50 sm:grid-cols-2 md:grid-cols-3"
+        >
           {entries.map((a) => (
             <ArticleCard article={a} showExcerpt surface="white" />
           ))}

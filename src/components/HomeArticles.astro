@@ -36,7 +36,10 @@ const topicOf = (a: NonNullable<typeof lead>) => {
     }}
   />
   {lead ? (
-    <div class="grid gap-10 transition-opacity group-aria-busy/swap:opacity-50 md:grid-cols-[1.25fr_1fr]">
+    <div
+      data-swap-animate
+      class="grid gap-10 transition-opacity group-aria-busy/swap:opacity-50 md:grid-cols-[1.25fr_1fr]"
+    >
       <a href={`/learn/${lead.id}`} class="flex flex-col bg-white">
         <div class="cover h-85 bg-[#ddd]">
           {lead.data.featured_image && (

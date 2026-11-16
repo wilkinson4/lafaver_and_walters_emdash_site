@@ -135,7 +135,7 @@ const pageCtx = createPublicPageContext({
     </div>
 
     <nav
-      class="sticky top-0 z-30 border-b border-line bg-white shadow-[0_2px_14px_rgba(0,0,0,0.05)] print:hidden"
+      class="sticky top-0 z-30 border-b border-line bg-white shadow-[0_2px_14px_rgba(0,0,0,0.05)] [view-transition-name:site-nav] print:hidden"
       aria-label="Main"
     >
       <div class="wrap flex h-19 items-center justify-between gap-4 sm:h-23 sm:gap-8 xl:gap-6">
@@ -473,21 +473,42 @@ const pageCtx = createPublicPageContext({
           );
           const next = doc.getElementById(target);
           if (!next) return false;
-          region.replaceWith(next);
-          if (opts.push) {
-            if (!history.state?.swap) {
-              history.replaceState({ swap: target }, "");
+          const update = () => {
+            region.replaceWith(next);
+            if (opts.push) {
+              if (!history.state?.swap) {
+                history.replaceState({ swap: target }, "");
+              }
+              history.pushState({ swap: target }, "", opts.push);
             }
-            history.pushState({ swap: target }, "", opts.push);
-          }
-          // Full pages carry a title; partial fragments don't.
-          if (doc.title) document.title = doc.title;
-          if (opts.focusHref) {
-            next
-              .querySelector<HTMLElement>(
-                `a[href="${CSS.escape(opts.focusHref)}"]`,
-              )
-              ?.focus({ preventScroll: true });
+            // Full pages carry a title; partial fragments don't.
+            if (doc.title) document.title = doc.title;
+            if (opts.focusHref) {
+              next
+                .querySelector<HTMLElement>(
+                  `a[href="${CSS.escape(opts.focusHref)}"]`,
+                )
+                ?.focus({ preventScroll: true });
+            }
+          };
+          if (
+            document.startViewTransition &&
+            !matchMedia("(prefers-reduced-motion: reduce)").matches
+          ) {
+            // Name only the `data-swap-animate` element (the results grid)
+            // so it animates on its own; everything else crossfades.
+            const animated = (el: Element, on: boolean) => {
+              const grid = el.querySelector<HTMLElement>("[data-swap-animate]");
+              if (grid)
+                grid.style.viewTransitionName = on ? "swap-content" : "";
+            };
+            animated(region, true);
+            animated(next, true);
+            const transition = document.startViewTransition(update);
+            await transition.updateCallbackDone;
+            transition.finished.finally(() => animated(next, false));
+          } else {
+            update();
           }
           if (opts.scroll && next.getBoundingClientRect().top < 0) {
             next.scrollIntoView({ behavior: "smooth" });
