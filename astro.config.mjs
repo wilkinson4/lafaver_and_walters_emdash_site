@@ -1,16 +1,14 @@
-import node from "@astrojs/node";
+import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "astro/config";
-import emdash, { local } from "emdash/astro";
-import { sqlite } from "emdash/db";
+import { d1, r2, sandbox } from "@emdash-cms/cloudflare";
+import emdash from "emdash/astro";
 
 export default defineConfig({
   output: "server",
-  adapter: node({
-    mode: "standalone",
-  }),
+  adapter: cloudflare(),
   image: {
     layout: "constrained",
     responsiveStyles: true,
@@ -18,11 +16,8 @@ export default defineConfig({
   integrations: [
     react(),
     emdash({
-      database: sqlite({ url: "file:./data.db" }),
-      storage: local({
-        directory: "./uploads",
-        baseUrl: "/_emdash/api/media/file",
-      }),
+      database: d1({ binding: "DB", session: "auto", coalesce: true }),
+      storage: r2({ binding: "MEDIA" }),
       plugins: [
         {
           id: "lead-forms",
@@ -37,8 +32,9 @@ export default defineConfig({
           capabilities: ["email:send"],
         },
       ],
-      // Runs registry and `sandboxed: []` plugins in an isolated workerd process.
-      sandboxRunner: "@emdash-cms/sandbox-workerd/sandbox",
+      // Runs registry and `sandboxed: []` plugins as Dynamic Workers (needs
+      // the Workers Paid plan and the LOADER binding in wrangler.jsonc).
+      sandboxRunner: sandbox(),
     }),
   ],
   vite: {

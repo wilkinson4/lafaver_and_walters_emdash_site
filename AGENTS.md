@@ -12,19 +12,30 @@ When skills or docs show `npx emdash ...`, run `pnpm exec emdash ...` instead. A
 pnpm install                          # Install dependencies
 pnpm dev                              # Start the Astro dev server
 pnpm exec emdash types                # Regenerate TypeScript types from a running site
-pnpm exec emdash seed seed/seed.json  # Apply schema + sample content to ./data.db
 pnpm typecheck                        # astro check
 pnpm fix                              # Format everything with Prettier (.prettierrc.mjs, .prettierignore)
 pnpm format:check                     # Check formatting without writing
+pnpm run deploy                       # Build and deploy to Cloudflare (wrangler login first)
 ```
 
 The admin UI is at `http://localhost:4321/_emdash/admin`.
+
+## Hosting (Cloudflare Workers)
+
+The site runs on Cloudflare Workers via `@astrojs/cloudflare` + `@emdash-cms/cloudflare`: content in D1 (`DB`), media in R2 (`MEDIA`), live-editing rooms in a Durable Object, and a one-minute cron for scheduled publishing. Bindings live in `wrangler.jsonc`; `src/worker.ts` is the Worker entry (re-exports EmDash's Durable Objects and adds the `scheduled()` handler). The first `wrangler deploy` provisions D1/R2/KV by name.
+
+- `pnpm dev` runs on the Workers runtime with local D1/R2 under `.wrangler/state` (gitignored); there is no `data.db`. To start fresh locally, stop the dev server, delete `.wrangler/state`, restart, and run setup again (the bundled seed applies on setup). `emdash seed`/`emdash doctor` without `--url` operate on `./data.db`, not local D1. Local D1 files are keyed by `database_id`, so changing it in `wrangler.jsonc` (the first deploy writes it) points dev at a new empty database; the old data stays in the previous `.wrangler/state/v3/d1/miniflare-D1DatabaseObject/*.sqlite` file.
+- Content moves between sites with Site Transfer (admin → Settings → Transfer, or `emdash site export|import --url`). Users, plugin storage (lead submissions), and plugin settings are not transferred.
+- Sandboxed/registry plugins need Workers Paid (`worker_loaders` binding `LOADER`). On the free plan remove `sandboxRunner` and `worker_loaders`.
+- Run `pnpm exec wrangler types` to inspect binding types after changing `wrangler.jsonc` (the output isn't included in `tsconfig.json` because it conflicts with DOM types).
 
 ## Key Files
 
 | File                     | Purpose                                                                            |
 | ------------------------ | ---------------------------------------------------------------------------------- |
 | `astro.config.mjs`       | Astro config with `emdash()` integration, database, and storage                    |
+| `wrangler.jsonc`         | Cloudflare Worker name, bindings (D1, R2, Durable Object, loader), cron            |
+| `src/worker.ts`          | Worker entry: EmDash handler, Durable Object exports, `scheduled()` handler        |
 | `src/live.config.ts`     | EmDash loader registration (boilerplate -- don't modify)                           |
 | `seed/seed.json`         | Schema definition + demo content (collections, fields, taxonomies, menus, widgets) |
 | `emdash-env.d.ts`        | Generated types for collections (auto-regenerated on dev server start)             |
@@ -89,13 +100,13 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 - If an article's first block is a landscape YouTube embed, `learn/[slug].astro` shows it in place of the featured image (the image is still used for cards and share previews). `src/components/ArticleEmbed.astro` plays YouTube Shorts links (`youtube.com/shorts/ID`, which EmDash's `Embed` doesn't recognise) in a vertical frame; Shorts never replace the featured image.
 - Page shortcodes: a paragraph containing only `[name args]` in a page body is replaced by a component (`splitShortcodes` in `src/lib/site.ts`, mapped in `src/pages/[slug].astro`): `[team]`, `[closing-cost-calculator]`, `[equity-calculator]`, `[mortgage-calculator]`, `[mortgage-rates]`, `[market-chart median-price|days-on-market]`. Components live in `src/components/tools/` and `TeamGrid.astro`; equity data is in `src/lib/median-prices.ts`.
 - WordPress URLs are preserved with 301 redirects (admin → Redirects, group "WordPress"): root post slugs → `/learn/<slug>`, `/category/...` → `/learn?topic=`, `/tag/...` → `/learn?tag=`, `/contact-us` → `/#contact`, retired pages → `/`.
-- Tracking: GA4 (`G-4RZRQK05GB`) and Meta Pixel (`458970391416189`) load from `Base.astro` in production builds only; successful lead forms fire `generate_lead` / `Lead` events. The privacy policy describes both.
+- Tracking: GA4 (`G-4RZRQK05GB`) and Meta Pixel (`458970391416189`) load from `Base.astro` in production builds only, and not while the site is in staging (Settings → `staging`, which also adds `noindex`); successful lead forms fire `generate_lead` / `Lead` events. The privacy policy describes both.
 
 ## Plugins
 
-`plugins/lead-forms` is a native plugin registered in `astro.config.mjs`. Every `form[data-lead="contact|guide|home-value"]` is posted by the script in `Base.astro` to `/_emdash/api/plugins/lead-forms/submit`; submissions are validated, rate-limited per IP, saved to plugin storage, and emailed to `LEAD_FORMS_TO` (default `lafaverandwalters@gmail.com`) with Reply-To set to the visitor. In dev, emails are captured at `/_emdash/api/dev/emails`; production needs an email provider (SMTP) configured in EmDash or messages are only stored.
+`plugins/lead-forms` is a native plugin registered in `astro.config.mjs`. Every `form[data-lead="contact|guide|home-value"]` is posted by the script in `Base.astro` to `/_emdash/api/plugins/lead-forms/submit`; submissions are validated, rate-limited per IP, saved to plugin storage, and emailed to `LEAD_FORMS_TO` (default `lafaverandwalters@gmail.com`) with Reply-To set to the visitor. In dev, emails are captured at `/_emdash/api/dev/emails`; production needs an email provider configured in EmDash (SMTP secrets, or Cloudflare Email once the domain is on Cloudflare) or messages are only stored.
 
-Sandboxed plugins are enabled via `sandboxRunner: "@emdash-cms/sandbox-workerd/sandbox"` in `astro.config.mjs` (deps: `@emdash-cms/sandbox-workerd`, `workerd`). Admins can install registry plugins from **Registry** in the admin; plugin code runs in a separate workerd process (Miniflare in `pnpm dev`). Config-managed plugins go in `emdash({ plugins: [] })` (native, in-process) or `sandboxed: []` -- follow each package's instructions. Never set `sandbox: false` outside local debugging. Docs: https://docs.emdashcms.com/plugins/installing/
+Sandboxed plugins are enabled via `sandboxRunner: sandbox()` from `@emdash-cms/cloudflare` in `astro.config.mjs` (uses the `LOADER` Worker Loader binding). Admins can install registry plugins from **Registry** in the admin; plugin code runs in isolated Worker isolates. Config-managed plugins go in `emdash({ plugins: [] })` (native, in-process) or `sandboxed: []` -- follow each package's instructions. Never set `sandbox: false` outside local debugging. Docs: https://docs.emdashcms.com/plugins/installing/
 
 ## Styling
 
