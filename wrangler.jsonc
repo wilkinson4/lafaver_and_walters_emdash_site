@@ -2,6 +2,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "comehometopa",
   "main": "./src/worker.ts",
+  "workers_dev": true,
+  "preview_urls": false,
   "compatibility_date": "2026-02-24",
   "compatibility_flags": ["nodejs_compat"],
   "d1_databases": [
