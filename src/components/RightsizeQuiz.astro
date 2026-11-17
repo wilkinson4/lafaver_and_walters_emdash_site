@@ -1,0 +1,227 @@
+---
+interface Answer {
+  label: string;
+  points?: number | null;
+}
+interface Result {
+  title: string;
+  from_percent?: number | null;
+  description?: string | null;
+  link_label?: string | null;
+  link_url?: string | null;
+}
+interface Props {
+  questions: { question: string; answers: Answer[] }[];
+  results: Result[];
+}
+
+const { questions, results } = Astro.props;
+const total = questions.length;
+const bands = [...results].sort(
+  (a, b) => (a.from_percent ?? 0) - (b.from_percent ?? 0),
+);
+const optionClass =
+  "mb-3 flex cursor-pointer items-center gap-4 border-2 border-[#ddd] px-5 py-4.5 text-lg transition duration-150 hover:border-brand has-checked:border-brand has-checked:bg-[#fdf2f2] has-focus-visible:outline-2 has-focus-visible:outline-brand";
+const reveal =
+  "motion-safe:transition-[opacity,translate] motion-safe:duration-300 motion-safe:starting:translate-y-2 motion-safe:starting:opacity-0";
+---
+
+<div
+  id="quiz-card"
+  data-quiz
+  class="scroll-mt-28 border border-line bg-white p-7.5 shadow-[0_24px_60px_rgba(0,0,0,0.1)] sm:p-11"
+>
+  <div class="mb-6.5 h-1.5 bg-[#eee]">
+    <i
+      data-quiz-bar
+      class="block h-full bg-brand motion-safe:transition-[width] motion-safe:duration-300"
+      style={`width:${100 / (total + 1)}%`}
+    ></i>
+  </div>
+  <form data-quiz-form>
+    {questions.map((q, n) => (
+      <fieldset data-quiz-step hidden={n > 0} disabled={n > 0} class={reveal}>
+        <legend class="contents">
+          <span class="block text-[15px] font-semibold text-[#666]">
+            Question {n + 1} of {total}
+          </span>
+          <span class="mt-2 mb-6 block font-serif text-[28px] leading-[1.3] font-medium">
+            {q.question}
+          </span>
+        </legend>
+        {q.answers.map((a) => (
+          <label class={optionClass}>
+            <input
+              type="radio"
+              name={`q${n}`}
+              value={a.points ?? 0}
+              required
+              class="size-5.5 shrink-0 accent-brand"
+            />
+            {a.label}
+          </label>
+        ))}
+        <div class="mt-6 flex items-center justify-between gap-4">
+          {n > 0 ? (
+            <button
+              type="button"
+              data-quiz-back
+              class="text-[15px] font-semibold text-muted underline-offset-4 hover:underline"
+            >
+              ← Back
+            </button>
+          ) : (
+            <span />
+          )}
+          <button type="submit" class="btn btn-black">
+            {n === total - 1 ? "See my result" : "Next"}
+          </button>
+        </div>
+      </fieldset>
+    ))}
+  </form>
+  <div data-quiz-result hidden class={reveal} aria-live="polite">
+    <div class="text-[15px] font-semibold text-[#666]">
+      Your readiness score
+    </div>
+    <div class="mt-1 font-serif text-[56px] leading-none text-brand">
+      <span data-quiz-score>0</span>%
+    </div>
+    {bands.map((r) => (
+      <div data-quiz-band={r.from_percent ?? 0} hidden>
+        <h3 class="mt-5 mb-3 font-serif text-[28px] leading-[1.3] font-medium">
+          {r.title}
+        </h3>
+        {r.description && <p class="mb-6 text-lg">{r.description}</p>}
+        {r.link_url && r.link_label && (
+          <a href={r.link_url} class="btn btn-red">
+            {r.link_label} →
+          </a>
+        )}
+      </div>
+    ))}
+    <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-[15px] font-semibold">
+      <a href="/#contact" data-quiz-contact class="text-brand hover:underline">
+        Talk through your result with Randyl
+      </a>
+      <button
+        type="button"
+        data-quiz-restart
+        class="text-muted underline-offset-4 hover:underline"
+      >
+        Retake the quiz
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  for (const card of document.querySelectorAll<HTMLElement>("[data-quiz]")) {
+    const form = card.querySelector<HTMLFormElement>("[data-quiz-form]")!;
+    const steps = [
+      ...card.querySelectorAll<HTMLFieldSetElement>("[data-quiz-step]"),
+    ];
+    const bar = card.querySelector<HTMLElement>("[data-quiz-bar]")!;
+    const result = card.querySelector<HTMLElement>("[data-quiz-result]")!;
+    const bands = [...card.querySelectorAll<HTMLElement>("[data-quiz-band]")];
+    let current = 0;
+
+    const progress = (done: number) => {
+      bar.style.width = `${((done + 1) / (steps.length + 1)) * 100}%`;
+    };
+    const show = (index: number, focus = true) => {
+      current = index;
+      steps.forEach((step, i) => {
+        step.hidden = i !== index;
+        // Later steps stay disabled so their required answers don't block Next.
+        step.disabled = i > index;
+      });
+      progress(index);
+      if (focus) {
+        const step = steps[index];
+        (
+          step.querySelector<HTMLInputElement>("input:checked") ??
+          step.querySelector<HTMLInputElement>("input")
+        )?.focus({ preventScroll: true });
+      }
+    };
+
+    const finish = () => {
+      const data = new FormData(form);
+      let score = 0;
+      let max = 0;
+      steps.forEach((step, i) => {
+        const values = [
+          ...step.querySelectorAll<HTMLInputElement>("input"),
+        ].map((input) => Number(input.value) || 0);
+        max += Math.max(0, ...values);
+        score += Number(data.get(`q${i}`)) || 0;
+      });
+      const percent = max ? Math.round((score / max) * 100) : 0;
+      const band = bands
+        .filter((b) => Number(b.dataset.quizBand) <= percent)
+        .at(-1);
+      bands.forEach((b) => (b.hidden = b !== band));
+      card.querySelector("[data-quiz-score]")!.textContent = String(percent);
+      // Hide the duplicate contact link when the band's button already goes there.
+      const bandLink = band?.querySelector<HTMLAnchorElement>("a");
+      card.querySelector<HTMLElement>("[data-quiz-contact]")!.hidden =
+        bandLink?.hash === "#contact" && bandLink.pathname === "/";
+      form.hidden = true;
+      result.hidden = false;
+      bar.style.width = "100%";
+
+      // Pass the result to the consultation form.
+      const title = band?.querySelector("h3")?.textContent?.trim();
+      const note = `Rightsizing quiz result: ${percent}%${title ? ` (${title})` : ""}.`;
+      const message = document.querySelector<HTMLTextAreaElement>(
+        'form[data-lead="contact"] textarea[name="message"]',
+      );
+      if (message && (!message.value || message.dataset.quizNote)) {
+        message.value = note;
+        message.dataset.quizNote = "1";
+      }
+
+      (window as { gtag?: (...args: unknown[]) => void }).gtag?.(
+        "event",
+        "quiz_complete",
+        { score: percent },
+      );
+    };
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (current < steps.length - 1) show(current + 1);
+      else finish();
+    });
+    // A pointer click on an answer moves on; keyboard users press Next.
+    let advance: ReturnType<typeof setTimeout> | undefined;
+    form.addEventListener("click", (event) => {
+      const input = (event.target as Element)
+        .closest("label")
+        ?.querySelector("input");
+      if (!input || (event as PointerEvent).detail === 0) return;
+      clearTimeout(advance);
+      advance = setTimeout(() => form.requestSubmit(), 250);
+    });
+    card.addEventListener("click", (event) => {
+      const target = event.target as Element;
+      if (target.closest("[data-quiz-back]")) show(Math.max(0, current - 1));
+      if (target.closest("[data-quiz-restart]")) {
+        form.reset();
+        result.hidden = true;
+        form.hidden = false;
+        show(0);
+      }
+    });
+    // "Take the Quiz" links focus the first answer.
+    document
+      .querySelectorAll<HTMLAnchorElement>(`a[href="#${card.id}"]`)
+      .forEach((link) =>
+        link.addEventListener("click", () => {
+          if (!form.hidden) setTimeout(() => show(current), 0);
+        }),
+      );
+    progress(0);
+  }
+</script>

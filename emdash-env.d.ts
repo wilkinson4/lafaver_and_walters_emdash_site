@@ -34,6 +34,7 @@ export interface Homepage {
   stats?: { "value": string; "label": string }[];
   quiz_heading?: string;
   quiz_intro?: string;
+  quiz_results?: { "title": string; "from_percent"?: number | null; "description"?: string | null; "link_label"?: string | null; "link_url"?: string | null }[];
   reviews_heading?: string;
   about_heading?: string;
   about_body?: PortableTextBlock[];
@@ -147,6 +148,21 @@ export interface Team {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
+export interface QuizQuestion {
+  id: string;
+  slug: string | null;
+  status: string;
+  question: string;
+  answers: { "label": string; "points"?: number | null }[];
+  sort_order?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  byline?: BylineSummary | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface Page {
   id: string;
   slug: string | null;
@@ -173,6 +189,7 @@ declare module "emdash" {
     testimonials: Testimonial;
     faqs: Faq;
     team: Team;
+    quiz_questions: QuizQuestion;
     pages: Page;
   }
 }

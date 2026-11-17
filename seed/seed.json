@@ -300,6 +300,42 @@
           }
         },
         {
+          "slug": "quiz_results",
+          "label": "Quiz · Results (the highest band the score reaches is shown)",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "title",
+                "label": "Title",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "from_percent",
+                "label": "Shown from score % (0–100)",
+                "type": "integer"
+              },
+              {
+                "slug": "description",
+                "label": "Text",
+                "type": "text"
+              },
+              {
+                "slug": "link_label",
+                "label": "Button label",
+                "type": "string"
+              },
+              {
+                "slug": "link_url",
+                "label": "Button link",
+                "type": "url"
+              }
+            ],
+            "maxItems": 4
+          }
+        },
+        {
           "slug": "reviews_heading",
           "label": "Testimonials · Heading",
           "type": "string"
@@ -611,6 +647,58 @@
           "slug": "email",
           "label": "Email",
           "type": "string"
+        },
+        {
+          "slug": "sort_order",
+          "label": "Display order",
+          "type": "integer",
+          "indexed": true,
+          "defaultValue": 10
+        }
+      ]
+    },
+    {
+      "slug": "quiz_questions",
+      "label": "Quiz Questions",
+      "labelSingular": "Quiz Question",
+      "description": "Questions for the homepage rightsizing quiz. Each answer scores 0 (no reason to move) to 3 (strong reason to move).",
+      "icon": "list-checks",
+      "sortOrder": 6,
+      "routable": false,
+      "titleField": "question",
+      "admin": {
+        "listColumns": ["sort_order"]
+      },
+      "supports": ["drafts"],
+      "fields": [
+        {
+          "slug": "question",
+          "label": "Question",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "answers",
+          "label": "Answers (points: 0 = no reason to move, 3 = strong reason to move)",
+          "type": "repeater",
+          "required": true,
+          "validation": {
+            "subFields": [
+              {
+                "slug": "label",
+                "label": "Answer",
+                "type": "string",
+                "required": true
+              },
+              {
+                "slug": "points",
+                "label": "Points (0–3)",
+                "type": "integer"
+              }
+            ],
+            "minItems": 2,
+            "maxItems": 6
+          }
         },
         {
           "slug": "sort_order",
@@ -951,7 +1039,30 @@
           "office_phone": "(215) 340-5700",
           "broker_license": "RB062907C",
           "copyright": "LaFaver & Walters Realty · Keller Williams Real Estate. All rights reserved.",
-          "eeo_statement": "Keller Williams Realty, Inc., a franchise company, is an Equal Opportunity Employer and supports the Fair Housing Act. Each Keller Williams® office is independently owned and operated."
+          "eeo_statement": "Keller Williams Realty, Inc., a franchise company, is an Equal Opportunity Employer and supports the Fair Housing Act. Each Keller Williams® office is independently owned and operated.",
+          "quiz_results": [
+            {
+              "title": "Your home still fits — for now",
+              "from_percent": 0,
+              "description": "Your home is still working for the way you live. There’s no rush, but knowing what your home is worth today means you can plan on your own terms when the time comes.",
+              "link_label": "Estimate your home equity",
+              "link_url": "/equity-calculator"
+            },
+            {
+              "title": "Worth exploring",
+              "from_percent": 40,
+              "description": "A few things are starting to pull in a new direction. A good next step is getting clear on your equity, your costs, and what “right-sized” could look like for you.",
+              "link_label": "Read the Right-Size Roadmap",
+              "link_url": "/right-size-roadmap"
+            },
+            {
+              "title": "Ready for a plan",
+              "from_percent": 70,
+              "description": "Your answers suggest your home no longer fits the life you want. A no-pressure conversation can turn that feeling into a clear, step-by-step plan.",
+              "link_label": "Talk it through with Randyl",
+              "link_url": "/#contact"
+            }
+          ]
         }
       }
     ],
@@ -1232,6 +1343,216 @@
           "role": "Realtor®",
           "credentials": "Transaction Concierge",
           "sort_order": 4
+        }
+      }
+    ],
+    "quiz_questions": [
+      {
+        "id": "quiz-1",
+        "status": "published",
+        "data": {
+          "question": "Which best describes how much of your home you actively use?",
+          "sort_order": 10,
+          "answers": [
+            {
+              "label": "We actively use most of the home on a regular basis",
+              "points": 0
+            },
+            {
+              "label": "We use the main areas, but several rooms go unused most of the time",
+              "points": 1
+            },
+            {
+              "label": "We primarily live on one level or in a small portion of the home",
+              "points": 2
+            },
+            {
+              "label": "Large parts of the home feel unnecessary or burdensome to maintain",
+              "points": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "quiz-2",
+        "status": "published",
+        "data": {
+          "question": "How does property maintenance feel right now?",
+          "sort_order": 20,
+          "answers": [
+            {
+              "label": "Very manageable",
+              "points": 0
+            },
+            {
+              "label": "Manageable, but more work than it used to be",
+              "points": 1
+            },
+            {
+              "label": "Increasingly burdensome",
+              "points": 2
+            },
+            {
+              "label": "Something I actively worry about",
+              "points": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "quiz-3",
+        "status": "published",
+        "data": {
+          "question": "How well does this home fit the way you want to live over the next 5–10 years?",
+          "sort_order": 30,
+          "answers": [
+            {
+              "label": "Very well",
+              "points": 0
+            },
+            {
+              "label": "Mostly well, with some concerns",
+              "points": 1
+            },
+            {
+              "label": "I’m unsure",
+              "points": 2
+            },
+            {
+              "label": "Not very well",
+              "points": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "quiz-4",
+        "status": "published",
+        "data": {
+          "question": "How important is flexibility to travel or leave for extended periods without worrying about the house?",
+          "sort_order": 40,
+          "answers": [
+            {
+              "label": "Not important",
+              "points": 0
+            },
+            {
+              "label": "Somewhat important",
+              "points": 1
+            },
+            {
+              "label": "Increasingly important",
+              "points": 2
+            },
+            {
+              "label": "Very important",
+              "points": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "quiz-5",
+        "status": "published",
+        "data": {
+          "question": "How do your current housing costs feel overall?",
+          "sort_order": 50,
+          "answers": [
+            {
+              "label": "Very comfortable and predictable",
+              "points": 0
+            },
+            {
+              "label": "Manageable, but I keep an eye on it",
+              "points": 1
+            },
+            {
+              "label": "Somewhat tight or uncertain",
+              "points": 2
+            },
+            {
+              "label": "A regular source of stress",
+              "points": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "quiz-6",
+        "status": "published",
+        "data": {
+          "question": "How important is it to simplify your financial picture when it comes to housing?",
+          "sort_order": 60,
+          "answers": [
+            {
+              "label": "Not very important",
+              "points": 0
+            },
+            {
+              "label": "Somewhat important",
+              "points": 1
+            },
+            {
+              "label": "It’s becoming a priority",
+              "points": 2
+            },
+            {
+              "label": "Very important",
+              "points": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "quiz-7",
+        "status": "published",
+        "data": {
+          "question": "How often does the idea of changing homes cross your mind?",
+          "sort_order": 70,
+          "answers": [
+            {
+              "label": "Rarely — I’m generally content where I am",
+              "points": 0
+            },
+            {
+              "label": "Occasionally — usually when something triggers it",
+              "points": 1
+            },
+            {
+              "label": "Fairly often — it’s a recurring thought",
+              "points": 2
+            },
+            {
+              "label": "Regularly — it’s something I’m actively thinking about",
+              "points": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "quiz-8",
+        "status": "published",
+        "data": {
+          "question": "Which best describes where you are right now?",
+          "sort_order": 80,
+          "answers": [
+            {
+              "label": "I’m comfortable staying put",
+              "points": 0
+            },
+            {
+              "label": "I feel torn",
+              "points": 1
+            },
+            {
+              "label": "I’m open to possibilities",
+              "points": 2
+            },
+            {
+              "label": "I’m ready for change",
+              "points": 3
+            }
+          ]
         }
       }
     ]

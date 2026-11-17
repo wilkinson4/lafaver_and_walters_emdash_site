@@ -3,6 +3,7 @@ import { getEmDashCollection, getSiteSettings } from "emdash";
 import { Image, PortableText } from "emdash/ui";
 import Base from "../layouts/Base.astro";
 import HomeArticles from "../components/HomeArticles.astro";
+import RightsizeQuiz from "../components/RightsizeQuiz.astro";
 import {
   getHomeArticles,
   getHomepage,
@@ -19,6 +20,7 @@ const [
   articlesResult,
   testimonialsResult,
   faqsResult,
+  quizResult,
   settings,
 ] = await Promise.all([
   getHomepage(),
@@ -29,6 +31,10 @@ const [
     limit: 12,
   }),
   getEmDashCollection("faqs", { orderBy: { sort_order: "asc" }, limit: 12 }),
+  getEmDashCollection("quiz_questions", {
+    orderBy: { sort_order: "asc" },
+    limit: 30,
+  }),
   getSiteSettings(),
 ]);
 if (Astro.cache?.enabled) {
@@ -37,6 +43,7 @@ if (Astro.cache?.enabled) {
     workshopResult,
     testimonialsResult,
     faqsResult,
+    quizResult,
   ]) {
     Astro.cache.set(r.cacheHint);
   }
@@ -65,12 +72,12 @@ const w = workshop
   ? workshopParts(workshop.data.starts_at, workshop.data.ends_at, timezone)
   : null;
 const phone = home.phone ?? "";
-const quizOptions = [
-  "None, we use every room",
-  "One or two rooms",
-  "Three or more rooms",
-  "I'm not sure",
-];
+const quizQuestions = quizResult.entries
+  .map((q) => ({
+    question: q.data.question,
+    answers: (q.data.answers ?? []).filter((a) => a.label),
+  }))
+  .filter((q) => q.question && q.answers.length >= 2);
 const finalBg =
   'linear-gradient(rgba(247,245,242,0.95), rgba(247,245,242,0.97)), url("https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1800&q=80")';
 ---
@@ -352,48 +359,31 @@ const finalBg =
     </section>
   )}
 
-  <section
-    class:list={["pb-20 sm:pb-30", { "pt-20 sm:pt-30": !workshop }]}
-    id="quiz"
-  >
-    <div class="wrap grid items-center gap-12.5 md:grid-cols-2 md:gap-20">
-      <div>
-        <div class="eyebrow">2-Minute Self-Assessment</div>
-        <h2 class="section-title" {...edit.quiz_heading}>
-          {home.quiz_heading}
-        </h2>
-        <p class="lead mb-8.5" {...edit.quiz_intro}>
-          {home.quiz_intro}
-        </p>
-        <a href="#contact" class="btn btn-red">
-          Take the Quiz →
-        </a>
-      </div>
-      <div
-        class="border border-line bg-white p-7.5 shadow-[0_24px_60px_rgba(0,0,0,0.1)] sm:p-11"
-        aria-label="Sample quiz question"
-      >
-        <div class="mb-6.5 h-1.5 bg-[#eee]">
-          <i class="block h-full w-[30%] bg-brand"></i>
+  {quizQuestions.length > 0 && (
+    <section
+      class:list={["pb-20 sm:pb-30", { "pt-20 sm:pt-30": !workshop }]}
+      id="quiz"
+    >
+      <div class="wrap grid items-center gap-12.5 md:grid-cols-2 md:gap-20">
+        <div>
+          <div class="eyebrow">2-Minute Self-Assessment</div>
+          <h2 class="section-title" {...edit.quiz_heading}>
+            {home.quiz_heading}
+          </h2>
+          <p class="lead mb-8.5" {...edit.quiz_intro}>
+            {home.quiz_intro}
+          </p>
+          <a href="#quiz-card" class="btn btn-red">
+            Take the Quiz →
+          </a>
         </div>
-        <div class="text-[15px] font-semibold text-[#666]">Question 3 of 8</div>
-        <h4 class="mt-2 mb-6 font-serif text-[28px] leading-[1.3] font-medium">
-          How many rooms in your home go unused most of the year?
-        </h4>
-        {quizOptions.map((opt, i) => (
-          <label class="mb-3 flex cursor-pointer items-center gap-4 border-2 border-[#ddd] px-5 py-4.5 text-lg transition duration-150 hover:border-brand has-checked:border-brand has-checked:bg-[#fdf2f2]">
-            <input
-              type="radio"
-              name="q"
-              checked={i === 1}
-              class="size-5.5 accent-brand"
-            />{" "}
-            {opt}
-          </label>
-        ))}
+        <RightsizeQuiz
+          questions={quizQuestions}
+          results={home.quiz_results ?? []}
+        />
       </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   {testimonialsResult.entries.length > 0 && (
     <section class="bg-ivory py-20 sm:py-30">

@@ -27,6 +27,7 @@ The site runs on Cloudflare Workers via `@astrojs/cloudflare` + `@emdash-cms/clo
 - `pnpm dev` runs on the Workers runtime with local D1/R2 under `.wrangler/state` (gitignored); there is no `data.db`. To start fresh locally, stop the dev server, delete `.wrangler/state`, restart, and run setup again (the bundled seed applies on setup). `emdash seed`/`emdash doctor` without `--url` operate on `./data.db`, not local D1. Local D1 files are keyed by `database_id`, so changing it in `wrangler.jsonc` (the first deploy writes it) points dev at a new empty database; the old data stays in the previous `.wrangler/state/v3/d1/miniflare-D1DatabaseObject/*.sqlite` file.
 - Content moves between sites with Site Transfer (admin → Settings → Transfer, or `emdash site export|import --url`). Users, plugin storage (lead submissions), and plugin settings are not transferred.
 - Sandboxed/registry plugins need Workers Paid (`worker_loaders` binding `LOADER`). On the free plan remove `sandboxRunner` and `worker_loaders`.
+- Images are resized through the Cloudflare Images binding (`/_image`, with `srcset`). Media URLs are absolute, and EmDash only optimises hosts in `image.remotePatterns`; it adds the site's own host only when `siteUrl` is set. So `astro.config.mjs` lists the deployed hosts explicitly. Add any new domain there, otherwise images are served full size.
 - Run `pnpm exec wrangler types` to inspect binding types after changing `wrangler.jsonc` (the output isn't included in `tsconfig.json` because it conflicts with DOM types).
 
 ## Key Files
@@ -83,7 +84,7 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 
 - `posts` (Articles): imported from WordPress. Taxonomies `category` (hierarchical: Sellers, Buyers, Local Living, Right-Sizing Your Life parents) and `tag`.
 - `pages`: imported from WordPress, rendered by `src/pages/[slug].astro`; SEO panel enabled (pages are in the sitemap).
-- `homepage` singleton, `testimonials` (real Google reviews), `faqs`, `team` (`/about` team grid), `workshops` (currently empty; banner falls back to a tagline).
+- `homepage` singleton, `testimonials` (real Google reviews), `faqs`, `team` (`/about` team grid), `quiz_questions` (homepage rightsizing quiz), `workshops` (currently empty; banner falls back to a tagline).
 - Menus: `primary` (supports one level of dropdown children), `footer_learn`, `footer_services`.
 - Site settings: `title`, `tagline`, `logo` (header), `social` (footer links).
 
@@ -93,6 +94,7 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 - Learning Center "topics" are the `category` taxonomy (`?topic=<category-slug>`); `TopicNav` hides empty categories. `tag` is also on posts.
 - Topic chips update the article list in place: links with `data-swap="<element id>"` are handled by the swap script in `Base.astro` (fetches the page or `data-swap-src`, replaces that element; `data-swap-history` updates the URL for back/forward). `/learn` swaps `#learn-results`; the homepage swaps `#home-articles` from the `/partials/home-articles?topic=` fragment without changing the URL. Plain links still work without JS.
 - Animations use the browser View Transitions API (no `<ClientRouter />`): `@view-transition { navigation: auto }` in `global.css` crossfades page navigations with the sticky nav (`site-nav`) held still, and the swap script wraps updates in `document.startViewTransition()`, temporarily naming the region's `[data-swap-animate]` element `swap-content` so the results grid fades up. Both are skipped for `prefers-reduced-motion` and in unsupported browsers.
+- Rightsizing quiz (`src/components/RightsizeQuiz.astro`): one step per published `quiz_questions` entry (ordered by `sort_order`; each answer has a `label` and `points` 0–3). The score is the points total as a % of the maximum, and the result is the `homepage.quiz_results` band with the highest `from_percent` that is at or below the score. Results pre-fill the contact form message and fire a GA `quiz_complete` event. The section is hidden when there are no questions. `homepage.quiz_intro` mentions the question count, so update it if questions are added or removed.
 - Homepage topic chips come from `homepage.featured_topics` (category labels; empty = the 4 busiest parents). Its options are fixed in the schema, so add new top-level categories there too.
 - `/#<topic-slug>` (e.g. `/#sellers`, `/#buyers`, used by the Sellers/Buyers menu items and homepage path cards) scrolls to the homepage Learning Center and selects that featured topic (script at the end of `index.astro`, matching chips by `data-topic`). The old `/sellers-start-here` and `/buyers-start-here` link pages are unpublished and redirect there.
 - `posts.featured` ("Feature on homepage") picks the homepage lead article; otherwise the newest is used.

@@ -12,6 +12,19 @@ export default defineConfig({
   image: {
     layout: "constrained",
     responsiveStyles: true,
+    // Lets the Cloudflare Images binding resize EmDash media served from these
+    // hosts. EmDash only adds this automatically when `siteUrl` is set, which
+    // would also pin passkeys/CSRF to one host. Bytes are read from R2, never
+    // fetched from the host.
+    remotePatterns: [
+      "comehometopa.lafaverandwaltersrealty.workers.dev",
+      "comehometopa.com",
+      "www.comehometopa.com",
+    ].map((hostname) => ({
+      protocol: "https",
+      hostname,
+      pathname: "/_emdash/api/media/file/**",
+    })),
   },
   integrations: [
     react(),
