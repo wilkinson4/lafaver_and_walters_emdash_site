@@ -22,14 +22,12 @@ const bands = [...results].sort(
 );
 const optionClass =
   "mb-3 flex cursor-pointer items-center gap-4 border-2 border-[#ddd] px-5 py-4.5 text-lg transition duration-150 hover:border-brand has-checked:border-brand has-checked:bg-[#fdf2f2] has-focus-visible:outline-2 has-focus-visible:outline-brand";
-const reveal =
-  "motion-safe:transition-[opacity,translate] motion-safe:duration-300 motion-safe:starting:translate-y-2 motion-safe:starting:opacity-0";
 ---
 
 <div
   id="quiz-card"
   data-quiz
-  class="scroll-mt-28 border border-line bg-white p-7.5 shadow-[0_24px_60px_rgba(0,0,0,0.1)] sm:p-11"
+  class="scroll-mt-28 overflow-hidden border border-line bg-white p-7.5 shadow-[0_24px_60px_rgba(0,0,0,0.1)] sm:p-11"
 >
   <div class="mb-6.5 h-1.5 bg-[#eee]">
     <i
@@ -38,9 +36,9 @@ const reveal =
       style={`width:${100 / (total + 1)}%`}
     ></i>
   </div>
-  <form data-quiz-form>
+  <form data-quiz-form novalidate>
     {questions.map((q, n) => (
-      <fieldset data-quiz-step hidden={n > 0} disabled={n > 0} class={reveal}>
+      <fieldset data-quiz-step hidden={n > 0}>
         <legend class="contents">
           <span class="block text-[15px] font-semibold text-[#666]">
             Question {n + 1} of {total}
@@ -55,12 +53,19 @@ const reveal =
               type="radio"
               name={`q${n}`}
               value={a.points ?? 0}
-              required
               class="size-5.5 shrink-0 accent-brand"
             />
             {a.label}
           </label>
         ))}
+        <p
+          data-quiz-error
+          role="alert"
+          hidden
+          class="mt-1 text-[15px] font-semibold text-brand"
+        >
+          Please choose an answer to continue.
+        </p>
         <div class="mt-6 flex items-center justify-between gap-4">
           {n > 0 ? (
             <button
@@ -80,7 +85,7 @@ const reveal =
       </fieldset>
     ))}
   </form>
-  <div data-quiz-result hidden class={reveal} aria-live="polite">
+  <div data-quiz-result hidden aria-live="polite">
     <div class="text-[15px] font-semibold text-[#666]">
       Your readiness score
     </div>
@@ -116,6 +121,8 @@ const reveal =
 </div>
 
 <script>
+  const motion = () => !matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   for (const card of document.querySelectorAll<HTMLElement>("[data-quiz]")) {
     const form = card.querySelector<HTMLFormElement>("[data-quiz-form]")!;
     const steps = [
@@ -123,53 +130,104 @@ const reveal =
     ];
     const bar = card.querySelector<HTMLElement>("[data-quiz-bar]")!;
     const result = card.querySelector<HTMLElement>("[data-quiz-result]")!;
+    const score = card.querySelector<HTMLElement>("[data-quiz-score]")!;
     const bands = [...card.querySelectorAll<HTMLElement>("[data-quiz-band]")];
     let current = 0;
+    let busy = false;
 
     const progress = (done: number) => {
       bar.style.width = `${((done + 1) / (steps.length + 1)) * 100}%`;
     };
-    const show = (index: number, focus = true) => {
-      current = index;
-      steps.forEach((step, i) => {
-        step.hidden = i !== index;
-        // Later steps stay disabled so their required answers don't block Next.
-        step.disabled = i > index;
-      });
-      progress(index);
-      if (focus) {
-        const step = steps[index];
-        (
-          step.querySelector<HTMLInputElement>("input:checked") ??
-          step.querySelector<HTMLInputElement>("input")
-        )?.focus({ preventScroll: true });
+    const focusStep = (step: HTMLElement) =>
+      (
+        step.querySelector<HTMLInputElement>("input:checked") ??
+        step.querySelector<HTMLInputElement>("input")
+      )?.focus({ preventScroll: true });
+
+    // Slide the outgoing panel away, slide the next one in, and ease the
+    // card's height between them. dir 1 = forward, -1 = back.
+    const swap = async (from: HTMLElement, to: HTMLElement, dir: 1 | -1) => {
+      if (!motion()) {
+        from.hidden = true;
+        to.hidden = false;
+        return;
       }
+      busy = true;
+      const startHeight = card.offsetHeight;
+      await from.animate(
+        [
+          { opacity: 1, transform: "none" },
+          { opacity: 0, transform: `translateX(${-28 * dir}px)` },
+        ],
+        { duration: 160, easing: "ease-in" },
+      ).finished;
+      from.hidden = true;
+      to.hidden = false;
+      const endHeight = card.offsetHeight;
+      if (startHeight !== endHeight) {
+        card.animate(
+          [{ height: `${startHeight}px` }, { height: `${endHeight}px` }],
+          { duration: 260, easing: "cubic-bezier(.2,.8,.2,1)" },
+        );
+      }
+      await to.animate(
+        [
+          { opacity: 0, transform: `translateX(${28 * dir}px)` },
+          { opacity: 1, transform: "none" },
+        ],
+        { duration: 260, easing: "cubic-bezier(.2,.8,.2,1)" },
+      ).finished;
+      busy = false;
     };
 
-    const finish = () => {
+    const goTo = async (index: number) => {
+      if (index === current) return;
+      const from = steps[current];
+      const dir = index > current ? 1 : -1;
+      current = index;
+      progress(index);
+      await swap(from, steps[index], dir);
+      focusStep(steps[index]);
+    };
+
+    const countUp = (percent: number) => {
+      if (!motion()) {
+        score.textContent = String(percent);
+        return;
+      }
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / 900);
+        score.textContent = String(Math.round(percent * (1 - (1 - t) ** 3)));
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+
+    const finish = async () => {
       const data = new FormData(form);
-      let score = 0;
+      let total = 0;
       let max = 0;
       steps.forEach((step, i) => {
         const values = [
           ...step.querySelectorAll<HTMLInputElement>("input"),
         ].map((input) => Number(input.value) || 0);
         max += Math.max(0, ...values);
-        score += Number(data.get(`q${i}`)) || 0;
+        total += Number(data.get(`q${i}`)) || 0;
       });
-      const percent = max ? Math.round((score / max) * 100) : 0;
+      const percent = max ? Math.round((total / max) * 100) : 0;
       const band = bands
         .filter((b) => Number(b.dataset.quizBand) <= percent)
         .at(-1);
       bands.forEach((b) => (b.hidden = b !== band));
-      card.querySelector("[data-quiz-score]")!.textContent = String(percent);
+      score.textContent = "0";
       // Hide the duplicate contact link when the band's button already goes there.
       const bandLink = band?.querySelector<HTMLAnchorElement>("a");
       card.querySelector<HTMLElement>("[data-quiz-contact]")!.hidden =
         bandLink?.hash === "#contact" && bandLink.pathname === "/";
-      form.hidden = true;
-      result.hidden = false;
       bar.style.width = "100%";
+      await swap(form, result, 1);
+      countUp(percent);
 
       // Pass the result to the consultation form.
       const title = band?.querySelector("h3")?.textContent?.trim();
@@ -191,8 +249,28 @@ const reveal =
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-      if (current < steps.length - 1) show(current + 1);
+      if (busy) return;
+      const step = steps[current];
+      if (!step.querySelector("input:checked")) {
+        step.querySelector<HTMLElement>("[data-quiz-error]")!.hidden = false;
+        focusStep(step);
+        if (motion()) {
+          step.animate(
+            [0, -8, 8, -5, 5, 0].map((x) => ({
+              transform: `translateX(${x}px)`,
+            })),
+            { duration: 320, easing: "ease-in-out" },
+          );
+        }
+        return;
+      }
+      if (current < steps.length - 1) goTo(current + 1);
       else finish();
+    });
+    form.addEventListener("change", (event) => {
+      const step = (event.target as Element).closest("[data-quiz-step]");
+      const error = step?.querySelector<HTMLElement>("[data-quiz-error]");
+      if (error) error.hidden = true;
     });
     // A pointer click on an answer moves on; keyboard users press Next.
     let advance: ReturnType<typeof setTimeout> | undefined;
@@ -204,22 +282,28 @@ const reveal =
       clearTimeout(advance);
       advance = setTimeout(() => form.requestSubmit(), 250);
     });
-    card.addEventListener("click", (event) => {
+    card.addEventListener("click", async (event) => {
+      if (busy) return;
       const target = event.target as Element;
-      if (target.closest("[data-quiz-back]")) show(Math.max(0, current - 1));
+      if (target.closest("[data-quiz-back]")) goTo(Math.max(0, current - 1));
       if (target.closest("[data-quiz-restart]")) {
         form.reset();
-        result.hidden = true;
-        form.hidden = false;
-        show(0);
+        steps.forEach((step, i) => {
+          step.hidden = i !== 0;
+          step.querySelector<HTMLElement>("[data-quiz-error]")!.hidden = true;
+        });
+        current = 0;
+        progress(0);
+        await swap(result, form, -1);
+        focusStep(steps[0]);
       }
     });
-    // "Take the Quiz" links focus the first answer.
+    // "Take the Quiz" links focus the current answer.
     document
       .querySelectorAll<HTMLAnchorElement>(`a[href="#${card.id}"]`)
       .forEach((link) =>
         link.addEventListener("click", () => {
-          if (!form.hidden) setTimeout(() => show(current), 0);
+          if (!form.hidden) setTimeout(() => focusStep(steps[current]), 0);
         }),
       );
     progress(0);
